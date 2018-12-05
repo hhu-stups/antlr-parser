@@ -1,8 +1,19 @@
 # ANTLR4 Parser for B
+**DO NOT USE THIS CODE IN ANYTHING THAT IS IMPORTANT TO YOU.
+RATHER, IN ANYTHING AT ALL.
+DO NOT EVEN THINK ABOUT USING IT.
+STUFF _WILL_ BREAK.
+YOU _WILL_ CRY.
+WE WILL _NOT CARE_.**
 
 This repo contains a standalone version of the
 _still in development_ ANTLR4 Parser feature of the
 [ProB Parsers Library](https://github.com/bendisposto/probparsers).
+
+The code is still in a very early and experimental state.
+Just do not use it unless you have contacted us
+and we deemed usage of this library suitable for your goals.
+
 
 ## Licence
 
