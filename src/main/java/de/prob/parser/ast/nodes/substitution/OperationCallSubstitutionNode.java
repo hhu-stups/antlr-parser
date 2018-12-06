@@ -1,11 +1,11 @@
 package de.prob.parser.ast.nodes.substitution;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.OperationNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class OperationCallSubstitutionNode extends SubstitutionNode {
 
@@ -25,6 +25,8 @@ public class OperationCallSubstitutionNode extends SubstitutionNode {
 		this.names = names;
 		this.arguments = arguments;
 		this.assignedVariables = assignedVariables;
+		this.arguments.forEach(arg -> arg.setParent(this));
+		this.assignedVariables.forEach(var -> var.setParent(this));
 	}
 
 	public List<String> getNames() {
