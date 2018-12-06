@@ -1,10 +1,10 @@
 package de.prob.parser.ast.nodes.substitution;
 
-import java.util.List;
-
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
+
+import java.util.List;
 
 public class AnySubstitutionNode extends SubstitutionNode {
 
@@ -18,6 +18,9 @@ public class AnySubstitutionNode extends SubstitutionNode {
 		this.parameters = parameters;
 		this.wherePredicate = wherePredicate;
 		this.thenSubstitution = thenSubstitution;
+		parameters.forEach(param -> param.setParent(this));
+		wherePredicate.setParent(this);
+		thenSubstitution.setParent(this);
 	}
 
 	public List<DeclarationNode> getParameters() {
