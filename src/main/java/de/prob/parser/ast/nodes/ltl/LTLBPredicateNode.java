@@ -10,6 +10,7 @@ public class LTLBPredicateNode extends LTLNode {
 	public LTLBPredicateNode(SourceCodePosition sourceCodePosition, PredicateNode predicate) {
 		super(sourceCodePosition);
 		this.predicate = predicate;
+		this.predicate.setParent(this);
 	}
 
 	public PredicateNode getPredicate() {

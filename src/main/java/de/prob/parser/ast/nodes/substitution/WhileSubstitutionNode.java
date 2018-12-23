@@ -17,6 +17,10 @@ public class WhileSubstitutionNode extends SubstitutionNode {
 		this.body = body;
 		this.invariant = invariant;
 		this.variant = variant;
+		this.condition.setParent(this);
+		this.body.setParent(this);
+		this.invariant.setParent(this);
+		this.variant.setParent(this);
 	}
 
 	public ExprNode getVariant() {

@@ -14,6 +14,7 @@ public class ChoiceSubstitutionNode extends SubstitutionNode {
     public ChoiceSubstitutionNode(SourceCodePosition sourceCodePosition, List<SubstitutionNode> substitutions) {
         super(sourceCodePosition);
         this.substitutions = substitutions;
+        this.substitutions.forEach(sub -> sub.setParent(this));
     }
 
     public List<SubstitutionNode> getSubstitutions() {

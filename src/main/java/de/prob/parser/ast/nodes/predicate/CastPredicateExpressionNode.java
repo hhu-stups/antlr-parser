@@ -10,6 +10,7 @@ public class CastPredicateExpressionNode extends ExprNode {
 	public CastPredicateExpressionNode(SourceCodePosition sourceCodePosition, PredicateNode predicate) {
 		super(sourceCodePosition);
 		this.predicate = predicate;
+		this.predicate.setParent(this);
 	}
 
 	public PredicateNode getPredicate() {

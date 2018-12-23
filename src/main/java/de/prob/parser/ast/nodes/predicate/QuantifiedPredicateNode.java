@@ -1,10 +1,10 @@
 package de.prob.parser.ast.nodes.predicate;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class QuantifiedPredicateNode extends PredicateNode {
 
@@ -22,6 +22,8 @@ public class QuantifiedPredicateNode extends PredicateNode {
 		this.declarationList = declarationList;
 		this.predicateNode = predNode;
 		this.operator = operator;
+		this.declarationList.forEach(decl -> decl.setParent(this));
+		this.predicateNode.setParent(this);
 	}
 
 	public List<DeclarationNode> getDeclarationList() {

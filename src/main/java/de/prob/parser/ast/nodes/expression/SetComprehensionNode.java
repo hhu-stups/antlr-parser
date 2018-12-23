@@ -1,11 +1,11 @@
 package de.prob.parser.ast.nodes.expression;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SetComprehensionNode extends ExprNode {
 	private List<DeclarationNode> declarationList;
@@ -16,6 +16,8 @@ public class SetComprehensionNode extends ExprNode {
 		super(sourceCodePosition);
 		this.declarationList = declarationList;
 		this.predicateNode = predicateNode;
+		this.declarationList.forEach(decl -> decl.setParent(this));
+		this.predicateNode.setParent(this);
 	}
 
 	public List<DeclarationNode> getDeclarationList() {

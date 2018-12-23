@@ -18,6 +18,8 @@ public class ConditionSubstitutionNode extends SubstitutionNode {
 		this.condition = condition;
 		this.substitution = substitution;
 		this.kind = kind;
+		this.condition.setParent(this);
+		this.setParent(this);
 	}
 
 	public SubstitutionNode getSubstitution() {

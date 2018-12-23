@@ -13,6 +13,7 @@ public class EnumerationSetNode extends ExprNode {
 		super(sourceCodePosition);
 		this.enumeratedSetDeclarationNode = enumeratedSetNode;
 		this.name = name;
+		this.enumeratedSetDeclarationNode.setParent(this);
 	}
 
 	public String getName() {

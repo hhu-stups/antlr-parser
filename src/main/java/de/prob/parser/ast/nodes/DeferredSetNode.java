@@ -13,6 +13,7 @@ public class DeferredSetNode extends ExprNode {
 		super(sourceCodePosition);
 		this.declarationNode = declNode;
 		this.name = name;
+		this.declarationNode.setParent(this);
 	}
 
 	public String getName() {

@@ -1,9 +1,9 @@
 package de.prob.parser.ast.nodes.substitution;
 
-import java.util.List;
-
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
+
+import java.util.List;
 
 public class IfOrSelectSubstitutionsNode extends SubstitutionNode {
 	protected List<PredicateNode> conditions;
@@ -32,6 +32,9 @@ public class IfOrSelectSubstitutionsNode extends SubstitutionNode {
 		this.conditions = conditions;
 		this.substitutions = substitutions;
 		this.elseSubstitution = elseSubstitution;
+		this.conditions.forEach(cond -> cond.setParent(this));
+		this.substitutions.forEach(sub -> sub.setParent(this));
+		this.elseSubstitution.setParent(this);
 	}
 
 	public Operator getOperator() {

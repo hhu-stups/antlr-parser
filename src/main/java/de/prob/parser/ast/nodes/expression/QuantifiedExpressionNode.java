@@ -28,6 +28,7 @@ public class QuantifiedExpressionNode extends SetComprehensionNode {
 		super(sourceCodePosition, declarationList, predNode);
 		this.expressionNode = expressionNode;
 		this.operator = operator;
+		this.expressionNode.setParent(this);
 	}
 
 	public QuantifiedExpressionOperator getOperator() {

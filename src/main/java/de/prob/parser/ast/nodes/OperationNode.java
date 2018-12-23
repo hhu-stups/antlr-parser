@@ -19,6 +19,9 @@ public class OperationNode extends Node {
 		this.substitution = substitution;
 		this.outputParams = outputParamNodes;
 		this.params = paramNodes;
+		this.outputParams.forEach(output -> output.setParent(this));
+		this.substitution.setParent(this);
+		this.params.forEach(param -> param.setParent(this));
 	}
 
 	public String getName() {

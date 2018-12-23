@@ -15,6 +15,7 @@ public class LTLPrefixOperatorNode extends LTLNode {
 		super(sourceCodePosition);
 		this.kind = kind;
 		this.argument = node;
+		this.argument.setParent(this);
 	}
 
 	public Kind getKind() {

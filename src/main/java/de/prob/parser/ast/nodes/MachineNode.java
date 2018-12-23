@@ -34,6 +34,7 @@ public class MachineNode extends Node {
 
 	public void setVariables(List<DeclarationNode> variables) {
 		this.variables = variables;
+		this.variables.forEach(var -> var.setParent(this));
 	}
 
 	public MachineNode(SourceCodePosition sourceCodePosition) {
@@ -46,10 +47,12 @@ public class MachineNode extends Node {
 
 	public void setConstants(List<DeclarationNode> constants) {
 		this.constants = constants;
+		this.constants.forEach(constant -> constant.setParent(this));
 	}
 
 	public void addLTLFormula(LTLFormula ltlFormula) {
 		this.ltlFormulas.add(ltlFormula);
+		ltlFormula.setParent(this);
 	}
 
 	public SubstitutionNode getInitialisation() {
@@ -58,6 +61,7 @@ public class MachineNode extends Node {
 
 	public void setInitialisation(SubstitutionNode initialisation) {
 		this.initialisation = initialisation;
+		this.initialisation.setParent(this);
 	}
 
 	public List<OperationNode> getOperations() {
@@ -66,6 +70,7 @@ public class MachineNode extends Node {
 
 	public void setOperations(List<OperationNode> operations) {
 		this.operations = operations;
+		this.operations.forEach(op -> op.setParent(this));
 	}
 
 	public PredicateNode getInvariant() {
@@ -74,6 +79,7 @@ public class MachineNode extends Node {
 
 	public void setInvariant(PredicateNode invariant) {
 		this.invariant = invariant;
+		this.invariant.setParent(this);
 	}
 
 	public PredicateNode getProperties() {
@@ -82,10 +88,12 @@ public class MachineNode extends Node {
 
 	public void setProperties(PredicateNode properties) {
 		this.properties = properties;
+		this.properties.setParent(this);
 	}
 
 	public void addSetEnumeration(EnumeratedSetDeclarationNode setEnumeration) {
 		this.setEnumerations.add(setEnumeration);
+		setEnumeration.setParent(this);
 	}
 
 	public List<EnumeratedSetDeclarationNode> getEnumaratedSets() {
@@ -94,6 +102,7 @@ public class MachineNode extends Node {
 
 	public void addDeferredSet(DeclarationNode setDeclNode) {
 		this.deferredSets.add(setDeclNode);
+		setDeclNode.setParent(this);
 	}
 
 	public List<DeclarationNode> getDeferredSets() {
@@ -106,10 +115,12 @@ public class MachineNode extends Node {
 
 	public void addOperation(OperationNode operationNode) {
 		this.operations.add(operationNode);
+		operationNode.setParent(this);
 	}
 
 	public void addMachineReferenceNode(MachineReferenceNode machineReferenceNode) {
 		machineReferences.add(machineReferenceNode);
+		machineReferenceNode.setParent(this);
 	}
 
 	public List<MachineReferenceNode> getMachineReferences() {
@@ -118,6 +129,7 @@ public class MachineNode extends Node {
 
 	public void addValues(SubstitutionNode substitution) {
 		values.add(substitution);
+		substitution.setParent(this);
 	}
 
 	public List<SubstitutionNode> getValues() {

@@ -16,6 +16,8 @@ public class EnumeratedSetElementNode extends ExprNode {
 		this.enumeratedSetDeclarationNode = enumeratedSetDeclarationNode;
 		this.elementName = elementName;
 		this.declarationNode = declarationNode;
+		this.enumeratedSetDeclarationNode.setParent(this);
+		this.declarationNode.setParent(this);
 	}
 
 	public String getName() {

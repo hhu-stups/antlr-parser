@@ -1,9 +1,9 @@
 package de.prob.parser.ast.nodes;
 
+import de.prob.parser.ast.SourceCodePosition;
+
 import java.util.List;
 import java.util.stream.Collectors;
-
-import de.prob.parser.ast.SourceCodePosition;
 
 public class EnumeratedSetDeclarationNode extends Node {
 	final DeclarationNode setDeclaration;
@@ -14,6 +14,8 @@ public class EnumeratedSetDeclarationNode extends Node {
 		super(sourceCodePosition);
 		this.setDeclaration = setDeclaration;
 		this.elements = elements;
+		this.setDeclaration.setParent(this);
+		this.elements.forEach(element -> element.setParent(this));
 	}
 
 	public DeclarationNode getSetDeclarationNode() {

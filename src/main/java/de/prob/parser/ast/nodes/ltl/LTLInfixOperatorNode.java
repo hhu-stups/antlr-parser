@@ -17,6 +17,8 @@ public class LTLInfixOperatorNode extends LTLNode {
 		this.kind = kind;
 		this.left = left;
 		this.right = right;
+		this.left.setParent(this);
+		this.right.setParent(this);
 	}
 
 	public Kind getKind() {

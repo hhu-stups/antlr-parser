@@ -51,6 +51,7 @@ public class ExpressionOperatorNode extends ExprNode
 		setExpressionNodes(expressionNodes);
 		this.expressionNodes = expressionNodes;
 		this.operator = operator;
+		this.expressionNodes.forEach(expr -> expr.setParent(this));
 	}
 
 	public ExpressionOperatorNode(SourceCodePosition sourceCodePosition, ExpressionOperator operator) {
