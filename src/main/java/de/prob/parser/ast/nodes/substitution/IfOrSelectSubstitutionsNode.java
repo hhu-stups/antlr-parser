@@ -34,7 +34,9 @@ public class IfOrSelectSubstitutionsNode extends SubstitutionNode {
 		this.elseSubstitution = elseSubstitution;
 		this.conditions.forEach(cond -> cond.setParent(this));
 		this.substitutions.forEach(sub -> sub.setParent(this));
-		this.elseSubstitution.setParent(this);
+		if(elseSubstitution != null) {
+			this.elseSubstitution.setParent(this);
+		}
 	}
 
 	public Operator getOperator() {
