@@ -14,6 +14,7 @@ import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode.PredicateOperator;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorWithExprArgsNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorWithExprArgsNode.PredOperatorExprArgs;
+import de.prob.parser.ast.nodes.predicate.QuantifiedPredicateNode;
 import de.prob.parser.ast.nodes.substitution.AnySubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.AssignSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.BecomesElementOfSubstitutionNode;
@@ -262,6 +263,24 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 			throw new RuntimeException("Not implemented: " + ctx.expressionOperatorP160().operator.getText());
 		}
 		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx), createExprNodeList(left, right), op);
+	}
+
+	@Override
+	public Node visitQuantifiedPredicate(BParser.QuantifiedPredicateContext ctx) {
+		final List<DeclarationNode> identifierList = new ArrayList<>();
+		for (Token exprNode : ctx.quantified_variables_list().identifier_list().idents) {
+			String name = exprNode.getText();
+			DeclarationNode decl = new DeclarationNode(Util.createSourceCodePosition(exprNode), name,
+					DeclarationNode.Kind.SUBSTITUION_IDENTIFIER, null);
+			identifierList.add(decl);
+		}
+
+		PredicateNode predicate = (PredicateNode) ctx.predicate().accept(this);
+		QuantifiedPredicateNode.QuantifiedPredicateOperator operator =
+				BParser.FOR_ANY == ctx.operator.getType() ?
+						QuantifiedPredicateNode.QuantifiedPredicateOperator.UNIVERSAL_QUANTIFICATION :
+						QuantifiedPredicateNode.QuantifiedPredicateOperator.EXISTENTIAL_QUANTIFICATION;
+		return new QuantifiedPredicateNode(Util.createSourceCodePosition(ctx), identifierList, predicate, operator);
 	}
 
 	@Override
