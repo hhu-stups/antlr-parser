@@ -219,6 +219,7 @@ MIRROR: 'mirror';
 PERM: 'perm';
 POSTFIX: 'postfix';
 POW: 'POW';
+FIN: 'FIN';
 PREFIX: 'prefix';
 RAN: 'ran';
 REL: 'rel';

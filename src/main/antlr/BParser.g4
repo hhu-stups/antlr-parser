@@ -314,6 +314,7 @@ expression_prefix_operator
   | PERM
   | POSTFIX
   | POW
+  | FIN
   | PREFIX
   | RAN
   | REL
