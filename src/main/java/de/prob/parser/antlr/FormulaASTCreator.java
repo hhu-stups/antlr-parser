@@ -373,6 +373,19 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 	}
 
 	@Override
+	public Node visitExpressionBinOperatorP125(BParser.ExpressionBinOperatorP125Context ctx) {
+		final ExprNode left = (ExprNode) ctx.left.accept(this);
+		final ExprNode right = (ExprNode) ctx.right.accept(this);
+		final int type = ctx.expression_bin_operator_p125().operator.getType();
+		ExpressionOperator op = exprOperatorMap.get(type);
+		if (op == null) {
+			throw new RuntimeException("Not implemented: " + ctx.expression_bin_operator_p125().operator.getText());
+		}
+		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx), createExprNodeList(left, right), op);
+
+	}
+
+	@Override
 	public Node visitSetEnumeration(BParser.SetEnumerationContext ctx) {
 		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx),
 				visitExpressionList(ctx.expression_list()), ExpressionOperator.SET_ENUMERATION);
