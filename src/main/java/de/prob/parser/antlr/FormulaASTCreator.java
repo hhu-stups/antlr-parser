@@ -106,6 +106,19 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		addExprOperator(BParser.RANGE_SUBSTRATION, ExpressionOperator.RANGE_SUBTRACTION);
 		addExprOperator(BParser.TILDE, ExpressionOperator.INVERSE_RELATION);
 		addExprOperator(BParser.SET_RELATION, ExpressionOperator.SET_RELATION);
+		addExprOperator(BParser.TOTAL_SURJECTION_RELATION, ExpressionOperator.TOTAL_SURJECTION_RELATION);
+		addExprOperator(BParser.SURJECTION_RELATION, ExpressionOperator.SURJECTION_RELATION);
+
+		// functions
+		addExprOperator(BParser.PARTIAL_BIJECTION, ExpressionOperator.PARTIAL_BIJECTION);
+		addExprOperator(BParser.PARTIAL_FUNCTION, ExpressionOperator.PARTIAL_FUNCTION);
+		addExprOperator(BParser.PARTIAL_INJECTION, ExpressionOperator.PARTIAL_INJECTION);
+		addExprOperator(BParser.PARTIAL_SURJECTION, ExpressionOperator.PARTIAL_SURJECTION);
+		addExprOperator(BParser.TOTAL_BIJECTION, ExpressionOperator.TOTAL_BIJECTION);
+		addExprOperator(BParser.TOTAL_FUNCTION, ExpressionOperator.TOTAL_FUNCTION);
+		addExprOperator(BParser.TOTAL_INJECTION, ExpressionOperator.TOTAL_INJECTION);
+		addExprOperator(BParser.TOTAL_RELATION, ExpressionOperator.TOTAL_RELATION);
+		addExprOperator(BParser.TOTAL_SURJECTION, ExpressionOperator.TOTAL_SURJECTION);
 
 		// sequence operators
 		addExprOperator(BParser.FIRST, ExpressionOperator.FIRST);
