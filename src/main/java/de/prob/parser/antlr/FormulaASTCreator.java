@@ -7,6 +7,7 @@ import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode.ExpressionOperator;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
+import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
 import de.prob.parser.ast.nodes.predicate.IdentifierPredicateNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
@@ -271,7 +272,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		for (Token exprNode : ctx.quantified_variables_list().identifier_list().idents) {
 			String name = exprNode.getText();
 			DeclarationNode decl = new DeclarationNode(Util.createSourceCodePosition(exprNode), name,
-					DeclarationNode.Kind.SUBSTITUION_IDENTIFIER, null);
+					DeclarationNode.Kind.VARIABLE, null);
 			identifierList.add(decl);
 		}
 
@@ -408,6 +409,19 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 	public Node visitSetEnumeration(BParser.SetEnumerationContext ctx) {
 		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx),
 				visitExpressionList(ctx.expression_list()), ExpressionOperator.SET_ENUMERATION);
+	}
+
+	@Override
+	public Node visitSetComprehension(BParser.SetComprehensionContext ctx) {
+		final List<DeclarationNode> identifierList = new ArrayList<>();
+		for (Token exprNode : ctx.identifier_list().idents) {
+			String name = exprNode.getText();
+			DeclarationNode decl = new DeclarationNode(Util.createSourceCodePosition(exprNode), name,
+					DeclarationNode.Kind.VARIABLE, null);
+			identifierList.add(decl);
+		}
+		PredicateNode predicate = (PredicateNode) ctx.predicate().accept(this);
+		return new SetComprehensionNode(Util.createSourceCodePosition(ctx), identifierList, predicate);
 	}
 
 	@Override
