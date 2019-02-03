@@ -6,28 +6,39 @@ apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'antlr'
 apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'maven'
 
 project.version = '0.1.0-SNAPSHOT'
 project.group = 'de.hhu.stups'
 
 repositories {
+    mavenLocal()
+    jcenter()
     mavenCentral()
     maven {
         name "snapshots"
         url "https://oss.sonatype.org/content/repositories/snapshots/"
     }
+    maven {
+        name "release"
+        url "https://oss.sonatype.org/content/repositories/releases/"
+    }
 }
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 dependencies {
     antlr "org.antlr:antlr4:4.7.1" // use ANTLR version 4
-
     testCompile 'junit:junit:4.8.2'
 }
+
 
 sourceSets {
     main {
         java {
-          	srcDirs = ['src/main/java', 'build/generated-src/antlr/main']
+          	srcDirs = ['build/temp', 'src/main/java', 'build/generated-src/antlr/main']
         }
     }
 }
