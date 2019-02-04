@@ -537,6 +537,17 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		case EMPTY_SET:
 			typedNodes.add(node);
 			return unify(expected, new SetType(new UntypedType()), node);
+		case TOTAL_FUNCTION:
+		case PARTIAL_FUNCTION:
+		case TOTAL_INJECTION:
+		case PARTIAL_INJECTION:
+		case TOTAL_BIJECTION:
+		case PARTIAL_BIJECTION:
+		case TOTAL_SURJECTION:
+		case PARTIAL_SURJECTION:
+		case SURJECTION_RELATION:
+		case TOTAL_RELATION:
+		case TOTAL_SURJECTION_RELATION:
 		case SET_RELATION: {
 			SetType found = new SetType(new SetType(new CoupleType(new UntypedType(), new UntypedType())));
 			found = (SetType) unify(expected, found, node);
@@ -546,7 +557,6 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			visitExprNode(node.getExpressionNodes().get(1), new SetType(couple.getRight()));
 			return node.getType();
 		}
-		//TODO add type checking for bijections, injections, surjections, ...
 		case FIN:
 		case POW:
 			SetType found = (SetType) unify(expected, new SetType(new UntypedType()), node);
