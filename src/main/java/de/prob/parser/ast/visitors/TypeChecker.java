@@ -546,6 +546,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			visitExprNode(node.getExpressionNodes().get(1), new SetType(couple.getRight()));
 			return node.getType();
 		}
+		//TODO add type checking for bijections, injections, surjections, ...
+		case FIN:
 		case POW:
 			SetType found = (SetType) unify(expected, new SetType(new UntypedType()), node);
 			BType subtype = found.getSubType();
