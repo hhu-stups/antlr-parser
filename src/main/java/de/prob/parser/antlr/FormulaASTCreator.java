@@ -418,7 +418,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		}
 		PredicateNode predicateNode = (PredicateNode) ctx.predicate().accept(this);
 		ExprNode exprNode = (ExprNode) ctx.expression_in_par().accept(this);
-		return new LambdaNode(Util.createSourceCodePosition(ctx), identifierList, predicateNode, )
+		return new LambdaNode(Util.createSourceCodePosition(ctx), identifierList, predicateNode, exprNode);
 	}
 
 	@Override
