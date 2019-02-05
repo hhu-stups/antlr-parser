@@ -10,6 +10,7 @@ import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.OperationNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
+import de.prob.parser.ast.nodes.expression.LambdaNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
 import de.prob.parser.ast.nodes.predicate.IdentifierPredicateNode;
@@ -231,7 +232,11 @@ public class MachineScopeChecker {
 		@Override
 		public void visitSetComprehensionNode(SetComprehensionNode node) {
 			// TODO Auto-generated method stub
+		}
 
+		@Override
+		public void visitLambdaNode(LambdaNode node) {
+			// TODO Auto-generated method stub
 		}
 
 		@Override
