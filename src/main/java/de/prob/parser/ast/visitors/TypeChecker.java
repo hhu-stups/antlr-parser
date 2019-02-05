@@ -4,6 +4,7 @@ import de.prob.parser.ast.nodes.*;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
+import de.prob.parser.ast.nodes.expression.LambdaNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
@@ -820,4 +821,12 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		return null;
 	}
 
+	@Override
+	public BType visitLambdaNode(LambdaNode node, BType expected) {
+		setDeclarationTypes(node.getDeclarations());
+		visitPredicateNode(node.getPredicate(), BoolType.getInstance());
+		List<BType> types = node.getDeclarations().stream().map(TypedNode::getType).collect(Collectors.toList());
+		BType expressionType = visitExprNode(node.getExpression(), new UntypedType());
+		return unify(expected, new SetType(new CoupleType(createNestedCouple(types), expressionType)), node);
+	}
 }

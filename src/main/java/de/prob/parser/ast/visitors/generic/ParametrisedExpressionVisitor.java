@@ -3,6 +3,7 @@ package de.prob.parser.ast.visitors.generic;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
+import de.prob.parser.ast.nodes.expression.LambdaNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
@@ -23,6 +24,8 @@ public interface ParametrisedExpressionVisitor<R, P> {
 			return visitSetComprehensionNode((SetComprehensionNode) node, expected);
 		} else if (node instanceof CastPredicateExpressionNode) {
 			return visitCastPredicateExpressionNode((CastPredicateExpressionNode) node, expected);
+		} else if (node instanceof LambdaNode) {
+			return visitLambdaNode((LambdaNode) node, expected);
 		}
 		throw new AssertionError();
 	}
@@ -39,4 +42,5 @@ public interface ParametrisedExpressionVisitor<R, P> {
 
 	R visitSetComprehensionNode(SetComprehensionNode node, P expected);
 
+	R visitLambdaNode(LambdaNode node, P expected);
 }
