@@ -6,6 +6,7 @@ import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode.ExpressionOperator;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
+import de.prob.parser.ast.nodes.expression.LambdaNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
@@ -404,6 +405,20 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		}
 		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx), createExprNodeList(left, right), op);
 
+	}
+
+	@Override
+	public Node visitLambdaExpression(BParser.LambdaExpressionContext ctx) {
+		final List<DeclarationNode> identifierList = new ArrayList<>();
+		for (Token exprNode : ctx.quantified_variables_list().identifier_list().idents) {
+			String name = exprNode.getText();
+			DeclarationNode decl = new DeclarationNode(Util.createSourceCodePosition(exprNode), name,
+					DeclarationNode.Kind.VARIABLE, null);
+			identifierList.add(decl);
+		}
+		PredicateNode predicateNode = (PredicateNode) ctx.predicate().accept(this);
+		ExprNode exprNode = (ExprNode) ctx.expression_in_par().accept(this);
+		return new LambdaNode(Util.createSourceCodePosition(ctx), identifierList, predicateNode, )
 	}
 
 	@Override
