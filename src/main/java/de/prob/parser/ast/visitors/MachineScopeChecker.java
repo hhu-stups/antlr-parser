@@ -226,17 +226,19 @@ public class MachineScopeChecker {
 		@Override
 		public void visitQuantifiedExpressionNode(QuantifiedExpressionNode node) {
 			// TODO Auto-generated method stub
-
 		}
 
 		@Override
 		public void visitSetComprehensionNode(SetComprehensionNode node) {
-			// TODO Auto-generated method stub
+			createNewScope(node.getDeclarationList());
+			visitPredicateNode(node.getPredicateNode());
 		}
 
 		@Override
 		public void visitLambdaNode(LambdaNode node) {
-			// TODO Auto-generated method stub
+			createNewScope(node.getDeclarations());
+			visitPredicateNode(node.getPredicate());
+			visitExprNode(node.getExpression());
 		}
 
 		@Override
@@ -248,7 +250,8 @@ public class MachineScopeChecker {
 
 		@Override
 		public void visitQuantifiedPredicateNode(QuantifiedPredicateNode node) {
-			// TODO Auto-generated method stub
+			createNewScope(node.getDeclarationList());
+			visitPredicateNode(node.getPredicateNode());
 		}
 
 		@Override
