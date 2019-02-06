@@ -230,12 +230,14 @@ public class MachineScopeChecker {
 
 		@Override
 		public void visitSetComprehensionNode(SetComprehensionNode node) {
+			//TODO: variables outside regular scope available
 			createNewScope(node.getDeclarationList());
 			visitPredicateNode(node.getPredicateNode());
 		}
 
 		@Override
 		public void visitLambdaNode(LambdaNode node) {
+			//TODO: variables outside regular scope available
 			createNewScope(node.getDeclarations());
 			visitPredicateNode(node.getPredicate());
 			visitExprNode(node.getExpression());
@@ -250,6 +252,7 @@ public class MachineScopeChecker {
 
 		@Override
 		public void visitQuantifiedPredicateNode(QuantifiedPredicateNode node) {
+			//TODO: variables outside regular scope available
 			createNewScope(node.getDeclarationList());
 			visitPredicateNode(node.getPredicateNode());
 		}
