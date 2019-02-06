@@ -661,8 +661,6 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		setDeclarationTypes(node.getDeclarationList());
 		visitPredicateNode(node.getPredicateNode(), BoolType.getInstance());
 		//TODO: type checking is wrong?
-		List<BType> types = node.getDeclarationList().stream().map(TypedNode::getType).collect(Collectors.toList());
-		unify(expected, new SetType(createNestedCouple(types)), node);
 		return unify(expected, BoolType.getInstance(), node);
 	}
 
