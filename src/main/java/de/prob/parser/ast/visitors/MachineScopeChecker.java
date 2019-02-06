@@ -207,6 +207,7 @@ public class MachineScopeChecker {
 		public void visitVarSubstitutionNode(VarSubstitutionNode node) {
 			createNewScope(node.getLocalIdentifiers());
 			visitSubstitutionNode(node.getBody());
+			scopeTable.removeLast();
 		}
 
 		@Override
@@ -233,6 +234,7 @@ public class MachineScopeChecker {
 			//TODO: variables outside regular scope available
 			createNewScope(node.getDeclarationList());
 			visitPredicateNode(node.getPredicateNode());
+			scopeTable.removeLast();
 		}
 
 		@Override
@@ -241,6 +243,7 @@ public class MachineScopeChecker {
 			createNewScope(node.getDeclarations());
 			visitPredicateNode(node.getPredicate());
 			visitExprNode(node.getExpression());
+			scopeTable.removeLast();
 		}
 
 		@Override
@@ -255,6 +258,7 @@ public class MachineScopeChecker {
 			//TODO: variables outside regular scope available
 			createNewScope(node.getDeclarationList());
 			visitPredicateNode(node.getPredicateNode());
+			scopeTable.removeLast();
 		}
 
 		@Override
@@ -263,6 +267,7 @@ public class MachineScopeChecker {
 			createNewScope(node.getParameters());
 			visitPredicateNode(node.getWherePredicate());
 			visitSubstitutionNode(node.getThenSubstitution());
+			scopeTable.removeLast();
 		}
 
 		@Override
