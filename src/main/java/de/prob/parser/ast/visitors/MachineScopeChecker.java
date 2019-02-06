@@ -249,7 +249,6 @@ public class MachineScopeChecker {
 		@Override
 		public void visitQuantifiedPredicateNode(QuantifiedPredicateNode node) {
 			// TODO Auto-generated method stub
-
 		}
 
 		@Override

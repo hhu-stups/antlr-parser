@@ -658,10 +658,9 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 
 	@Override
 	public BType visitQuantifiedPredicateNode(QuantifiedPredicateNode node, BType expected) {
-		unify(expected, BoolType.getInstance(), node);
 		setDeclarationTypes(node.getDeclarationList());
 		visitPredicateNode(node.getPredicateNode(), BoolType.getInstance());
-		return BoolType.getInstance();
+		return unify(expected, BoolType.getInstance(), node);
 	}
 
 	/*
