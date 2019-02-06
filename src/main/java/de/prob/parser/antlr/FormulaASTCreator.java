@@ -277,7 +277,6 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 					DeclarationNode.Kind.VARIABLE, null);
 			identifierList.add(decl);
 		}
-
 		PredicateNode predicate = (PredicateNode) ctx.predicate().accept(this);
 		QuantifiedPredicateNode.QuantifiedPredicateOperator operator =
 				BParser.FOR_ANY == ctx.operator.getType() ?
