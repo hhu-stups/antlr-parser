@@ -184,14 +184,14 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 	public PredicateNode visitAndOrList(AndOrListContext ctx) {
 		List<Predicate_atomicContext> terms = ctx.terms;
 		List<Token> operators = ctx.operators;
-		PredicateNode temp = (PredicateNode) ctx.terms.get(0).accept(this);
-		for (int i = 0; i < operators.size(); i++) {
-			Predicate_atomicContext rightContext = terms.get(i + 1);
-			PredicateNode right = (PredicateNode) rightContext.accept(this);
+		PredicateNode temp = (PredicateNode) terms.get(operators.size()).accept(this);
+		for (int i = operators.size(); i > 0; i++) {
+			Predicate_atomicContext leftContext = terms.get(i - 1);
+			PredicateNode left = (PredicateNode) leftContext.accept(this);
 			PredicateOperator op = ctx.operators.get(i).getType() == BParser.AND ? PredicateOperator.AND
 					: PredicateOperator.OR;
 			temp = new PredicateOperatorNode(Util.createSourceCodePosition(ctx), op,
-					createPredicateNodeList(temp, right));
+					createPredicateNodeList(left, temp));
 		}
 		return temp;
 	}
