@@ -186,7 +186,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		List<Token> operators = ctx.operators;
 		PredicateNode temp = (PredicateNode) terms.get(operators.size()).accept(this);
 		//Easier to access first predicates
-		for (int i = operators.size(); i > 0; i++) {
+		for (int i = operators.size() - 1; i > 0; i++) {
 			Predicate_atomicContext leftContext = terms.get(i - 1);
 			PredicateNode left = (PredicateNode) leftContext.accept(this);
 			PredicateOperator op = ctx.operators.get(i).getType() == BParser.AND ? PredicateOperator.AND
