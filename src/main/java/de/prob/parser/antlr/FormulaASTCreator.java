@@ -48,6 +48,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -184,23 +185,34 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 	public PredicateNode visitAndOrList(AndOrListContext ctx) {
 		List<Predicate_atomicContext> terms = ctx.terms;
 		List<Token> operators = ctx.operators;
-		PredicateNode temp = (PredicateNode) terms.get(operators.size()).accept(this);
-		//Easier to access first predicates
-		for (int i = operators.size() - 1; i > 0; i--) {
-			Predicate_atomicContext leftContext = terms.get(i - 1);
-			PredicateNode left = (PredicateNode) leftContext.accept(this);
-			PredicateOperator op = ctx.operators.get(i).getType() == BParser.AND ? PredicateOperator.AND
+
+		PredicateOperator op = ctx.operators.get(0).getType() == BParser.AND ? PredicateOperator.AND
+				: PredicateOperator.OR;
+		List<PredicateNode> args = new ArrayList<>();
+		for (int i = 0; i < operators.size(); i++) {
+			Predicate_atomicContext argContext = terms.get(i);
+			PredicateNode arg = (PredicateNode) argContext.accept(this);
+			args.add(arg);
+
+			PredicateOperator newOp = ctx.operators.get(i).getType() == BParser.AND ? PredicateOperator.AND
 					: PredicateOperator.OR;
-			temp = new PredicateOperatorNode(Util.createSourceCodePosition(ctx), op,
-					createPredicateNodeList(left, temp));
+			if (op != newOp) {
+				PredicateNode temp = new PredicateOperatorNode(Util.createSourceCodePosition(ctx), op, args);
+				args = new ArrayList<>();
+				args.add(temp);
+			}
 		}
-		return temp;
+		Predicate_atomicContext lastContext = terms.get(terms.size()-1);
+		PredicateNode last = (PredicateNode) lastContext.accept(this);
+		args.add(last);
+		return new PredicateOperatorNode(Util.createSourceCodePosition(ctx), op, args);
 	}
 
 	@Override
 	public Node visitPredicateNot(BParser.PredicateNotContext ctx) {
 		PredicateNode node = (PredicateNode) ctx.predicate().accept(this);
-		return new PredicateOperatorNode(Util.createSourceCodePosition(ctx), PredicateOperator.NOT, createPredicateNodeList(node));
+		return new PredicateOperatorNode(Util.createSourceCodePosition(ctx), PredicateOperator.NOT,
+				createPredicateNodeList(node));
 	}
 
 	@Override
@@ -216,16 +228,16 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public Node visitPredicateIdentifierCall(BParser.PredicateIdentifierCallContext ctx) {
-		/*List<String> names = new ArrayList<>();
-		for (TerminalNode tNode : ctx.composed_identifier().IDENTIFIER()) {
-			names.add(tNode.getText());
-		}
-
-		ExprNode exprNode = (ExprNode) ctx.expression.accept(this);*/
-		//TODO
+		/*
+		 * List<String> names = new ArrayList<>(); for (TerminalNode tNode :
+		 * ctx.composed_identifier().IDENTIFIER()) { names.add(tNode.getText());
+		 * }
+		 * 
+		 * ExprNode exprNode = (ExprNode) ctx.expression.accept(this);
+		 */
+		// TODO
 		return new IdentifierPredicateNode(Util.createSourceCodePosition(ctx), ctx.composed_identifier().getText());
 	}
-
 
 	@Override
 	public Node visitImplication(BParser.ImplicationContext ctx) {
@@ -279,10 +291,9 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 			identifierList.add(decl);
 		}
 		PredicateNode predicate = (PredicateNode) ctx.predicate().accept(this);
-		QuantifiedPredicateNode.QuantifiedPredicateOperator operator =
-				BParser.FOR_ANY == ctx.operator.getType() ?
-						QuantifiedPredicateNode.QuantifiedPredicateOperator.UNIVERSAL_QUANTIFICATION :
-						QuantifiedPredicateNode.QuantifiedPredicateOperator.EXISTENTIAL_QUANTIFICATION;
+		QuantifiedPredicateNode.QuantifiedPredicateOperator operator = BParser.FOR_ANY == ctx.operator.getType()
+				? QuantifiedPredicateNode.QuantifiedPredicateOperator.UNIVERSAL_QUANTIFICATION
+				: QuantifiedPredicateNode.QuantifiedPredicateOperator.EXISTENTIAL_QUANTIFICATION;
 		return new QuantifiedPredicateNode(Util.createSourceCodePosition(ctx), identifierList, predicate, operator);
 	}
 
@@ -314,7 +325,8 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		List<ExprNode> list = new ArrayList<>();
 		final ExprNode node = (ExprNode) ctx.expression().accept(this);
 		list.add(node);
-		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx), list, ExpressionOperator.INVERSE_RELATION);
+		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx), list,
+				ExpressionOperator.INVERSE_RELATION);
 	}
 
 	@Override
@@ -458,7 +470,8 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public Node visitBoolCastExpression(BParser.BoolCastExpressionContext ctx) {
-		return new CastPredicateExpressionNode(Util.createSourceCodePosition(ctx), (PredicateNode) ctx.predicate().accept(this));
+		return new CastPredicateExpressionNode(Util.createSourceCodePosition(ctx),
+				(PredicateNode) ctx.predicate().accept(this));
 	}
 
 	@Override
@@ -503,7 +516,8 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		List<ExprNode> output = new ArrayList<>();
 		for (Token exprNode : ctx.identifier_list().idents) {
 			String name = exprNode.getText();
-			IdentifierExprNode identifierExprNode = new IdentifierExprNode(Util.createSourceCodePosition(exprNode), name);
+			IdentifierExprNode identifierExprNode = new IdentifierExprNode(Util.createSourceCodePosition(exprNode),
+					name);
 			output.add(identifierExprNode);
 		}
 
@@ -646,8 +660,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		List<IdentifierExprNode> leftList = new ArrayList<>();
 		for (Token left : ctx.identifier_list().idents) {
 			String name = left.getText();
-			IdentifierExprNode identifierExprNode = new IdentifierExprNode(Util.createSourceCodePosition(left),
-					name);
+			IdentifierExprNode identifierExprNode = new IdentifierExprNode(Util.createSourceCodePosition(left), name);
 			leftList.add(identifierExprNode);
 		}
 
@@ -695,7 +708,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 	@Override
 	public Node visitChoiceSubstitution(BParser.ChoiceSubstitutionContext ctx) {
 		List<SubstitutionNode> substitutions = new ArrayList<>();
-		for(SubstitutionContext sCtx : ctx.substitution()) {
+		for (SubstitutionContext sCtx : ctx.substitution()) {
 			substitutions.add((SubstitutionNode) sCtx.accept(this));
 		}
 		return new ChoiceSubstitutionNode(Util.createSourceCodePosition(ctx), substitutions);
