@@ -48,7 +48,6 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -671,6 +670,18 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 	@Override
 	public ExprNode visitAssignSingleIdentifier(BParser.AssignSingleIdentifierContext ctx) {
 		return new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.getText());
+	}
+
+	@Override
+	public Node visitAssignFunctionIdentifier(BParser.AssignFunctionIdentifierContext ctx) {
+		List<ExprNode> list = new ArrayList<>();
+		final ExprNode func = new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.IDENTIFIER().getText());
+		list.add(func);
+		for (Expression_listContext arg : ctx.argument_lists) {
+			final ExprNode argNode = (ExprNode) arg.accept(this);
+			list.add(argNode);
+		}
+		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx), list, ExpressionOperator.FUNCTION_CALL);
 	}
 
 	@Override
