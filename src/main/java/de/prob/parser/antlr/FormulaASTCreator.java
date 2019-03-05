@@ -8,6 +8,7 @@ import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode.ExpressionOper
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 import de.prob.parser.ast.nodes.expression.LambdaNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
+import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
 import de.prob.parser.ast.nodes.predicate.IdentifierPredicateNode;
@@ -449,6 +450,35 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		}
 		PredicateNode predicate = (PredicateNode) ctx.predicate().accept(this);
 		return new SetComprehensionNode(Util.createSourceCodePosition(ctx), identifierList, predicate);
+	}
+
+	@Override
+	public Node visitQuantifiedExpression(BParser.QuantifiedExpressionContext ctx) {
+		QuantifiedExpressionNode.QuantifiedExpressionOperator operator = null;
+		switch(ctx.operator.getType()) {
+			case BParser.SIGMA:
+				operator = QuantifiedExpressionNode.QuantifiedExpressionOperator.SIGMA;
+				break;
+			case BParser.PI:
+				operator = QuantifiedExpressionNode.QuantifiedExpressionOperator.PI;
+				break;
+			case BParser.QUANTIFIED_INTER:
+				operator = QuantifiedExpressionNode.QuantifiedExpressionOperator.QUANTIFIED_INTER;
+				break;
+			case BParser.QUANTIFIED_UNION:
+				operator = QuantifiedExpressionNode.QuantifiedExpressionOperator.QUANTIFIED_UNION;
+				break;
+		}
+		final List<DeclarationNode> identifierList = new ArrayList<>();
+		for (Token exprNode : ctx.quantified_variables_list().identifier_list().idents) {
+			String name = exprNode.getText();
+			DeclarationNode decl = new DeclarationNode(Util.createSourceCodePosition(exprNode), name,
+					DeclarationNode.Kind.VARIABLE, null);
+			identifierList.add(decl);
+		}
+		PredicateNode predicate = (PredicateNode) ctx.predicate().accept(this);
+		ExprNode expression = (ExprNode) ctx.expression_in_par().accept(this);
+		return new QuantifiedExpressionNode(Util.createSourceCodePosition(ctx), operator, identifierList, predicate, expression);
 	}
 
 	@Override

@@ -9,7 +9,7 @@ import java.util.List;
 public class QuantifiedExpressionNode extends SetComprehensionNode {
 
 	public enum QuantifiedExpressionOperator {
-		QUANTIFIED_UNION, QUANTIFIED_INTER
+		QUANTIFIED_UNION, QUANTIFIED_INTER, SIGMA, PI
 	}
 
 	private QuantifiedExpressionOperator operator;
