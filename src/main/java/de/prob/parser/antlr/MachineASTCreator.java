@@ -53,6 +53,8 @@ public class MachineASTCreator {
 			return null;
 		}
 
+		//TODO: Add definitions to Machine AST
+
 		@Override
 		public Void visitInstanceClause(BParser.InstanceClauseContext ctx) {
 			MachineReferenceNode.Kind kind = null;
