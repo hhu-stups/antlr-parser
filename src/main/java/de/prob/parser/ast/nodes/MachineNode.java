@@ -96,7 +96,7 @@ public class MachineNode extends Node {
 		setEnumeration.setParent(this);
 	}
 
-	public List<EnumeratedSetDeclarationNode> getEnumaratedSets() {
+	public List<EnumeratedSetDeclarationNode> getEnumeratedSets() {
 		return new ArrayList<>(this.setEnumerations);
 	}
 

@@ -148,7 +148,7 @@ public class MachineScopeChecker {
 	private List<DeclarationNode> getSetsInScope(List<MachineNode> list) {
 		List<DeclarationNode> result = new ArrayList<>();
 		for (MachineNode machine : list) {
-			for (EnumeratedSetDeclarationNode enumSet : machine.getEnumaratedSets()) {
+			for (EnumeratedSetDeclarationNode enumSet : machine.getEnumeratedSets()) {
 				result.add(enumSet.getSetDeclarationNode());
 				result.addAll(enumSet.getElements());
 			}
