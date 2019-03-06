@@ -196,7 +196,7 @@ BFALSE: 'bfalse';
 // expression prefix operators with one parameter
 
 GENERALIZED_UNION: 'union' | '⋃';//'\u22c3';
-GENERALIZED_INTER: 'inter'; //TODO unicode missing
+GENERALIZED_INTER: 'inter' | '∩';//'\u2229';
 
 BTREE: 'btree';
 CARD: 'card';
