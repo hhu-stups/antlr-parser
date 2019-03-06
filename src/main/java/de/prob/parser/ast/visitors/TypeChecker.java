@@ -648,7 +648,6 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			visitPredicateNode(node.getPredicateNode(), BoolType.getInstance());
 			visitExprNode(node.getExpressionNode(), node.getType());
 			return node.getType();
-			break;
 		default:
 			break;
 		}
