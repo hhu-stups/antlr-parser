@@ -226,7 +226,10 @@ public class MachineScopeChecker {
 
 		@Override
 		public void visitQuantifiedExpressionNode(QuantifiedExpressionNode node) {
-			// TODO Auto-generated method stub
+			createNewScope(node.getDeclarationList());
+			visitPredicateNode(node.getPredicateNode());
+			visitExprNode(node.getExpressionNode());
+			scopeTable.removeLast();
 		}
 
 		@Override
