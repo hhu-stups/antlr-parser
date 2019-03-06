@@ -6,6 +6,7 @@ import de.prob.parser.ast.nodes.predicate.PredicateNode;
 
 import java.util.List;
 
+//TODO: Reason for extending SetComprehensionNode?
 public class QuantifiedExpressionNode extends SetComprehensionNode {
 
 	public enum QuantifiedExpressionOperator {
