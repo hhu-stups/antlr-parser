@@ -642,6 +642,12 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			visitPredicateNode(node.getPredicateNode(), BoolType.getInstance());
 			visitExprNode(node.getExpressionNode(), node.getType());
 			return node.getType();
+		case SIGMA:
+		case PI:
+			unify(expected, IntegerType.getInstance(), node);
+			visitPredicateNode(node.getPredicateNode(), BoolType.getInstance());
+			visitExprNode(node.getExpressionNode(), node.getType());
+			break;
 		default:
 			break;
 		}
@@ -660,7 +666,6 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	public BType visitQuantifiedPredicateNode(QuantifiedPredicateNode node, BType expected) {
 		setDeclarationTypes(node.getDeclarationList());
 		visitPredicateNode(node.getPredicateNode(), BoolType.getInstance());
-		//TODO: type checking is wrong?
 		return unify(expected, BoolType.getInstance(), node);
 	}
 
