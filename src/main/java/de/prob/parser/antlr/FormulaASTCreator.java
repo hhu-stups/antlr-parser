@@ -115,6 +115,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		addExprOperator(BParser.SET_RELATION, ExpressionOperator.SET_RELATION);
 		addExprOperator(BParser.TOTAL_SURJECTION_RELATION, ExpressionOperator.TOTAL_SURJECTION_RELATION);
 		addExprOperator(BParser.SURJECTION_RELATION, ExpressionOperator.SURJECTION_RELATION);
+		addExprOperator(BParser.ID, ExpressionOperator.ID);
 
 		// functions
 		addExprOperator(BParser.PARTIAL_BIJECTION, ExpressionOperator.PARTIAL_BIJECTION);
