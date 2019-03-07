@@ -396,7 +396,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			return node.getType();
 		}
 		case ID: {
-			BType subType = visitExprNode(expressionNodes.get(0), new UntypedType());
+			SetType argument = (SetType) visitExprNode(expressionNodes.get(0), new UntypedType());
+			BType subType = argument.getSubType();
 			unify(expected, new SetType(new CoupleType(subType, subType)), node);
 			return node.getType();
 		}
