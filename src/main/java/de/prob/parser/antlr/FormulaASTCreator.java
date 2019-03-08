@@ -116,6 +116,8 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		addExprOperator(BParser.TOTAL_SURJECTION_RELATION, ExpressionOperator.TOTAL_SURJECTION_RELATION);
 		addExprOperator(BParser.SURJECTION_RELATION, ExpressionOperator.SURJECTION_RELATION);
 		addExprOperator(BParser.ID, ExpressionOperator.ID);
+		addExprOperator(BParser.SEMICOLON, ExpressionOperator.COMPOSITION);
+		addExprOperator(BParser.DOUBLE_VERTICAL_BAR, ExpressionOperator.PARALLEL_PRODUCT);
 
 		// functions
 		addExprOperator(BParser.PARTIAL_BIJECTION, ExpressionOperator.PARTIAL_BIJECTION);
@@ -420,6 +422,17 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		}
 		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx), createExprNodeList(left, right), op);
 
+	}
+
+	@Override
+	public Node visitCompositionOrParallelProduct(BParser.CompositionOrParallelProductContext ctx) {
+		final ExprNode left = (ExprNode) ctx.left.accept(this);
+		final ExprNode right = (ExprNode) ctx.right.accept(this);
+		ExpressionOperator op = exprOperatorMap.get(ctx.operator.getType());
+		if (op == null) {
+			throw new RuntimeException("Not implemented: " + ctx.operator.getText());
+		}
+		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx), createExprNodeList(left, right), op);
 	}
 
 	@Override
