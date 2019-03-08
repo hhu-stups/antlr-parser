@@ -426,6 +426,29 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			visitExprNode(expressionNodes.get(1), new SetType(new CoupleType(typeOfT, typeOfV)));
 			return node.getType();
 		}
+		case PARALLEL_PRODUCT: {
+			SetType found = new SetType(
+					new CoupleType(new CoupleType(new UntypedType(), new UntypedType()), new CoupleType(new UntypedType(), new UntypedType())));
+			found = (SetType) unify(expected, found, node);
+			CoupleType c1 = (CoupleType) found.getSubType();
+			CoupleType c2 = (CoupleType) c1.getLeft();
+			CoupleType c3 = (CoupleType) c1.getRight();
+			BType typeOfA = c2.getLeft();
+			BType typeOfV = c3.getLeft();
+			BType typeOfB = c2.getRight();
+			BType typeOfW = c3.getRight();
+			visitExprNode(expressionNodes.get(0),
+					new SetType(new CoupleType(typeOfA, typeOfB)));
+			visitExprNode(expressionNodes.get(1), new SetType(new CoupleType(typeOfV, typeOfW)));
+			return node.getType();
+		}
+		case COMPOSITION:
+			SetType left = (SetType) visitExprNode(expressionNodes.get(0), new SetType(new CoupleType(new UntypedType(), new UntypedType())));
+			SetType right = (SetType) visitExprNode(expressionNodes.get(1), new SetType(new CoupleType(new UntypedType(), new UntypedType())));
+			CoupleType coupleTypeLeft = (CoupleType) left.getSubType();
+			CoupleType coupleRightType = (CoupleType) right.getSubType();
+			unify(expected, new SetType(new CoupleType(coupleTypeLeft.getLeft(), coupleRightType.getRight())), node);
+			return node.getType();
 		case DOMAIN_RESTRICTION:
 		case DOMAIN_SUBTRACTION:
 			// S <| r
