@@ -118,6 +118,8 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		addExprOperator(BParser.ID, ExpressionOperator.ID);
 		addExprOperator(BParser.SEMICOLON, ExpressionOperator.COMPOSITION);
 		addExprOperator(BParser.DOUBLE_VERTICAL_BAR, ExpressionOperator.PARALLEL_PRODUCT);
+		addExprOperator(BParser.CLOSURE, ExpressionOperator.CLOSURE);
+		addExprOperator(BParser.CLOSURE1, ExpressionOperator.CLOSURE1);
 
 		// functions
 		addExprOperator(BParser.PARTIAL_BIJECTION, ExpressionOperator.PARTIAL_BIJECTION);
