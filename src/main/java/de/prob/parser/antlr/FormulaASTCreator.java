@@ -120,6 +120,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		addExprOperator(BParser.DOUBLE_VERTICAL_BAR, ExpressionOperator.PARALLEL_PRODUCT);
 		addExprOperator(BParser.CLOSURE, ExpressionOperator.CLOSURE);
 		addExprOperator(BParser.CLOSURE1, ExpressionOperator.CLOSURE1);
+		addExprOperator(BParser.ITERATE, ExpressionOperator.ITERATE);
 
 		// functions
 		addExprOperator(BParser.PARTIAL_BIJECTION, ExpressionOperator.PARTIAL_BIJECTION);
@@ -389,6 +390,18 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		}
 		ExprNode argument = (ExprNode) ctx.expression_in_par().accept(this);
 		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx), createExprNodeList(argument), op);
+	}
+
+	@Override
+	public Node visitExpressionPrefixOperator2Args(BParser.ExpressionPrefixOperator2ArgsContext ctx) {
+		int type = ctx.expression_prefix_operator_2_args().operator.getType();
+		ExpressionOperator op = exprOperatorMap.get(type);
+		if (op == null) {
+			throw new RuntimeException(ctx.expression_prefix_operator_2_args().operator.getText());
+		}
+		ExprNode expr1 = (ExprNode) ctx.expr1.accept(this);
+		ExprNode expr2 = (ExprNode) ctx.expr2.accept(this);
+		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx), createExprNodeList(expr1, expr2), op);
 	}
 
 	@Override
