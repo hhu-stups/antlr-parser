@@ -406,6 +406,11 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			unify(expected, new SetType(new CoupleType(new UntypedType(), new UntypedType())), node);
 			visitExprNode(expressionNodes.get(0), node.getType());
 			return node.getType();
+		case ITERATE:
+			unify(expected, new SetType(new CoupleType(new UntypedType(), new UntypedType())), node);
+			visitExprNode(expressionNodes.get(0), node.getType());
+			visitExprNode(expressionNodes.get(1), IntegerType.getInstance());
+			return node.getType();
 		case CONCAT:
 			unify(expected, new SetType(new CoupleType(IntegerType.getInstance(), new UntypedType())), node);
 			visitExprNode(expressionNodes.get(0), node.getType());
