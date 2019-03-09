@@ -403,7 +403,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		}
 		case CLOSURE:
 		case CLOSURE1:
-			unify(expected, visitExprNode(expressionNodes.get(0), node.getType()), node);
+			unify(expected, new SetType(new CoupleType(new UntypedType(), new UntypedType())), node);
+			visitExprNode(expressionNodes.get(0), node.getType());
 			return node.getType();
 		case CONCAT:
 			unify(expected, new SetType(new CoupleType(IntegerType.getInstance(), new UntypedType())), node);
