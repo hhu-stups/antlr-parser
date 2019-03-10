@@ -296,6 +296,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		case UNARY_MINUS:
 		case MOD:
 		case DIVIDE:
+		case PRED:
+		case SUCC:
 		case POWER_OF:
 			expressionNodes.forEach(n -> visitExprNode(n, IntegerType.getInstance()));
 			return unify(expected, IntegerType.getInstance(), node);

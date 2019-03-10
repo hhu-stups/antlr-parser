@@ -18,6 +18,7 @@ public class ExpressionOperatorNode extends ExprNode
 		, PLUS, MINUS, MULT, DIVIDE, MOD, INTERVAL//
 		, UNARY_MINUS//
 		, MAX, MIN//
+		, PRED, SUCC//
 		//
 		, BOOL
 		// set operators
