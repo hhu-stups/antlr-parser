@@ -176,6 +176,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 					"Can not infer the type of constant " + con.getName() + ". Type variable: " + con.getType()));
 		});
 
+		machineNode.getValues().forEach(node -> visitSubstitutionNode(node, null));
+
 		// set all variables to untyped
 		machineNode.getVariables().forEach(this::setInitialType);
 
