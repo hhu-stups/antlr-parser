@@ -108,7 +108,6 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		addExprOperator(BParser.RAN, ExpressionOperator.RANGE);
 		addExprOperator(BParser.OVERWRITE_RELATION, ExpressionOperator.OVERWRITE_RELATION);
 		addExprOperator(BParser.DIRECT_PRODUCT, ExpressionOperator.DIRECT_PRODUCT);
-		addExprOperator(BParser.CONCAT, ExpressionOperator.CONCAT);
 		addExprOperator(BParser.DOMAIN_RESTRICTION, ExpressionOperator.DOMAIN_RESTRICTION);
 		addExprOperator(BParser.DOMAIN_SUBSTRACTION, ExpressionOperator.DOMAIN_SUBTRACTION);
 		addExprOperator(BParser.RANGE_RESTRICTION, ExpressionOperator.RANGE_RESTRICTION);
