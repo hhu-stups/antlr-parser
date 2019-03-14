@@ -36,7 +36,7 @@ public class ExpressionOperatorNode extends ExprNode
 		// sequence operators
 		, FIRST, LAST, FRONT, TAIL, CONC, SEQ_ENUMERATION, EMPTY_SEQUENCE//
 		, CONCAT, INSERT_FRONT, INSERT_TAIL, RESTRICT_FRONT, RESTRICT_TAIL//
-		, SEQ, SEQ1, ISEQ, ISEQ1
+		, SEQ, SEQ1, ISEQ, ISEQ1, SIZE, PERM, REV
 		// special
 		, COUPLE
 		// prefix operators

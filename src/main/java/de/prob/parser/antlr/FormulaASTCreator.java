@@ -149,6 +149,10 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		addExprOperator(BParser.SEQ1, ExpressionOperator.SEQ1);
 		addExprOperator(BParser.ISEQ, ExpressionOperator.ISEQ);
 		addExprOperator(BParser.ISEQ1, ExpressionOperator.ISEQ1);
+		addExprOperator(BParser.SIZE, ExpressionOperator.SIZE);
+		addExprOperator(BParser.PERM, ExpressionOperator.PERM);
+		addExprOperator(BParser.CONCAT, ExpressionOperator.CONCAT);
+		addExprOperator(BParser.REV, ExpressionOperator.REV);
 	}
 
 	private static final Map<Integer, PredOperatorExprArgs> predicateBinOperatorMap = new HashMap<>();
