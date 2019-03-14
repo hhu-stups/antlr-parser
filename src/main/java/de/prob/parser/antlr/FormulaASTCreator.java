@@ -358,6 +358,12 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 	}
 
 	@Override
+	public Node visitEmptySequence(BParser.EmptySequenceContext ctx) {
+		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx), new ArrayList<>(),
+				ExpressionOperator.SEQ_ENUMERATION);
+	}
+
+	@Override
 	public Node visitPredicateBinExpression(BParser.PredicateBinExpressionContext ctx) {
 		ExprNode left = (ExprNode) ctx.left.accept(this);
 		ExprNode right = (ExprNode) ctx.right.accept(this);
@@ -470,6 +476,12 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 	public Node visitSetEnumeration(BParser.SetEnumerationContext ctx) {
 		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx),
 				visitExpressionList(ctx.expression_list()), ExpressionOperator.SET_ENUMERATION);
+	}
+
+	@Override
+	public Node visitSequenceEnumeration(BParser.SequenceEnumerationContext ctx) {
+		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx),
+				visitExpressionList(ctx.expression_list()), ExpressionOperator.SEQ_ENUMERATION);
 	}
 
 	@Override
