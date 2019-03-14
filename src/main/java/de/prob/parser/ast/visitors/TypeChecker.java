@@ -420,6 +420,13 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			visitExprNode(expressionNodes.get(0), node.getType());
 			visitExprNode(expressionNodes.get(1), node.getType());
 			return node.getType();
+		case CONC:
+			unify(expected, new SetType(new CoupleType(IntegerType.getInstance(), new SetType(new CoupleType(IntegerType.getInstance(), new UntypedType())))), node);
+			BType subType = ((SetType) node.getType()).getSubType();
+			for(ExprNode expr : expressionNodes) {
+				visitExprNode(expr, subType);
+			}
+			return node.getType();
 		case DIRECT_PRODUCT: {
 			/*
 			 * E ⊗ F type of result is is P(T ×(U × V)) type of E is P(T × U)
@@ -533,10 +540,12 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		case FIRST:
 			return unify(expected, getRightTypeOfRelationType(visitExprNode(expressionNodes.get(0),
 					new SetType(new CoupleType(IntegerType.getInstance(), new UntypedType())))), node);
+		case REV:
 		case FRONT:
 		case TAIL:
 			return visitExprNode(expressionNodes.get(0),
 					unify(expected, new SetType(new CoupleType(IntegerType.getInstance(), new UntypedType())), node));
+		case PERM:
 		case SEQ:
 		case SEQ1:
 		case ISEQ:
@@ -575,6 +584,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			coupleType = (CoupleType) relType.getSubType();
 			return unify(expected, new SetType(coupleType.getRight()), node);
 		}
+		case SIZE:
 		case CARD:
 			visitExprNode(expressionNodes.get(0), new SetType(new UntypedType()));
 			return unify(expected, IntegerType.getInstance(), node);
