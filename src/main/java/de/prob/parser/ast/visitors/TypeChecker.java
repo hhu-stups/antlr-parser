@@ -422,9 +422,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			return node.getType();
 		case CONC:
 			unify(expected, new SetType(new CoupleType(IntegerType.getInstance(), new SetType(new CoupleType(IntegerType.getInstance(), new UntypedType())))), node);
-			BType subType = ((SetType) node.getType()).getSubType();
-			for(ExprNode expr : expressionNodes) {
-				visitExprNode(expr, subType);
+			if(!expressionNodes.isEmpty()) {
+				visitExprNode(expressionNodes.get(0), node.getType());
 			}
 			return node.getType();
 		case DIRECT_PRODUCT: {
