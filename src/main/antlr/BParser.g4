@@ -313,6 +313,7 @@ expression_prefix_operator
   | MIRROR
   | PERM
   | POSTFIX
+  | PRED
   | POW
   | FIN
   | PREFIX
@@ -325,6 +326,7 @@ expression_prefix_operator
   | SIZE
   | SIZET
   | SONS
+  | SUCC
   | TAIL
   | TOP
   | TREE
@@ -351,8 +353,6 @@ expression_keyword
   | INT
   | INTEGER
   | BOOL
-  | PRED
-  | SUCC
   | MAXINT
   | MININT
   )
