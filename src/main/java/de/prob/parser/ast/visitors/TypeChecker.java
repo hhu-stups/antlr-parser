@@ -415,6 +415,30 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			visitExprNode(expressionNodes.get(0), node.getType());
 			visitExprNode(expressionNodes.get(1), IntegerType.getInstance());
 			return node.getType();
+		case PRJ1: {
+			unify(expected, new SetType(new CoupleType(new CoupleType(new UntypedType(), new UntypedType()), new UntypedType())), node);
+			CoupleType coupleType = (CoupleType) ((SetType) node.getType()).getSubType();
+			CoupleType domainCoupleType = (CoupleType) coupleType.getLeft();
+			BType rangeCoupleType = coupleType.getRight();
+			BType leftDomainType = domainCoupleType.getLeft();
+			BType rightDomainType = domainCoupleType.getRight();
+			visitExprNode(expressionNodes.get(0), new SetType(leftDomainType));
+			visitExprNode(expressionNodes.get(1), new SetType(rightDomainType));
+			visitExprNode(expressionNodes.get(0), new SetType(rangeCoupleType));
+			return node.getType();
+		}
+		case PRJ2: {
+			unify(expected, new SetType(new CoupleType(new CoupleType(new UntypedType(), new UntypedType()), new UntypedType())), node);
+			CoupleType coupleType = (CoupleType) ((SetType) node.getType()).getSubType();
+			CoupleType domainCoupleType = (CoupleType) coupleType.getLeft();
+			BType rangeCoupleType = coupleType.getRight();
+			BType leftDomainType = domainCoupleType.getLeft();
+			BType rightDomainType = domainCoupleType.getRight();
+			visitExprNode(expressionNodes.get(0), new SetType(leftDomainType));
+			visitExprNode(expressionNodes.get(1), new SetType(rightDomainType));
+			visitExprNode(expressionNodes.get(1), new SetType(rangeCoupleType));
+			return node.getType();
+		}
 		case CONCAT:
 			unify(expected, new SetType(new CoupleType(IntegerType.getInstance(), new UntypedType())), node);
 			visitExprNode(expressionNodes.get(0), node.getType());
