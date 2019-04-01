@@ -41,7 +41,7 @@ public class ExpressionOperatorNode extends ExprNode
 		// special
 		, COUPLE
 		// prefix operators
-		, FIN, POW
+		, FIN, FIN1, POW, POW1
 	}
 
 	private List<ExprNode> expressionNodes;

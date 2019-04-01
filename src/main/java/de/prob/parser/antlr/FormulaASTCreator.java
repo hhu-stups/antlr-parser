@@ -89,7 +89,9 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 		// sets
 		addExprOperator(BParser.POW, ExpressionOperator.POW);
+		addExprOperator(BParser.POW1, ExpressionOperator.POW1);
 		addExprOperator(BParser.FIN, ExpressionOperator.FIN);
+		addExprOperator(BParser.FIN1, ExpressionOperator.FIN1);
 		addExprOperator(BParser.CARD, ExpressionOperator.CARD);
 		addExprOperator(BParser.INTERSECTION, ExpressionOperator.INTERSECTION);
 		addExprOperator(BParser.UNION, ExpressionOperator.UNION);
