@@ -439,6 +439,23 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			visitExprNode(expressionNodes.get(1), new SetType(rangeCoupleType));
 			return node.getType();
 		}
+		case FNC: {
+			unify(expected, new SetType(new CoupleType(new UntypedType(), new SetType(new UntypedType()))), node);
+			CoupleType coupleType = (CoupleType) ((SetType) node.getType()).getSubType();
+			BType leftType = coupleType.getLeft();
+			SetType rightSetType = (SetType) coupleType.getRight();
+			BType rightType = rightSetType.getSubType();
+			visitExprNode(expressionNodes.get(0), new SetType(new CoupleType(leftType, rightType)));
+			return node.getType();
+		}
+		case REL: {
+			unify(expected, new SetType(new CoupleType(new UntypedType(), new UntypedType())), node);
+			CoupleType coupleType = (CoupleType) ((SetType) node.getType()).getSubType();
+			BType leftType = coupleType.getLeft();
+			BType rightType = coupleType.getRight();
+			visitExprNode(expressionNodes.get(0), new SetType(new CoupleType(leftType, new SetType(rightType))));
+			return node.getType();
+		}
 		case CONCAT:
 			unify(expected, new SetType(new CoupleType(IntegerType.getInstance(), new UntypedType())), node);
 			visitExprNode(expressionNodes.get(0), node.getType());
