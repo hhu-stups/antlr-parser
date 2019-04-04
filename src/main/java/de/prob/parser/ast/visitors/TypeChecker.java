@@ -265,10 +265,11 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			visitExprNode(expressionNodes.get(1), visitExprNode(expressionNodes.get(0), new UntypedType()));
 			break;
 		case NOT_BELONGING:
-		case ELEMENT_OF:
+		case ELEMENT_OF: {
 			BType left = visitExprNode(expressionNodes.get(0), new UntypedType());
 			visitExprNode(expressionNodes.get(1), new SetType(left));
 			break;
+		}
 		case LESS_EQUAL:
 		case LESS:
 		case GREATER_EQUAL:
@@ -280,8 +281,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		case NON_INCLUSION:
 		case STRICT_INCLUSION:
 		case STRICT_NON_INCLUSION: {
-			visitExprNode(expressionNodes.get(1),
-					visitExprNode(expressionNodes.get(0), new SetType(new UntypedType())));
+			BType left = visitExprNode(expressionNodes.get(0), new SetType(new UntypedType()));
+			visitExprNode(expressionNodes.get(1), left);
 			break;
 		}
 		default:
