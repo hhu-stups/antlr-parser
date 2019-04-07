@@ -11,7 +11,6 @@ import de.prob.parser.ast.nodes.expression.NumberNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
-import de.prob.parser.ast.nodes.predicate.IdentifierPredicateNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode.PredicateOperator;
@@ -247,7 +246,8 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public Node visitPredicateIdentifierCall(BParser.PredicateIdentifierCallContext ctx) {
-		return new IdentifierPredicateNode(Util.createSourceCodePosition(ctx), new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.composed_identifier().getText()));
+		//TODO: Implement PredicateIdentifierCall
+		return null;
 	}
 
 	@Override
