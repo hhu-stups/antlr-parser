@@ -2,15 +2,16 @@ package de.prob.parser.ast.nodes.predicate;
 
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
+import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 
 public class IdentifierPredicateNode extends PredicateNode {
 
-	private final String name;
 	private DeclarationNode declarationNode;
+	private IdentifierExprNode identifierNode;
 
-	public IdentifierPredicateNode(SourceCodePosition sourceCodePosition, String name) {
+	public IdentifierPredicateNode(SourceCodePosition sourceCodePosition, IdentifierExprNode identifierNode) {
 		super(sourceCodePosition);
-		this.name = name;
+		this.identifierNode = identifierNode;
 	}
 
 	public void setDeclarationNode(DeclarationNode declarationNode) {
@@ -21,12 +22,16 @@ public class IdentifierPredicateNode extends PredicateNode {
 		return declarationNode;
 	}
 
+	public IdentifierExprNode getIdentifierNode() {
+		return identifierNode;
+	}
+
 	public String getName() {
-		return this.name;
+		return this.identifierNode.getName();
 	}
 
 	@Override
 	public String toString() {
-		return name;
+		return this.identifierNode.getName();
 	}
 }

@@ -247,15 +247,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public Node visitPredicateIdentifierCall(BParser.PredicateIdentifierCallContext ctx) {
-		/*
-		 * List<String> names = new ArrayList<>(); for (TerminalNode tNode :
-		 * ctx.composed_identifier().IDENTIFIER()) { names.add(tNode.getText());
-		 * }
-		 * 
-		 * ExprNode exprNode = (ExprNode) ctx.expression.accept(this);
-		 */
-		// TODO
-		return new IdentifierPredicateNode(Util.createSourceCodePosition(ctx), ctx.composed_identifier().getText());
+		return new IdentifierPredicateNode(Util.createSourceCodePosition(ctx), new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.composed_identifier().getText()));
 	}
 
 	@Override
