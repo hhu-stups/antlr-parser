@@ -22,6 +22,7 @@ import de.prob.parser.ast.nodes.substitution.AssignSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.BecomesElementOfSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.ChoiceSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.IfOrSelectSubstitutionsNode;
+import de.prob.parser.ast.nodes.substitution.LetSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.ListSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.ListSubstitutionNode.ListOperator;
 import de.prob.parser.ast.nodes.substitution.OperationCallSubstitutionNode;
@@ -685,6 +686,20 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		}
 		SubstitutionNode sub = (SubstitutionNode) ctx.substitution().accept(this);
 		return new VarSubstitutionNode(Util.createSourceCodePosition(ctx), identifierList, sub);
+	}
+
+	@Override
+	public Node visitLetSubstitution(BParser.LetSubstitutionContext ctx) {
+		final List<DeclarationNode> identifierList = new ArrayList<>();
+		for (Token exprNode : ctx.identifier_list().idents) {
+			String name = exprNode.getText();
+			DeclarationNode decl = new DeclarationNode(Util.createSourceCodePosition(exprNode), name,
+					DeclarationNode.Kind.SUBSTITUION_IDENTIFIER, null);
+			identifierList.add(decl);
+		}
+		PredicateNode pred = (PredicateNode) ctx.predicate().accept(this);
+		SubstitutionNode sub = (SubstitutionNode) ctx.substitution().accept(this);
+		return new LetSubstitutionNode(Util.createSourceCodePosition(ctx), identifierList, pred, sub);
 	}
 
 	@Override
