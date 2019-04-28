@@ -19,6 +19,7 @@ import de.prob.parser.ast.nodes.substitution.AnySubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.AssignSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.BecomesElementOfSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.BecomesSuchThatSubstitutionNode;
+import de.prob.parser.ast.nodes.substitution.LetSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.OperationCallSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.VarSubstitutionNode;
 import de.prob.parser.ast.visitors.generic.ASTVisitor;
@@ -270,6 +271,15 @@ public class MachineScopeChecker {
 			createNewScope(node.getParameters());
 			visitPredicateNode(node.getWherePredicate());
 			visitSubstitutionNode(node.getThenSubstitution());
+			scopeTable.removeLast();
+		}
+
+		@Override
+		public void visitLetSubstitution(LetSubstitutionNode node) {
+			// TODO Auto-generated method stub
+			createNewScope(node.getLocalIdentifiers());
+			visitPredicateNode(node.getPredicate());
+			visitSubstitutionNode(node.getBody());
 			scopeTable.removeLast();
 		}
 

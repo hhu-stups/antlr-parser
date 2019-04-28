@@ -7,6 +7,7 @@ import de.prob.parser.ast.nodes.substitution.BecomesSuchThatSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.ChoiceSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.ConditionSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.IfOrSelectSubstitutionsNode;
+import de.prob.parser.ast.nodes.substitution.LetSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.ListSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.SkipSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.OperationCallSubstitutionNode;
@@ -21,6 +22,8 @@ public interface ParametrisedSubstitutionVisitor<R, P> {
 			return visitIfOrSelectSubstitutionsNode((IfOrSelectSubstitutionsNode) node, expected);
 		} else if (node instanceof AnySubstitutionNode) {
 			return visitAnySubstitution((AnySubstitutionNode) node, expected);
+		} else if (node instanceof LetSubstitutionNode) {
+			return visitLetSubstitution((LetSubstitutionNode) node, expected);
 		} else if (node instanceof BecomesSuchThatSubstitutionNode) {
 			return visitBecomesSuchThatSubstitutionNode((BecomesSuchThatSubstitutionNode) node, expected);
 		} else if (node instanceof BecomesElementOfSubstitutionNode) {
@@ -60,6 +63,8 @@ public interface ParametrisedSubstitutionVisitor<R, P> {
 	R visitConditionSubstitutionNode(ConditionSubstitutionNode node, P expected);
 
 	R visitAnySubstitution(AnySubstitutionNode node, P expected);
+
+	R visitLetSubstitution(LetSubstitutionNode node, P expected);
 
 	R visitBecomesElementOfSubstitutionNode(BecomesElementOfSubstitutionNode node, P expected);
 
