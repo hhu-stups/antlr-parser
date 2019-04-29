@@ -11,9 +11,11 @@ import de.prob.parser.ast.nodes.OperationNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 import de.prob.parser.ast.nodes.expression.LambdaNode;
+import de.prob.parser.ast.nodes.expression.LetExpressionNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
 import de.prob.parser.ast.nodes.predicate.IdentifierPredicateNode;
+import de.prob.parser.ast.nodes.predicate.LetPredicateNode;
 import de.prob.parser.ast.nodes.predicate.QuantifiedPredicateNode;
 import de.prob.parser.ast.nodes.substitution.AnySubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.AssignSubstitutionNode;
@@ -280,6 +282,22 @@ public class MachineScopeChecker {
 			createNewScope(node.getLocalIdentifiers());
 			visitPredicateNode(node.getPredicate());
 			visitSubstitutionNode(node.getBody());
+			scopeTable.removeLast();
+		}
+
+		@Override
+		public void visitLetExpressionNode(LetExpressionNode node) {
+			createNewScope(node.getLocalIdentifiers());
+			visitPredicateNode(node.getPredicate());
+			visitExprNode(node.getExpression());
+			scopeTable.removeLast();
+		}
+
+		@Override
+		public void visitLetPredicateNode(LetPredicateNode node) {
+			createNewScope(node.getLocalIdentifiers());
+			visitPredicateNode(node.getPredicate());
+			visitPredicateNode(node.getPredicate());
 			scopeTable.removeLast();
 		}
 

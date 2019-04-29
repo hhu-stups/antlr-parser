@@ -3,12 +3,16 @@ package de.prob.parser.ast.visitors.generic;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
+import de.prob.parser.ast.nodes.expression.IfExpressionNode;
 import de.prob.parser.ast.nodes.expression.LambdaNode;
+import de.prob.parser.ast.nodes.expression.LetExpressionNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
 import de.prob.parser.ast.nodes.predicate.IdentifierPredicateNode;
+import de.prob.parser.ast.nodes.predicate.IfPredicateNode;
+import de.prob.parser.ast.nodes.predicate.LetPredicateNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorWithExprArgsNode;
@@ -89,6 +93,18 @@ public class ASTVisitor implements ExpressionVisitor, SubstitutionVisitor, Predi
 	}
 
 	@Override
+	public void visitLetExpressionNode(LetExpressionNode node) {
+		visitPredicateNode(node.getPredicate());
+		visitExprNode(node.getExpression());
+	}
+
+	@Override
+	public void visitLetPredicateNode(LetPredicateNode node) {
+		visitPredicateNode(node.getPredicate());
+		visitPredicateNode(node.getWherePredicate());
+	}
+
+	@Override
 	public void visitIfOrSelectSubstitutionsNode(IfOrSelectSubstitutionsNode node) {
 		for (PredicateNode pred : node.getConditions()) {
 			visitPredicateNode(pred);
@@ -102,6 +118,20 @@ public class ASTVisitor implements ExpressionVisitor, SubstitutionVisitor, Predi
 	}
 
 	@Override
+	public void visitIfExpressionNode(IfExpressionNode node) {
+		visitPredicateNode(node.getCondition());
+		visitExprNode(node.getThenExpression());
+		visitExprNode(node.getElseExpression());
+	}
+
+	@Override
+	public void visitIfPredicateNode(IfPredicateNode node) {
+		visitPredicateNode(node.getCondition());
+		visitPredicateNode(node.getThenPredicate());
+		visitPredicateNode(node.getElsePredicate());
+	}
+
+	@Override
 	public void visitBecomesElementOfSubstitutionNode(BecomesElementOfSubstitutionNode node) {
 		// no children
 	}
@@ -109,7 +139,6 @@ public class ASTVisitor implements ExpressionVisitor, SubstitutionVisitor, Predi
 	@Override
 	public void visitBecomesSuchThatSubstitutionNode(BecomesSuchThatSubstitutionNode node) {
 		// no children
-
 	}
 
 	@Override

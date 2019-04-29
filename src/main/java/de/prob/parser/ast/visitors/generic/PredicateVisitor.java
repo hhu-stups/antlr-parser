@@ -1,6 +1,8 @@
 package de.prob.parser.ast.visitors.generic;
 
 import de.prob.parser.ast.nodes.predicate.IdentifierPredicateNode;
+import de.prob.parser.ast.nodes.predicate.IfPredicateNode;
+import de.prob.parser.ast.nodes.predicate.LetPredicateNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorWithExprArgsNode;
@@ -17,10 +19,13 @@ public interface PredicateVisitor {
 			visitIdentifierPredicateNode((IdentifierPredicateNode) node);
 		} else if (node instanceof QuantifiedPredicateNode) {
 			visitQuantifiedPredicateNode((QuantifiedPredicateNode) node);
+		} else if (node instanceof LetPredicateNode) {
+			visitLetPredicateNode((LetPredicateNode) node);
+		} else if (node instanceof IfPredicateNode) {
+			visitIfPredicateNode((IfPredicateNode) node);
 		} else {
 			throw new AssertionError(node);
 		}
-
 	}
 
 	void visitIdentifierPredicateNode(IdentifierPredicateNode node);
@@ -30,4 +35,8 @@ public interface PredicateVisitor {
 	void visitPredicateOperatorWithExprArgs(PredicateOperatorWithExprArgsNode node);
 
 	void visitQuantifiedPredicateNode(QuantifiedPredicateNode node);
+
+	void visitLetPredicateNode(LetPredicateNode node);
+
+	void visitIfPredicateNode(IfPredicateNode node);
 }

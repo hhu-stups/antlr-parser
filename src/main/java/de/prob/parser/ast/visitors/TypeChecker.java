@@ -1,35 +1,59 @@
 package de.prob.parser.ast.visitors;
 
-import de.prob.parser.ast.nodes.*;
+import de.prob.parser.ast.nodes.DeclarationNode;
+import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
+import de.prob.parser.ast.nodes.FormulaNode;
+import de.prob.parser.ast.nodes.MachineNode;
+import de.prob.parser.ast.nodes.Node;
+import de.prob.parser.ast.nodes.OperationNode;
+import de.prob.parser.ast.nodes.TypedNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
+import de.prob.parser.ast.nodes.expression.IfExpressionNode;
 import de.prob.parser.ast.nodes.expression.LambdaNode;
+import de.prob.parser.ast.nodes.expression.LetExpressionNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
-import de.prob.parser.ast.nodes.ltl.*;
+import de.prob.parser.ast.nodes.ltl.LTLBPredicateNode;
+import de.prob.parser.ast.nodes.ltl.LTLFormula;
+import de.prob.parser.ast.nodes.ltl.LTLInfixOperatorNode;
+import de.prob.parser.ast.nodes.ltl.LTLKeywordNode;
+import de.prob.parser.ast.nodes.ltl.LTLPrefixOperatorNode;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
 import de.prob.parser.ast.nodes.predicate.IdentifierPredicateNode;
+import de.prob.parser.ast.nodes.predicate.IfPredicateNode;
+import de.prob.parser.ast.nodes.predicate.LetPredicateNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorWithExprArgsNode;
 import de.prob.parser.ast.nodes.predicate.QuantifiedPredicateNode;
-import de.prob.parser.ast.nodes.substitution.ChoiceSubstitutionNode;
-import de.prob.parser.ast.nodes.substitution.IfOrSelectSubstitutionsNode;
-import de.prob.parser.ast.nodes.substitution.LetSubstitutionNode;
-import de.prob.parser.ast.nodes.substitution.ListSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.AnySubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.AssignSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.BecomesElementOfSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.BecomesSuchThatSubstitutionNode;
+import de.prob.parser.ast.nodes.substitution.ChoiceSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.ConditionSubstitutionNode;
-import de.prob.parser.ast.nodes.substitution.SkipSubstitutionNode;
+import de.prob.parser.ast.nodes.substitution.IfOrSelectSubstitutionsNode;
+import de.prob.parser.ast.nodes.substitution.LetSubstitutionNode;
+import de.prob.parser.ast.nodes.substitution.ListSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.OperationCallSubstitutionNode;
+import de.prob.parser.ast.nodes.substitution.SkipSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.SubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.VarSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.WhileSubstitutionNode;
-import de.prob.parser.ast.types.*;
+import de.prob.parser.ast.types.BType;
+import de.prob.parser.ast.types.BoolType;
+import de.prob.parser.ast.types.CoupleType;
+import de.prob.parser.ast.types.DeferredSetElementType;
+import de.prob.parser.ast.types.EnumeratedSetElementType;
+import de.prob.parser.ast.types.IntegerOrSetOfPairs;
+import de.prob.parser.ast.types.IntegerType;
+import de.prob.parser.ast.types.SetOrIntegerType;
+import de.prob.parser.ast.types.SetType;
+import de.prob.parser.ast.types.UnificationException;
+import de.prob.parser.ast.types.UntypedType;
 
 import java.util.HashSet;
 import java.util.List;
@@ -781,6 +805,22 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	}
 
 	@Override
+	public BType visitIfExpressionNode(IfExpressionNode node, BType expected) {
+		visitPredicateNode(node.getCondition(), BoolType.getInstance());
+		visitExprNode(node.getThenExpression(), node.getType());
+		visitExprNode(node.getElseExpression(), node.getType());
+		return node.getType();
+	}
+
+	@Override
+	public BType visitIfPredicateNode(IfPredicateNode node, BType expected) {
+		visitPredicateNode(node.getCondition(), BoolType.getInstance());
+		visitPredicateNode(node.getThenPredicate(), BoolType.getInstance());
+		visitPredicateNode(node.getElsePredicate(), BoolType.getInstance());
+		return unify(expected, BoolType.getInstance(), node);
+	}
+
+	@Override
 	public BType visitConditionSubstitutionNode(ConditionSubstitutionNode node, BType expected) {
 		visitPredicateNode(node.getCondition(), BoolType.getInstance());
 		visitSubstitutionNode(node.getSubstitution(), expected);
@@ -810,6 +850,22 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		visitPredicateNode(node.getPredicate(), BoolType.getInstance());
 		visitSubstitutionNode(node.getBody(), null);
 		return null;
+	}
+
+	@Override
+	public BType visitLetExpressionNode(LetExpressionNode node, BType expected) {
+		setDeclarationTypes(node.getLocalIdentifiers());
+		visitPredicateNode(node.getPredicate(), BoolType.getInstance());
+		visitExprNode(node.getExpression(), node.getType());
+		return node.getType();
+	}
+
+	@Override
+	public BType visitLetPredicateNode(LetPredicateNode node, BType expected) {
+		setDeclarationTypes(node.getLocalIdentifiers());
+		visitPredicateNode(node.getWherePredicate(), BoolType.getInstance());
+		visitPredicateNode(node.getPredicate(), BoolType.getInstance());
+		return unify(expected, BoolType.getInstance(), node);
 	}
 
 	@Override
