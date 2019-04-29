@@ -6,11 +6,15 @@ import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode.ExpressionOperator;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
+import de.prob.parser.ast.nodes.expression.IfExpressionNode;
 import de.prob.parser.ast.nodes.expression.LambdaNode;
+import de.prob.parser.ast.nodes.expression.LetExpressionNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
+import de.prob.parser.ast.nodes.predicate.IfPredicateNode;
+import de.prob.parser.ast.nodes.predicate.LetPredicateNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode.PredicateOperator;
@@ -667,6 +671,22 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 	}
 
 	@Override
+	public Node visitIfExpression(BParser.IfExpressionContext ctx) {
+		PredicateNode condition = (PredicateNode) ctx.predicate().accept(this);
+		ExprNode thenExpr = (ExprNode) ctx.expr1.accept(this);
+		ExprNode elseExpr = (ExprNode) ctx.expr1.accept(this);
+		return new IfExpressionNode(Util.createSourceCodePosition(ctx), condition, thenExpr, elseExpr);
+	}
+
+	@Override
+	public Node visitPredicateIf(BParser.PredicateIfContext ctx) {
+		PredicateNode condition = (PredicateNode) ctx.conditionPred.accept(this);
+		PredicateNode thenPred = (PredicateNode) ctx.thenPred.accept(this);
+		PredicateNode elsePred = (PredicateNode) ctx.elsePred.accept(this);
+		return new IfPredicateNode(Util.createSourceCodePosition(ctx), condition, thenPred, elsePred);
+	}
+
+	@Override
 	public Node visitWhileSubstitution(BParser.WhileSubstitutionContext ctx) {
 		PredicateNode condition = (PredicateNode) ctx.condition.accept(this);
 		SubstitutionNode body = (SubstitutionNode) ctx.substitution().accept(this);
@@ -700,6 +720,34 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		PredicateNode pred = (PredicateNode) ctx.predicate().accept(this);
 		SubstitutionNode sub = (SubstitutionNode) ctx.substitution().accept(this);
 		return new LetSubstitutionNode(Util.createSourceCodePosition(ctx), identifierList, pred, sub);
+	}
+
+	@Override
+	public Node visitLetExpression(BParser.LetExpressionContext ctx) {
+		final List<DeclarationNode> identifierList = new ArrayList<>();
+		for (Token exprNode : ctx.identifier_list().idents) {
+			String name = exprNode.getText();
+			DeclarationNode decl = new DeclarationNode(Util.createSourceCodePosition(exprNode), name,
+					DeclarationNode.Kind.SUBSTITUION_IDENTIFIER, null);
+			identifierList.add(decl);
+		}
+		PredicateNode pred = (PredicateNode) ctx.predicate().accept(this);
+		ExprNode sub = (ExprNode) ctx.expression_in_par().accept(this);
+		return new LetExpressionNode(Util.createSourceCodePosition(ctx), identifierList, pred, sub);
+	}
+
+	@Override
+	public Node visitPredicateLet(BParser.PredicateLetContext ctx) {
+		final List<DeclarationNode> identifierList = new ArrayList<>();
+		for (Token exprNode : ctx.identifier_list().idents) {
+			String name = exprNode.getText();
+			DeclarationNode decl = new DeclarationNode(Util.createSourceCodePosition(exprNode), name,
+					DeclarationNode.Kind.SUBSTITUION_IDENTIFIER, null);
+			identifierList.add(decl);
+		}
+		PredicateNode pred = (PredicateNode) ctx.pred1.accept(this);
+		PredicateNode sub = (PredicateNode) ctx.pred2.accept(this);
+		return new LetPredicateNode(Util.createSourceCodePosition(ctx), identifierList, pred, sub);
 	}
 
 	@Override
