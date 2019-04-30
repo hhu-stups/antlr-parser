@@ -674,7 +674,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 	public Node visitIfExpression(BParser.IfExpressionContext ctx) {
 		PredicateNode condition = (PredicateNode) ctx.predicate().accept(this);
 		ExprNode thenExpr = (ExprNode) ctx.expr1.accept(this);
-		ExprNode elseExpr = (ExprNode) ctx.expr1.accept(this);
+		ExprNode elseExpr = (ExprNode) ctx.expr2.accept(this);
 		return new IfExpressionNode(Util.createSourceCodePosition(ctx), condition, thenExpr, elseExpr);
 	}
 
