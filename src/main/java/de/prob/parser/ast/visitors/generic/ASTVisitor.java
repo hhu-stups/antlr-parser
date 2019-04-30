@@ -100,8 +100,8 @@ public class ASTVisitor implements ExpressionVisitor, SubstitutionVisitor, Predi
 
 	@Override
 	public void visitLetPredicateNode(LetPredicateNode node) {
-		visitPredicateNode(node.getPredicate());
 		visitPredicateNode(node.getWherePredicate());
+		visitPredicateNode(node.getPredicate());
 	}
 
 	@Override

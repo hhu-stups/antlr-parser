@@ -24,7 +24,7 @@ public interface PredicateVisitor {
 		} else if (node instanceof IfPredicateNode) {
 			visitIfPredicateNode((IfPredicateNode) node);
 		} else {
-			throw new AssertionError(node);
+			throw new AssertionError(node.getClass());
 		}
 	}
 

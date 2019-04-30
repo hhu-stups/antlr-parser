@@ -33,7 +33,7 @@ public interface ParametrisedExpressionVisitor<R, P> {
 		} else if(node instanceof IfExpressionNode) {
 			visitIfExpressionNode((IfExpressionNode) node, expected);
 		}
-		throw new AssertionError();
+		throw new AssertionError(node.getClass());
 	}
 
 	R visitExprOperatorNode(ExpressionOperatorNode node, P expected);

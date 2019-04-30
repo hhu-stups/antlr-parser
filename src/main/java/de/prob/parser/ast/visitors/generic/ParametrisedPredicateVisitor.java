@@ -24,7 +24,7 @@ public interface ParametrisedPredicateVisitor<R, P> {
 		} else if (node instanceof IfPredicateNode) {
 			return visitIfPredicateNode((IfPredicateNode) node, expected);
 		}
-		throw new AssertionError(node);
+		throw new AssertionError(node.getClass());
 	}
 
 	R visitIdentifierPredicateNode(IdentifierPredicateNode node, P expected);
