@@ -807,9 +807,9 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	@Override
 	public BType visitIfExpressionNode(IfExpressionNode node, BType expected) {
 		visitPredicateNode(node.getCondition(), BoolType.getInstance());
-		visitExprNode(node.getThenExpression(), node.getType());
-		visitExprNode(node.getElseExpression(), node.getType());
-		return node.getType();
+		BType type = visitExprNode(node.getThenExpression(), new UntypedType());
+		visitExprNode(node.getElseExpression(), type);
+		return unify(expected, type, node);
 	}
 
 	@Override
@@ -856,8 +856,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	public BType visitLetExpressionNode(LetExpressionNode node, BType expected) {
 		setDeclarationTypes(node.getLocalIdentifiers());
 		visitPredicateNode(node.getPredicate(), BoolType.getInstance());
-		visitExprNode(node.getExpression(), node.getType());
-		return node.getType();
+		BType type = visitExprNode(node.getExpression(), new UntypedType());
+		return unify(expected, type, node);
 	}
 
 	@Override
