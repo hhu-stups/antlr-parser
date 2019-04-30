@@ -29,9 +29,9 @@ public interface ParametrisedExpressionVisitor<R, P> {
 		} else if (node instanceof LambdaNode) {
 			return visitLambdaNode((LambdaNode) node, expected);
 		} else if(node instanceof LetExpressionNode) {
-			visitLetExpressionNode((LetExpressionNode) node, expected);
+			return visitLetExpressionNode((LetExpressionNode) node, expected);
 		} else if(node instanceof IfExpressionNode) {
-			visitIfExpressionNode((IfExpressionNode) node, expected);
+			return visitIfExpressionNode((IfExpressionNode) node, expected);
 		}
 		throw new AssertionError(node.getClass());
 	}
