@@ -313,7 +313,10 @@ public class MachineScopeChecker {
 		@Override
 		public void visitBecomesSuchThatSubstitutionNode(BecomesSuchThatSubstitutionNode node) {
 			// TODO Auto-generated method stub
-
+			for (ExprNode expr : node.getIdentifiers()) {
+				visitExprNode(expr);
+			}
+			visitPredicateNode(node.getPredicate());
 		}
 
 		@Override
