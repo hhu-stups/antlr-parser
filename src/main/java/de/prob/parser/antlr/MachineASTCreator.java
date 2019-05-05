@@ -124,7 +124,7 @@ public class MachineASTCreator {
 		public Void visitValuesClause(BParser.ValuesClauseContext ctx) {
 			for(int i = 0; i < ctx.idents.size(); i++) {
 				String name = ctx.idents.get(i).getText();
-				IdentifierExprNode identifier = new IdentifierExprNode(Util.createSourceCodePosition(ctx.idents.get(i)), name);
+				IdentifierExprNode identifier = new IdentifierExprNode(Util.createSourceCodePosition(ctx.idents.get(i)), name, false);
 				ExprNode expr = (ExprNode) ctx.exprs.get(i).accept(formulaAstCreator);
 				machineNode.addValues(new AssignSubstitutionNode(Util.createSourceCodePosition(ctx),
 						Collections.singletonList(identifier),

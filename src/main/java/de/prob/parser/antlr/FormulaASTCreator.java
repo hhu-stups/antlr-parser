@@ -557,7 +557,12 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public Node visitExpressionIdentifier(BParser.ExpressionIdentifierContext ctx) {
-		return new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.getText());
+		return new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.getText(), false);
+	}
+
+	@Override
+	public Node visitPrimedIdentifierExpression(BParser.PrimedIdentifierExpressionContext ctx) {
+		return new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.getText(), true);
 	}
 
 	// Substitution
@@ -598,7 +603,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		for (Token exprNode : ctx.identifier_list().idents) {
 			String name = exprNode.getText();
 			IdentifierExprNode identifierExprNode = new IdentifierExprNode(Util.createSourceCodePosition(exprNode),
-					name);
+					name, false);
 			output.add(identifierExprNode);
 		}
 
@@ -799,7 +804,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		List<IdentifierExprNode> leftList = new ArrayList<>();
 		for (Token left : ctx.identifier_list().idents) {
 			String name = left.getText();
-			IdentifierExprNode identifierExprNode = new IdentifierExprNode(Util.createSourceCodePosition(left), name);
+			IdentifierExprNode identifierExprNode = new IdentifierExprNode(Util.createSourceCodePosition(left), name, false);
 			leftList.add(identifierExprNode);
 		}
 
@@ -812,7 +817,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		List<IdentifierExprNode> leftList = new ArrayList<>();
 		for (Token left : ctx.identifier_list().idents) {
 			String name = left.getText();
-			IdentifierExprNode identifierExprNode = new IdentifierExprNode(Util.createSourceCodePosition(left), name);
+			IdentifierExprNode identifierExprNode = new IdentifierExprNode(Util.createSourceCodePosition(left), name, false);
 			leftList.add(identifierExprNode);
 		}
 		PredicateNode predicate = (PredicateNode) ctx.predicate().accept(this);
@@ -821,13 +826,13 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public ExprNode visitAssignSingleIdentifier(BParser.AssignSingleIdentifierContext ctx) {
-		return new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.getText());
+		return new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.getText(), false);
 	}
 
 	@Override
 	public ExprNode visitAssignFunctionIdentifier(BParser.AssignFunctionIdentifierContext ctx) {
 		List<ExprNode> list = new ArrayList<>();
-		final ExprNode func = new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.IDENTIFIER().getText());
+		final ExprNode func = new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.IDENTIFIER().getText(), false);
 		list.add(func);
 		List<ExprNode> arguments = ctx.expression_list() == null ? new ArrayList<>()
 				: visitExpressionList(ctx.expression_list);
