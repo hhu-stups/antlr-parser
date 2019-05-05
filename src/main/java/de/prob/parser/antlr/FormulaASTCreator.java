@@ -24,6 +24,7 @@ import de.prob.parser.ast.nodes.predicate.QuantifiedPredicateNode;
 import de.prob.parser.ast.nodes.substitution.AnySubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.AssignSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.BecomesElementOfSubstitutionNode;
+import de.prob.parser.ast.nodes.substitution.BecomesSuchThatSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.ChoiceSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.IfOrSelectSubstitutionsNode;
 import de.prob.parser.ast.nodes.substitution.LetSubstitutionNode;
@@ -804,6 +805,18 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 		ExprNode expression = (ExprNode) ctx.expression().accept(this);
 		return new BecomesElementOfSubstitutionNode(Util.createSourceCodePosition(ctx), leftList, expression);
+	}
+
+	@Override
+	public Node visitBecomesSuchThatSubstitution(BParser.BecomesSuchThatSubstitutionContext ctx) {
+		List<IdentifierExprNode> leftList = new ArrayList<>();
+		for (Token left : ctx.identifier_list().idents) {
+			String name = left.getText();
+			IdentifierExprNode identifierExprNode = new IdentifierExprNode(Util.createSourceCodePosition(left), name);
+			leftList.add(identifierExprNode);
+		}
+		PredicateNode predicate = (PredicateNode) ctx.predicate().accept(this);
+		return new BecomesSuchThatSubstitutionNode(Util.createSourceCodePosition(ctx), leftList, predicate);
 	}
 
 	@Override
