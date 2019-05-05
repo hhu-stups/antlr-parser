@@ -562,7 +562,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public Node visitPrimedIdentifierExpression(BParser.PrimedIdentifierExpressionContext ctx) {
-		return new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.getText(), true);
+		return new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.getText().substring(0, ctx.getText().length() - 2), true);
 	}
 
 	// Substitution
