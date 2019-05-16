@@ -629,7 +629,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		// check that all tokens are of the same type
 		for (int i = 1; i < operators.size(); i++) {
 			if (token != operators.get(i).getType()) {
-				throw new RuntimeException();
+				throw new RuntimeException("Error in Line: " + String.valueOf(ctx.operators.get(0).getTokenSource().getLine()));
 			}
 		}
 
