@@ -399,6 +399,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		case NAT:
 		case NAT1:
 			return unify(expected, new SetType(IntegerType.getInstance()), node);
+		case STRING:
+			return unify(expected, new SetType(StringType.getInstance()), node);
 		case FALSE:
 		case TRUE:
 			return unify(expected, BoolType.getInstance(), node);

@@ -355,6 +355,7 @@ expression_keyword
   | INT
   | INTEGER
   | BOOL
+  | STRING
   | MAXINT
   | MININT
   )
