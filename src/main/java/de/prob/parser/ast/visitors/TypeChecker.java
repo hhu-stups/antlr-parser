@@ -16,6 +16,7 @@ import de.prob.parser.ast.nodes.expression.LetExpressionNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
+import de.prob.parser.ast.nodes.expression.StringNode;
 import de.prob.parser.ast.nodes.ltl.LTLBPredicateNode;
 import de.prob.parser.ast.nodes.ltl.LTLFormula;
 import de.prob.parser.ast.nodes.ltl.LTLInfixOperatorNode;
@@ -52,6 +53,7 @@ import de.prob.parser.ast.types.IntegerOrSetOfPairs;
 import de.prob.parser.ast.types.IntegerType;
 import de.prob.parser.ast.types.SetOrIntegerType;
 import de.prob.parser.ast.types.SetType;
+import de.prob.parser.ast.types.StringType;
 import de.prob.parser.ast.types.UnificationException;
 import de.prob.parser.ast.types.UntypedType;
 
@@ -813,6 +815,11 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	}
 
 	@Override
+	public BType visitStringNode(StringNode node, BType expected) {
+		return unify(expected, StringType.getInstance(), node);
+	}
+
+	@Override
 	public BType visitIfPredicateNode(IfPredicateNode node, BType expected) {
 		visitPredicateNode(node.getCondition(), BoolType.getInstance());
 		visitPredicateNode(node.getThenPredicate(), BoolType.getInstance());
@@ -995,4 +1002,5 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		BType expressionType = visitExprNode(node.getExpression(), new UntypedType());
 		return unify(expected, new SetType(new CoupleType(createNestedCouple(types), expressionType)), node);
 	}
+
 }

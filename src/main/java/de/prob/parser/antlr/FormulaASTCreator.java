@@ -2,6 +2,7 @@ package de.prob.parser.antlr;
 
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.Node;
+import de.prob.parser.ast.nodes.expression.StringNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode.ExpressionOperator;
@@ -861,6 +862,11 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 			list.add(exprNode);
 		}
 		return list;
+	}
+
+	@Override
+	public Node visitString(BParser.StringContext ctx) {
+		return new StringNode(Util.createSourceCodePosition(ctx), ctx.StringLiteral().getText());
 	}
 
 	private Node notReachable(BooleanValueContext ctx) {

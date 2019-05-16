@@ -9,6 +9,7 @@ import de.prob.parser.ast.nodes.expression.LetExpressionNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
+import de.prob.parser.ast.nodes.expression.StringNode;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
 
 public interface ExpressionVisitor {
@@ -32,6 +33,8 @@ public interface ExpressionVisitor {
 			visitLetExpressionNode((LetExpressionNode) node);
 		} else if(node instanceof IfExpressionNode) {
 			visitIfExpressionNode((IfExpressionNode) node);
+		} else if(node instanceof StringNode) {
+			visitStringNode((StringNode) node);
 		} else {
 			throw new AssertionError(node.getClass());
 		}
@@ -55,5 +58,7 @@ public interface ExpressionVisitor {
 	void visitLetExpressionNode(LetExpressionNode node);
 
 	void visitIfExpressionNode(IfExpressionNode node);
+
+	void visitStringNode(StringNode node);
 
 }

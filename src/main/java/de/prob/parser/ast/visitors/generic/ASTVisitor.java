@@ -9,6 +9,7 @@ import de.prob.parser.ast.nodes.expression.LetExpressionNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
+import de.prob.parser.ast.nodes.expression.StringNode;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
 import de.prob.parser.ast.nodes.predicate.IdentifierPredicateNode;
 import de.prob.parser.ast.nodes.predicate.IfPredicateNode;
@@ -122,6 +123,11 @@ public class ASTVisitor implements ExpressionVisitor, SubstitutionVisitor, Predi
 		visitPredicateNode(node.getCondition());
 		visitExprNode(node.getThenExpression());
 		visitExprNode(node.getElseExpression());
+	}
+
+	@Override
+	public void visitStringNode(StringNode node) {
+		//no children
 	}
 
 	@Override
