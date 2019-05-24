@@ -78,7 +78,7 @@ set_definition
   ;
 
 operation
-  : (output=identifier_list OUTPUT_PRAMETERS )? IDENTIFIER ('(' parameters=identifier_list ')')?  EQUAL substitution # BOperation
+  : (output=identifier_list OUTPUT_PARAMETERS )? IDENTIFIER ('(' parameters=identifier_list ')')?  EQUAL substitution # BOperation
   ;
 
 composed_identifier_list
@@ -137,7 +137,7 @@ substitution_l1
   | identifier_or_function_or_record (',' identifier_or_function_or_record)*
       ':=' expression_list                                                              #AssignSubstitution
   | composed_identifier ('(' expression_list ')')?                                      #SubstitutionIdentifierCall
-  | output=identifier_list OUTPUT_PRAMETERS composed_identifier ('(' expression_list ')')?     #SubstitutionOperationCall
+  | output=identifier_list OUTPUT_PARAMETERS composed_identifier ('(' expression_list ')')?     #SubstitutionOperationCall
   | substitution_extension_point                                                            # SubstitutionNextExtensionPoint
   ;
 

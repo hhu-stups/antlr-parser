@@ -90,7 +90,7 @@ DO: 'DO';
 FOR_ANY: '!' | '\u2200';
 EXITS: '#' | '\u2203';
 LAMBDA: '%' | '\u03bb';
-OUTPUT_PRAMETERS: '<--' | '\u2190';
+OUTPUT_PARAMETERS: '<--' | '\u2190';
 DOUBLE_EQUAL: EQUAL EQUAL;
 ASSIGN: ':=';
 DOUBLE_COLON: '::' | ':' '\u2208' ;  /* becomes_element_of */

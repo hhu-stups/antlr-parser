@@ -18,9 +18,9 @@ machine_x
   ;
 
 operation
-  : (output=identifier_list OUTPUT_PRAMETERS )? IDENTIFIER ('(' parameters=identifier_list ')')?  EQUAL substitution   # BOperation
+  : (output=identifier_list OUTPUT_PARAMETERS )? IDENTIFIER ('(' parameters=identifier_list ')')?  EQUAL substitution   # BOperation
   | keyword=(RULE|COMPUTATION) IDENTIFIER operation_attributes* BODY substitution END                                                        # RuleComputationOperation
-  | FUNCTION (return_values=identifier_list OUTPUT_PRAMETERS)? IDENTIFIER ('(' parameters=identifier_list ')') ? operation_attributes* BODY substitution END                             # FunctionOperation
+  | FUNCTION (return_values=identifier_list OUTPUT_PARAMETERS)? IDENTIFIER ('(' parameters=identifier_list ')') ? operation_attributes* BODY substitution END                             # FunctionOperation
   ;
 
 
