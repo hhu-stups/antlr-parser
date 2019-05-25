@@ -1,5 +1,7 @@
 package de.prob.parser.ast.visitors.generic;
 
+import de.prob.parser.ast.nodes.RecordNode;
+import de.prob.parser.ast.nodes.StructNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
@@ -35,6 +37,10 @@ public interface ExpressionVisitor {
 			visitIfExpressionNode((IfExpressionNode) node);
 		} else if(node instanceof StringNode) {
 			visitStringNode((StringNode) node);
+		} else if(node instanceof RecordNode) {
+			visitRecordNode((RecordNode) node);
+		} else if(node instanceof StructNode) {
+			visitStructNode((StructNode) node);
 		} else {
 			throw new AssertionError(node.getClass());
 		}
@@ -60,5 +66,9 @@ public interface ExpressionVisitor {
 	void visitIfExpressionNode(IfExpressionNode node);
 
 	void visitStringNode(StringNode node);
+
+	void visitRecordNode(RecordNode node);
+
+	void visitStructNode(StructNode node);
 
 }

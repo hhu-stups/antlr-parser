@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by fabian on 25.05.19.
  */
-public class StructNode extends Node {
+public class StructNode extends ExprNode {
 
     private List<IdentifierExprNode> identifiers;
 

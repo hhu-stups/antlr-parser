@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * Created by fabian on 05.02.19.
  */
-public class LambdaNode extends ExprNode{
+public class LambdaNode extends ExprNode {
 
     private List<DeclarationNode> declarationList;
 
