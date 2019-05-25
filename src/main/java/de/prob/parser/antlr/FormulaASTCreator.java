@@ -2,6 +2,8 @@ package de.prob.parser.antlr;
 
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.Node;
+import de.prob.parser.ast.nodes.RecordNode;
+import de.prob.parser.ast.nodes.StructNode;
 import de.prob.parser.ast.nodes.expression.StringNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
@@ -888,4 +890,19 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		}
 		return new ChoiceSubstitutionNode(Util.createSourceCodePosition(ctx), substitutions);
 	}
+
+	@Override
+	public Node visitRecord(BParser.RecordContext ctx) {
+		List<IdentifierExprNode> identifiers = new ArrayList<>();
+		List<ExprNode> expressions = new ArrayList<>();
+		for(BParser.Rec_entryContext entry : ctx.entries) {
+			identifiers.add((IdentifierExprNode) entry.identifier().accept(this));
+			expressions.add((ExprNode) entry.expression_in_par().accept(this));
+		}
+		if(ctx.operator.getType() == BParser.STRUCT) {
+			return new StructNode(Util.createSourceCodePosition(ctx), identifiers, expressions);
+		}
+		return new RecordNode(Util.createSourceCodePosition(ctx), identifiers, expressions);
+	}
+
 }
