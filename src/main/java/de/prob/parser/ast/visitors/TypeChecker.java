@@ -53,6 +53,7 @@ import de.prob.parser.ast.types.DeferredSetElementType;
 import de.prob.parser.ast.types.EnumeratedSetElementType;
 import de.prob.parser.ast.types.IntegerOrSetOfPairs;
 import de.prob.parser.ast.types.IntegerType;
+import de.prob.parser.ast.types.RecordType;
 import de.prob.parser.ast.types.SetOrIntegerType;
 import de.prob.parser.ast.types.SetType;
 import de.prob.parser.ast.types.StringType;
@@ -825,18 +826,22 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 
 	@Override
 	public BType visitRecordNode(RecordNode node, BType expected) {
-		/*RecordType found = (RecordType) unify(expected, new RecordType(), node);
-		BType subtype = found.getSubType();
-		for (ExprNode exprNode : expressionNodes) {
-			subtype = visitExprNode(exprNode, subtype);
+		RecordType found = (RecordType) unify(expected, new RecordType(), node);
+		List<BType> subTypes = found.getSubtypes();
+		for(int i = 0; i < subTypes.size(); i++) {
+			visitExprNode(node.getIdentifiers().get(i), subTypes.get(i));
 		}
-		return node.getType();*/
-		return null;
+		return node.getType();
 	}
 
 	@Override
 	public BType visitStructNode(StructNode node, BType expected) {
-		return null;
+		RecordType found = (RecordType) unify(expected, new RecordType(), node);
+		List<BType> subTypes = found.getSubtypes();
+		for(int i = 0; i < subTypes.size(); i++) {
+			visitExprNode(node.getIdentifiers().get(i), subTypes.get(i));
+		}
+		return new SetType(node.getType());
 	}
 
 	@Override

@@ -123,4 +123,13 @@ public class RecordType extends Observable implements BType, Observer {
         return this.subtypes.contains(other) || this.subtypes.stream().anyMatch(this::contains);
     }
 
+    public List<String> getIdentifiers() {
+        return identifiers;
+    }
+
+    public List<BType> getSubtypes() {
+        return subtypes;
+    }
+
+
 }
