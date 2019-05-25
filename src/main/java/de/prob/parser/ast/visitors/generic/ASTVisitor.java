@@ -1,5 +1,7 @@
 package de.prob.parser.ast.visitors.generic;
 
+import de.prob.parser.ast.nodes.RecordNode;
+import de.prob.parser.ast.nodes.StructNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
@@ -221,5 +223,15 @@ public class ASTVisitor implements ExpressionVisitor, SubstitutionVisitor, Predi
 		for(SubstitutionNode substitution : node.getSubstitutions()) {
 			visitSubstitutionNode(substitution);
 		}
+	}
+
+	@Override
+	public void visitRecordNode(RecordNode node) {
+
+	}
+
+	@Override
+	public void visitStructNode(StructNode node) {
+
 	}
 }
