@@ -6,6 +6,8 @@ import de.prob.parser.ast.nodes.FormulaNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.OperationNode;
+import de.prob.parser.ast.nodes.RecordNode;
+import de.prob.parser.ast.nodes.StructNode;
 import de.prob.parser.ast.nodes.TypedNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
@@ -819,6 +821,22 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	@Override
 	public BType visitStringNode(StringNode node, BType expected) {
 		return unify(expected, StringType.getInstance(), node);
+	}
+
+	@Override
+	public BType visitRecordNode(RecordNode node, BType expected) {
+		/*RecordType found = (RecordType) unify(expected, new RecordType(), node);
+		BType subtype = found.getSubType();
+		for (ExprNode exprNode : expressionNodes) {
+			subtype = visitExprNode(exprNode, subtype);
+		}
+		return node.getType();*/
+		return null;
+	}
+
+	@Override
+	public BType visitStructNode(StructNode node, BType expected) {
+		return null;
 	}
 
 	@Override
