@@ -826,17 +826,23 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 
 	@Override
 	public BType visitRecordNode(RecordNode node, BType expected) {
-		setDeclarationTypes(node.getDeclarations());
-		List<String> identifiers = node.getDeclarations().stream().map(DeclarationNode::getName).collect(Collectors.toList());
-		List<BType> types = node.getDeclarations().stream().map(TypedNode::getType).collect(Collectors.toList());
+		for(int i = 0; i < node.getIdentifiers().size(); i++) {
+			BType left = visitExprNode(node.getIdentifiers().get(i), new UntypedType());
+			visitExprNode(node.getExpressions().get(i), new SetType(left));
+		}
+		List<String> identifiers = node.getIdentifiers().stream().map(IdentifierExprNode::getName).collect(Collectors.toList());
+		List<BType> types = node.getIdentifiers().stream().map(TypedNode::getType).collect(Collectors.toList());
 		return unify(expected, new RecordType(identifiers, types), node);
 	}
 
 	@Override
 	public BType visitStructNode(StructNode node, BType expected) {
-		setDeclarationTypes(node.getDeclarations());
-		List<String> identifiers = node.getDeclarations().stream().map(DeclarationNode::getName).collect(Collectors.toList());
-		List<BType> types = node.getDeclarations().stream().map(TypedNode::getType).collect(Collectors.toList());
+		for(int i = 0; i < node.getIdentifiers().size(); i++) {
+			BType left = visitExprNode(node.getIdentifiers().get(i), new UntypedType());
+			visitExprNode(node.getExpressions().get(i), new SetType(left));
+		}
+		List<String> identifiers = node.getIdentifiers().stream().map(IdentifierExprNode::getName).collect(Collectors.toList());
+		List<BType> types = node.getIdentifiers().stream().map(TypedNode::getType).collect(Collectors.toList());
 		return unify(expected, new SetType(new RecordType(identifiers, types)), node);
 	}
 

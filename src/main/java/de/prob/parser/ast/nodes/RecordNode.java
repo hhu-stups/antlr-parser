@@ -2,6 +2,7 @@ package de.prob.parser.ast.nodes;
 
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.expression.ExprNode;
+import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 
 import java.util.List;
 
@@ -10,18 +11,18 @@ import java.util.List;
  */
 public class RecordNode extends ExprNode {
 
-    private List<DeclarationNode> declarations;
+    private List<IdentifierExprNode> identifiers;
 
     private List<ExprNode> expressions;
 
-    public RecordNode(SourceCodePosition sourceCodePosition, List<DeclarationNode> declarations, List<ExprNode> expressions) {
+    public RecordNode(SourceCodePosition sourceCodePosition, List<IdentifierExprNode> identifiers, List<ExprNode> expressions) {
         super(sourceCodePosition);
-        this.declarations = declarations;
+        this.identifiers = identifiers;
         this.expressions = expressions;
     }
 
-    public List<DeclarationNode> getDeclarations() {
-        return declarations;
+    public List<IdentifierExprNode> getIdentifiers() {
+        return identifiers;
     }
 
     public List<ExprNode> getExpressions() {

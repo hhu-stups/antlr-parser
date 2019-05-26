@@ -893,19 +893,16 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public Node visitRecord(BParser.RecordContext ctx) {
-		List<DeclarationNode> declarations = new ArrayList<>();
+		List<IdentifierExprNode> identifiers = new ArrayList<>();
 		List<ExprNode> expressions = new ArrayList<>();
 		for(BParser.Rec_entryContext entry : ctx.entries) {
-			String name = entry.identifier().getText();
-			DeclarationNode decl = new DeclarationNode(Util.createSourceCodePosition(entry), name,
-					DeclarationNode.Kind.VARIABLE, null);
-			declarations.add(decl);
+			identifiers.add((IdentifierExprNode) entry.identifier().accept(this));
 			expressions.add((ExprNode) entry.expression_in_par().accept(this));
 		}
 		if(ctx.operator.getType() == BParser.STRUCT) {
-			return new StructNode(Util.createSourceCodePosition(ctx), declarations, expressions);
+			return new StructNode(Util.createSourceCodePosition(ctx), identifiers, expressions);
 		}
-		return new RecordNode(Util.createSourceCodePosition(ctx), declarations, expressions);
+		return new RecordNode(Util.createSourceCodePosition(ctx), identifiers, expressions);
 	}
 
 }
