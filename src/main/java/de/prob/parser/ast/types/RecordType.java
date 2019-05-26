@@ -35,7 +35,7 @@ public class RecordType extends Observable implements BType, Observer {
     @Override
     public BType unify(BType otherType) throws UnificationException {
         if (unifiable(otherType)) {
-            if (otherType == this) {
+            if (otherType instanceof UntypedType) {
                 ((UntypedType) otherType).replaceBy(this);
                 return this;
             } else {
