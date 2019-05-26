@@ -4,7 +4,6 @@ import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.RecordNode;
 import de.prob.parser.ast.nodes.StructNode;
-import de.prob.parser.ast.nodes.expression.StringNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode.ExpressionOperator;
@@ -15,6 +14,7 @@ import de.prob.parser.ast.nodes.expression.LetExpressionNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
+import de.prob.parser.ast.nodes.expression.StringNode;
 import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
 import de.prob.parser.ast.nodes.predicate.IfPredicateNode;
 import de.prob.parser.ast.nodes.predicate.LetPredicateNode;
@@ -893,16 +893,19 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public Node visitRecord(BParser.RecordContext ctx) {
-		List<IdentifierExprNode> identifiers = new ArrayList<>();
+		List<DeclarationNode> declarations = new ArrayList<>();
 		List<ExprNode> expressions = new ArrayList<>();
 		for(BParser.Rec_entryContext entry : ctx.entries) {
-			identifiers.add((IdentifierExprNode) entry.identifier().accept(this));
+			String name = entry.identifier().getText();
+			DeclarationNode decl = new DeclarationNode(Util.createSourceCodePosition(entry), name,
+					DeclarationNode.Kind.VARIABLE, null);
+			declarations.add(decl);
 			expressions.add((ExprNode) entry.expression_in_par().accept(this));
 		}
 		if(ctx.operator.getType() == BParser.STRUCT) {
-			return new StructNode(Util.createSourceCodePosition(ctx), identifiers, expressions);
+			return new StructNode(Util.createSourceCodePosition(ctx), declarations, expressions);
 		}
-		return new RecordNode(Util.createSourceCodePosition(ctx), identifiers, expressions);
+		return new RecordNode(Util.createSourceCodePosition(ctx), declarations, expressions);
 	}
 
 }
