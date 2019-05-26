@@ -8,6 +8,8 @@ import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.MachineReferenceNode;
 import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.OperationNode;
+import de.prob.parser.ast.nodes.RecordNode;
+import de.prob.parser.ast.nodes.StructNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 import de.prob.parser.ast.nodes.expression.LambdaNode;
@@ -329,6 +331,15 @@ public class MachineScopeChecker {
 			}
 		}
 
+		@Override
+		public void visitStructNode(StructNode node) {
+			//Do not visit declared fields
+		}
+
+		@Override
+		public void visitRecordNode(RecordNode node) {
+			//Do not visit declared fields
+		}
 	}
 
 	public DeclarationNode lookUpIdentifier(String name, Node node) {
