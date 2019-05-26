@@ -905,4 +905,8 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		return new RecordNode(Util.createSourceCodePosition(ctx), identifiers, expressions);
 	}
 
+	@Override
+	public Node visitIdentifier(BParser.IdentifierContext ctx) {
+		return new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.getText(), false);
+	}
 }
