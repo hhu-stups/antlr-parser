@@ -827,20 +827,14 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	@Override
 	public BType visitRecordNode(RecordNode node, BType expected) {
 		RecordType found = (RecordType) unify(expected, new RecordType(), node);
-		List<BType> subTypes = found.getSubtypes();
-		for(int i = 0; i < subTypes.size(); i++) {
-			visitExprNode(node.getIdentifiers().get(i), subTypes.get(i));
-		}
+		setDeclarationTypes(node.getDeclarations());
 		return node.getType();
 	}
 
 	@Override
 	public BType visitStructNode(StructNode node, BType expected) {
 		RecordType found = (RecordType) unify(expected, new RecordType(), node);
-		List<BType> subTypes = found.getSubtypes();
-		for(int i = 0; i < subTypes.size(); i++) {
-			visitExprNode(node.getIdentifiers().get(i), subTypes.get(i));
-		}
+		setDeclarationTypes(node.getDeclarations());
 		return new SetType(node.getType());
 	}
 
