@@ -96,6 +96,7 @@ public class RecordType extends Observable implements BType, Observer {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
+        sb.append("RECORD(");
         for(int i = 0; i < subtypes.size(); i++) {
             sb.append(identifiers.get(i));
             sb.append(":");
@@ -104,6 +105,7 @@ public class RecordType extends Observable implements BType, Observer {
                 sb.append(", ");
             }
         }
+        sb.append(")");
         return sb.toString();
     }
 
