@@ -1,6 +1,5 @@
 package de.prob.parser.ast.types;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -17,11 +16,6 @@ public class RecordType extends Observable implements BType, Observer {
     public RecordType(List<String> identifiers, List<BType> subtypes) {
         this.identifiers = identifiers;
         this.subtypes = subtypes;
-    }
-
-    public RecordType() {
-        this.identifiers = new ArrayList<>();
-        this.subtypes = new ArrayList<>();
     }
 
     public void setIdentifiers(List<String> identifiers) {
