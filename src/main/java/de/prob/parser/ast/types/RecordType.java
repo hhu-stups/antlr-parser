@@ -116,7 +116,7 @@ public class RecordType extends Observable implements BType, Observer {
 
     @Override
     public boolean contains(BType other) {
-        return this.subtypes.contains(other) || this.subtypes.stream().anyMatch(this::contains);
+        return this.subtypes.contains(other) || this.subtypes.stream().anyMatch(subtype -> subtype.contains(other));
     }
 
     public List<String> getIdentifiers() {
