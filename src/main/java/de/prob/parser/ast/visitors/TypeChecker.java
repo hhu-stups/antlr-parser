@@ -60,7 +60,6 @@ import de.prob.parser.ast.types.StringType;
 import de.prob.parser.ast.types.UnificationException;
 import de.prob.parser.ast.types.UntypedType;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -828,7 +827,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	@Override
 	public BType visitRecordNode(RecordNode node, BType expected) {
 		List<String> identifiers = node.getIdentifiers().stream().map(IdentifierExprNode::getName).collect(Collectors.toList());
-		List<BType> types = node.getIdentifiers().stream().map(id -> visitIdentifierExprNode(id, new UntypedType())).collect(Collectors.toList());
+		node.getIdentifiers().forEach(id -> visitIdentifierExprNode(id, new UntypedType()));
+		List<BType> types = node.getIdentifiers().stream().map(TypedNode::getType).collect(Collectors.toList());
 		for(int i = 0; i < node.getIdentifiers().size(); i++) {
 			BType left = visitExprNode(node.getIdentifiers().get(i), types.get(i));
 			visitExprNode(node.getExpressions().get(i), new SetType(left));
@@ -839,7 +839,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	@Override
 	public BType visitStructNode(StructNode node, BType expected) {
 		List<String> identifiers = node.getIdentifiers().stream().map(IdentifierExprNode::getName).collect(Collectors.toList());
-		List<BType> types = node.getIdentifiers().stream().map(id -> visitIdentifierExprNode(id, new UntypedType())).collect(Collectors.toList());
+		node.getIdentifiers().forEach(id -> visitIdentifierExprNode(id, new UntypedType()));
+		List<BType> types = node.getIdentifiers().stream().map(TypedNode::getType).collect(Collectors.toList());
 		for(int i = 0; i < node.getIdentifiers().size(); i++) {
 			BType left = visitExprNode(node.getIdentifiers().get(i), types.get(i));
 			visitExprNode(node.getExpressions().get(i), new SetType(left));
