@@ -830,7 +830,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		node.getIdentifiers().forEach(id -> visitIdentifierExprNode(id, new UntypedType()));
 		for(int i = 0; i < node.getIdentifiers().size(); i++) {
 			BType left = visitExprNode(node.getIdentifiers().get(i), new UntypedType());
-			visitExprNode(node.getExpressions().get(i), new SetType(left));
+			visitExprNode(node.getExpressions().get(i), left);
 		}
 		List<BType> types = node.getIdentifiers().stream().map(TypedNode::getType).collect(Collectors.toList());
 		unify(expected, new RecordType(identifiers, types), node);
