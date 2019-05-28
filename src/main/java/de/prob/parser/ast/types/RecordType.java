@@ -66,7 +66,15 @@ public class RecordType extends Observable implements BType, Observer {
             return true;
         } else if (otherType instanceof RecordType) {
             RecordType recordType = (RecordType) otherType;
-            return subtypes.stream().allMatch(recordType::unifiable);
+            if(subtypes.size() != recordType.subtypes.size()) {
+                return false;
+            }
+            for(int i = 0; i < subtypes.size(); i++) {
+                if(!subtypes.get(i).unifiable(recordType.getSubtypes().get(i))) {
+                    return false;
+                }
+            }
+            return true;
         }
         return false;
     }
