@@ -2,8 +2,9 @@ package de.prob.parser.antlr;
 
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.Node;
-import de.prob.parser.ast.nodes.RecordNode;
-import de.prob.parser.ast.nodes.StructNode;
+import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;
+import de.prob.parser.ast.nodes.expression.RecordNode;
+import de.prob.parser.ast.nodes.expression.StructNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode.ExpressionOperator;
@@ -903,6 +904,13 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 			return new StructNode(Util.createSourceCodePosition(ctx), identifiers, expressions);
 		}
 		return new RecordNode(Util.createSourceCodePosition(ctx), identifiers, expressions);
+	}
+
+	@Override
+	public Node visitRecordFieldAccess(BParser.RecordFieldAccessContext ctx) {
+		ExprNode expression = (ExprNode) ctx.expression().accept(this);
+		IdentifierExprNode identifier = (IdentifierExprNode) ctx.identifier().accept(this);
+		return new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), expression, identifier);
 	}
 
 	@Override

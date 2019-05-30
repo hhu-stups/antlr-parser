@@ -1,7 +1,7 @@
 package de.prob.parser.ast.visitors.generic;
 
-import de.prob.parser.ast.nodes.RecordNode;
-import de.prob.parser.ast.nodes.StructNode;
+import de.prob.parser.ast.nodes.expression.RecordNode;
+import de.prob.parser.ast.nodes.expression.StructNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
