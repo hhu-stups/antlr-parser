@@ -858,6 +858,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		for(int i = 0; i < recordType.getIdentifiers().size(); i++) {
 			if(recordType.getIdentifiers().get(i).equals(identifier.getName())) {
 				unify(expected, recordType.getSubtypes().get(i), node);
+				unify(expected, recordType.getSubtypes().get(i), node.getIdentifier());
 				break;
 			}
 		}
