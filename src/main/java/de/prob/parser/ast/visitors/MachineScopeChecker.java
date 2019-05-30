@@ -8,6 +8,7 @@ import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.MachineReferenceNode;
 import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.OperationNode;
+import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;
 import de.prob.parser.ast.nodes.expression.RecordNode;
 import de.prob.parser.ast.nodes.expression.StructNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
@@ -339,6 +340,11 @@ public class MachineScopeChecker {
 		@Override
 		public void visitRecordNode(RecordNode node) {
 			//Do not visit declared fields
+		}
+
+		@Override
+		public void visitRecordFieldAccessNode(RecordFieldAccessNode node) {
+			visitExprNode(node.getRecord());
 		}
 	}
 

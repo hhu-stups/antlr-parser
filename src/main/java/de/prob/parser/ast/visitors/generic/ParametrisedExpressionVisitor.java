@@ -1,5 +1,6 @@
 package de.prob.parser.ast.visitors.generic;
 
+import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;
 import de.prob.parser.ast.nodes.expression.RecordNode;
 import de.prob.parser.ast.nodes.expression.StructNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
@@ -41,6 +42,8 @@ public interface ParametrisedExpressionVisitor<R, P> {
 			return visitRecordNode((RecordNode) node, expected);
 		} else if(node instanceof StructNode) {
 			return visitStructNode((StructNode) node, expected);
+		} else if(node instanceof RecordFieldAccessNode) {
+			return visitRecordFieldAccessNode((RecordFieldAccessNode) node, expected);
 		}
 		throw new AssertionError(node.getClass());
 	}
@@ -68,4 +71,6 @@ public interface ParametrisedExpressionVisitor<R, P> {
 	R visitRecordNode(RecordNode node, P expected);
 
 	R visitStructNode(StructNode node, P expected);
+
+	R visitRecordFieldAccessNode(RecordFieldAccessNode node, P expected);
 }

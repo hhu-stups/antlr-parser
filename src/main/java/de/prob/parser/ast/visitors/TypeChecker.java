@@ -6,6 +6,7 @@ import de.prob.parser.ast.nodes.FormulaNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.OperationNode;
+import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;
 import de.prob.parser.ast.nodes.expression.RecordNode;
 import de.prob.parser.ast.nodes.expression.StructNode;
 import de.prob.parser.ast.nodes.TypedNode;
@@ -847,6 +848,19 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		}
 		List<BType> types = node.getIdentifiers().stream().map(TypedNode::getType).collect(Collectors.toList());
 		unify(expected, new SetType(new RecordType(identifiers, types)), node);
+		return node.getType();
+	}
+
+	@Override
+	public BType visitRecordFieldAccessNode(RecordFieldAccessNode node, BType expected) {
+		RecordType recordType = (RecordType) visitExprNode(node.getRecord(), new UntypedType());
+		IdentifierExprNode identifier = node.getIdentifier();
+		for(int i = 0; i < recordType.getIdentifiers().size(); i++) {
+			if(recordType.getIdentifiers().get(i).equals(identifier.getName())) {
+				unify(expected, recordType.getSubtypes().get(i), node);
+				break;
+			}
+		}
 		return node.getType();
 	}
 
