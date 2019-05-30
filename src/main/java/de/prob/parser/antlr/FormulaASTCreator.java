@@ -920,7 +920,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public Node visitAssignRecordIdentifier(BParser.AssignRecordIdentifierContext ctx) {
-		final ExprNode record = new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.IDENTIFIER.getText(), false);
+		final ExprNode record = new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.name.getText(), false);
 		RecordFieldAccessNode result = null;
 		for(int i = 0; i < ctx.attributes.size(); i++) {
 			if(i == 0) {
