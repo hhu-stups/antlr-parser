@@ -922,11 +922,11 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 	public Node visitAssignRecordIdentifier(BParser.AssignRecordIdentifierContext ctx) {
 		final ExprNode record = new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.name.getText(), false);
 		RecordFieldAccessNode result = null;
-		for(int i = 0; i < ctx.attributes.size(); i++) {
+		for(int i = 0; i < ctx.IDENTIFIER().size(); i++) {
 			if(i == 0) {
-				result = new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), record, new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.attributes.get(i).getText(), false));
+				result = new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), record, new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.IDENTIFIER().get(i).getText(), false));
 			} else {
-				result = new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), result, new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.attributes.get(i).getText(), false));
+				result = new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), result, new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.IDENTIFIER().get(i).getText(), false));
 			}
 		}
 		return result;
