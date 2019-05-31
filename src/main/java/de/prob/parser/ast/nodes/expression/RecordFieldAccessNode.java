@@ -24,4 +24,15 @@ public class RecordFieldAccessNode extends ExprNode {
     public IdentifierExprNode getIdentifier() {
         return identifier;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("RECORD_FIELD_ACCESS(");
+        sb.append(record.toString());
+        sb.append(", ");
+        sb.append(identifier.toString());
+        sb.append(")");
+        return sb.toString();
+    }
 }

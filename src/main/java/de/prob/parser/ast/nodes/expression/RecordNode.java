@@ -26,4 +26,20 @@ public class RecordNode extends ExprNode {
     public List<ExprNode> getExpressions() {
         return expressions;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("RECORD(");
+        for(int i = 0; i < identifiers.size(); i++) {
+            sb.append(identifiers.get(i));
+            sb.append(":");
+            sb.append(expressions.get(i).toString());
+            if(i < identifiers.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append(")");
+        return sb.toString();
+    }
 }
