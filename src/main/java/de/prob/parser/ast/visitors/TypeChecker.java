@@ -950,25 +950,6 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		return null;
 	}
 
-	// @Override
-	// public BType visitEnumerationSetNode(EnumerationSetNode node, BType
-	// expected) {
-	// return unify(expected,
-	// node.getEnumeratedSetDeclarationNode().getSetDeclaration().getType(),
-	// node);
-	// }
-	//
-	// @Override
-	// public BType visitDeferredSetNode(DeferredSetNode node, BType expected) {
-	// return unify(expected, node.getDeclarationNode().getType(), node);
-	// }
-	//
-	// @Override
-	// public BType visitEnumeratedSetElementNode(EnumeratedSetElementNode node,
-	// BType expected) {
-	// return unify(expected, node.getDeclarationNode().getType(), node);
-	// }
-
 	@Override
 	public BType visitLTLPrefixOperatorNode(LTLPrefixOperatorNode node, BType expected) {
 		visitLTLNode(node.getArgument(), expected);
