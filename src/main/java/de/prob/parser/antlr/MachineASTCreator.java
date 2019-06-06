@@ -89,6 +89,15 @@ public class MachineASTCreator {
 		}
 
 		@Override
+		public Void visitDeferredSet(BParser.DeferredSetContext ctx) {
+			SourceCodePosition position = getSourcePositionFromTerminalNode(ctx.IDENTIFIER());
+			DeclarationNode declarationNode = new DeclarationNode(position, ctx.IDENTIFIER().getSymbol().getText(),
+					DeclarationNode.Kind.DEFERRED_SET, machineNode);
+			machineNode.addDeferredSet(declarationNode);
+			return null;
+		}
+
+		@Override
 		public Void visitDeclarationClause(DeclarationClauseContext ctx) {
 			LinkedHashMap<String, TerminalNode> declarations = new LinkedHashMap<>();
 			for (TerminalNode terminalNode : ctx.identifier_list().IDENTIFIER()) {
