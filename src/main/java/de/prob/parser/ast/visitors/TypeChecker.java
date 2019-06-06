@@ -190,8 +190,11 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			}
 		}
 
-		machineNode.getDeferredSets().stream().filter(ds -> ds.getType() == null)
-				.forEach(ds -> ds.setType(new SetType(new DeferredSetElementType(ds.getName()))));
+		for (DeclarationNode dSet : machineNode.getDeferredSets()) {
+			if(dSet.getType() == null) {
+				dSet.setType(new SetType(new DeferredSetElementType(dSet.getName())));
+			}
+		}
 
 		// set all constants to untyped
 		machineNode.getConstants().forEach(this::setInitialType);
