@@ -879,7 +879,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	@Override
 	public BType visitConditionSubstitutionNode(ConditionSubstitutionNode node, BType expected) {
 		visitPredicateNode(node.getCondition(), BoolType.getInstance());
-		visitSubstitutionNode(node.getSubstitution(), expected);
+		visitSubstitutionNode(node.getSubstitution(), null);
 		return null;
 	}
 

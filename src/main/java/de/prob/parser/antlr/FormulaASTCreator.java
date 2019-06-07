@@ -30,6 +30,7 @@ import de.prob.parser.ast.nodes.substitution.AssignSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.BecomesElementOfSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.BecomesSuchThatSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.ChoiceSubstitutionNode;
+import de.prob.parser.ast.nodes.substitution.ConditionSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.IfOrSelectSubstitutionsNode;
 import de.prob.parser.ast.nodes.substitution.LetSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.ListSubstitutionNode;
@@ -880,7 +881,13 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public Node visitConditionSubstitution(BParser.ConditionSubstitutionContext ctx) {
-		return ctx.substitution().accept(this);
+		PredicateNode predicate = (PredicateNode) ctx.predicate().accept(this);
+		SubstitutionNode substitution = (SubstitutionNode) ctx.substitution().accept(this);
+		if("PRE".equals(ctx.keyword.getText())) {
+			return new ConditionSubstitutionNode(Util.createSourceCodePosition(ctx), ConditionSubstitutionNode.Kind.PRECONDITION, predicate, substitution);
+		} else {
+			return new ConditionSubstitutionNode(Util.createSourceCodePosition(ctx), ConditionSubstitutionNode.Kind.ASSERT, predicate, substitution);
+		}
 	}
 
 	@Override
