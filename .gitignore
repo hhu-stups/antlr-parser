@@ -132,3 +132,7 @@ gradle-app.setting
 
 # End of https://www.gitignore.io/api/intellij+all,java,gradle
 
+/bin/
+.project
+.settings/org.eclipse.jdt.core.prefs
+.classpath
