@@ -26,4 +26,31 @@ public class AssignSubstitutionNode extends SubstitutionNode {
 	public List<ExprNode> getRightSide() {
 		return this.rightSide;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		for (ExprNode node : leftSide) {
+			if (first) {
+				first = false;
+			} else {
+				sb.append(",");
+			}
+			sb.append(node);
+		}
+		sb.append(":=");
+
+		first = true;
+		for (ExprNode node : rightSide) {
+			if (first) {
+				first = false;
+			} else {
+				sb.append(",");
+			}
+			sb.append(node);
+		}
+		return sb.toString();
+	}
+
 }
