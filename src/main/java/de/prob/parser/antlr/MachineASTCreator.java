@@ -65,12 +65,43 @@ public class MachineASTCreator {
 			case BParser.EXTENDS:
 				kind = MachineReferenceNode.Kind.EXTENDED;
 				break;
+			case BParser.IMPORTS:
+				kind = MachineReferenceNode.Kind.IMPORTED;
+				break;
 			default:
 				throw new RuntimeException("Unknown instance type: " + ctx.name.getText());
 			}
 			for (Machine_instantiationContext instance : ctx.machine_instantiation()) {
 				String prefix = instance.prefix == null ? null : instance.prefix.getText();
 				String machineName = instance.name.getText();
+				machineNode.addMachineReferenceNode(
+						new MachineReferenceNode(Util.createSourceCodePosition(ctx), machineName, kind, prefix, true));
+			}
+			return null;
+		}
+
+		@Override
+		public Void visitReferenceClause(BParser.ReferenceClauseContext ctx) {
+			MachineReferenceNode.Kind kind = null;
+			switch (ctx.name.getType()) {
+				case BParser.SEES:
+					kind = MachineReferenceNode.Kind.SEEN;
+					break;
+				case BParser.USES:
+					kind = MachineReferenceNode.Kind.USED;
+					break;
+				default:
+					throw new RuntimeException("Unknown reference type: " + ctx.name.getText());
+			}
+			for (BParser.Composed_identifierContext instance : ctx.composed_identifier_list().idents) {
+				String prefix = null;
+				String machineName;
+				if(instance.IDENTIFIER().size() > 1) {
+					prefix = instance.IDENTIFIER().get(0).toString();
+					machineName = instance.IDENTIFIER().get(1).toString();
+				} else {
+					machineName = instance.IDENTIFIER().get(0).toString();
+				}
 				machineNode.addMachineReferenceNode(
 						new MachineReferenceNode(Util.createSourceCodePosition(ctx), machineName, kind, prefix, true));
 			}
