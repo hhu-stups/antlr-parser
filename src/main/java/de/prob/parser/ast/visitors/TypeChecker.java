@@ -649,13 +649,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			// visit function base
 			SetType baseType = (SetType) visitExprNode(expressionNodes.get(0),
 					new SetType(new CoupleType(domType, new UntypedType())));
-			for(int i = 0; i < arguments.size(); i++) {
-				if(i == arguments.size() - 1) {
-					return unify(expected, ((CoupleType) baseType.getSubType()).getRight(), node);
-				} else {
-					baseType = (SetType) ((CoupleType) baseType.getSubType()).getRight();
-				}
-			}
+			return unify(expected, ((CoupleType) baseType.getSubType()).getRight(), node);
 		}
 		case RELATIONAL_IMAGE: {
 			SetType relType = (SetType) visitExprNode(expressionNodes.get(0),
