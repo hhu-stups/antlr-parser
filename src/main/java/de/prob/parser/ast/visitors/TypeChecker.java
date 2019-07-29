@@ -653,10 +653,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 				if(i == arguments.size() - 1) {
 					return unify(expected, ((CoupleType) baseType.getSubType()).getRight(), node);
 				} else {
-					BType type = ((CoupleType) baseType.getSubType()).getRight();
-					if(type instanceof SetType) {
-						baseType = (SetType) ((CoupleType) baseType.getSubType()).getRight();
-					}
+					baseType = (SetType) ((CoupleType) baseType.getSubType()).getRight();
 				}
 			}
 		}
