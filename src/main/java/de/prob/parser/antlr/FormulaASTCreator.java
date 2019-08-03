@@ -913,7 +913,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		List<ExprNode> expressions = new ArrayList<>();
 		for(BParser.Rec_entryContext entry : ctx.entries) {
 			String name = entry.identifier().getText();
-			DeclarationNode decl = new DeclarationNode(Util.createSourceCodePosition(entry.start), name,
+			DeclarationNode decl = new DeclarationNode(Util.createSourceCodePosition(entry.getStart()), name,
 					DeclarationNode.Kind.VARIABLE, null);
 			declarations.add(decl);
 			expressions.add((ExprNode) entry.expression_in_par().accept(this));
@@ -927,7 +927,9 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 	@Override
 	public Node visitRecordFieldAccess(BParser.RecordFieldAccessContext ctx) {
 		ExprNode expression = (ExprNode) ctx.expression().accept(this);
-		IdentifierExprNode identifier = (IdentifierExprNode) ctx.identifier().accept(this);
+		String name = ctx.identifier().getText();
+		DeclarationNode identifier = new DeclarationNode(Util.createSourceCodePosition(ctx.identifier().getStart()), name,
+				DeclarationNode.Kind.VARIABLE, null);
 		return new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), expression, identifier);
 	}
 
@@ -941,10 +943,13 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		final ExprNode record = new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.name.getText(), false);
 		RecordFieldAccessNode result = null;
 		for(int i = 0; i < ctx.attributes.size(); i++) {
+			String name = ctx.attributes.get(i).getText();
+			DeclarationNode identifier = new DeclarationNode(Util.createSourceCodePosition(ctx.attributes.get(i)), name,
+					DeclarationNode.Kind.VARIABLE, null);
 			if(i == 0) {
-				result = new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), record, new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.attributes.get(i).getText(), false));
+				result = new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), record, identifier);
 			} else {
-				result = new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), result, new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.attributes.get(i).getText(), false));
+				result = new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), result, identifier);
 			}
 		}
 		return result;

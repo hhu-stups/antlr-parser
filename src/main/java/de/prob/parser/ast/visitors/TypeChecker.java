@@ -857,10 +857,10 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	@Override
 	public BType visitRecordFieldAccessNode(RecordFieldAccessNode node, BType expected) {
 		RecordType recordType = (RecordType) visitExprNode(node.getRecord(), new UntypedType());
-		IdentifierExprNode identifier = node.getIdentifier();
+		DeclarationNode identifier = node.getIdentifier();
 		for(int i = 0; i < recordType.getIdentifiers().size(); i++) {
 			if(recordType.getIdentifiers().get(i).equals(identifier.getName())) {
-				visitExprNode(identifier, recordType.getSubtypes().get(i));
+				identifier.setType(recordType.getSubtypes().get(i));
 				unify(expected, recordType.getSubtypes().get(i), node);
 				break;
 			}

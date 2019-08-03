@@ -1,6 +1,7 @@
 package de.prob.parser.ast.nodes.expression;
 
 import de.prob.parser.ast.SourceCodePosition;
+import de.prob.parser.ast.nodes.DeclarationNode;
 
 /**
  * Created by fabian on 30.05.19.
@@ -9,9 +10,9 @@ public class RecordFieldAccessNode extends ExprNode {
 
     private ExprNode record;
 
-    private IdentifierExprNode identifier;
+    private DeclarationNode identifier;
 
-    public RecordFieldAccessNode(SourceCodePosition sourceCodePosition, ExprNode record, IdentifierExprNode identifier) {
+    public RecordFieldAccessNode(SourceCodePosition sourceCodePosition, ExprNode record, DeclarationNode identifier) {
         super(sourceCodePosition);
         this.record = record;
         this.identifier = identifier;
@@ -21,7 +22,7 @@ public class RecordFieldAccessNode extends ExprNode {
         return record;
     }
 
-    public IdentifierExprNode getIdentifier() {
+    public DeclarationNode getIdentifier() {
         return identifier;
     }
 
