@@ -228,7 +228,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 			PredicateOperator newOp = ctx.operators.get(i).getType() == BParser.AND ? PredicateOperator.AND
 					: PredicateOperator.OR;
 			if (op != newOp) {
-				PredicateNode temp = new PredicateOperatorNode(Util.createSourceCodePosition(ctx), op, args);
+				PredicateNode temp = new PredicateOperatorNode(Util.createSourceCodePosition(ctx), newOp, args);
 				args = new ArrayList<>();
 				args.add(temp);
 			}
