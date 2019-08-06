@@ -220,8 +220,8 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		PredicateOperator op = ctx.operators.get(0).getType() == BParser.AND ? PredicateOperator.AND
 				: PredicateOperator.OR;
 		List<PredicateNode> args = new ArrayList<>();
-		for (int i = 0; i < operators.size(); i++) {
-			Predicate_atomicContext argContext = terms.get(i);
+		for (int i = operators.size() - 1; i >= 0; i++) {
+			Predicate_atomicContext argContext = terms.get(operators.size() - 1 - i);
 			PredicateNode arg = (PredicateNode) argContext.accept(this);
 			args.add(arg);
 
