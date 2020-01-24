@@ -228,19 +228,16 @@ public class ASTVisitor implements ExpressionVisitor, SubstitutionVisitor, Predi
 
 	@Override
 	public void visitRecordNode(RecordNode node) {
-		node.getIdentifiers().forEach(this::visitIdentifierExprNode);
 		node.getExpressions().forEach(this::visitExprNode);
 	}
 
 	@Override
 	public void visitStructNode(StructNode node) {
-		node.getIdentifiers().forEach(this::visitIdentifierExprNode);
 		node.getExpressions().forEach(this::visitExprNode);
 	}
 
 	@Override
 	public void visitRecordFieldAccessNode(RecordFieldAccessNode node) {
 		visitExprNode(node.getRecord());
-		visitIdentifierExprNode(node.getIdentifier());
 	}
 }

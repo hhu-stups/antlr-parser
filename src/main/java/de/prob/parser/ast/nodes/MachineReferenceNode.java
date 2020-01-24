@@ -10,7 +10,7 @@ public class MachineReferenceNode extends Node {
 	private MachineNode machineNode;
 
 	public enum Kind {
-		SEEN, INCLUDED, EXTENDED, USED
+		SEEN, INCLUDED, EXTENDED, IMPORTED, USED
 	}
 
 	public MachineReferenceNode(SourceCodePosition sourceCodePosition, String machineName, Kind kind, String prefix,

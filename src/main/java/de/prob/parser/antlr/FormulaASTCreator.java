@@ -217,18 +217,18 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		List<Predicate_atomicContext> terms = ctx.terms;
 		List<Token> operators = ctx.operators;
 
-		PredicateOperator op = ctx.operators.get(0).getType() == BParser.AND ? PredicateOperator.AND
+		PredicateOperator op = ctx.operators.get(ctx.operators.size() - 1).getType() == BParser.AND ? PredicateOperator.AND
 				: PredicateOperator.OR;
 		List<PredicateNode> args = new ArrayList<>();
-		for (int i = 0; i < operators.size(); i++) {
-			Predicate_atomicContext argContext = terms.get(i);
+		for (int i = operators.size() - 1; i >= 0; i--) {
+			Predicate_atomicContext argContext = terms.get(operators.size() - 1 - i);
 			PredicateNode arg = (PredicateNode) argContext.accept(this);
 			args.add(arg);
 
 			PredicateOperator newOp = ctx.operators.get(i).getType() == BParser.AND ? PredicateOperator.AND
 					: PredicateOperator.OR;
 			if (op != newOp) {
-				PredicateNode temp = new PredicateOperatorNode(Util.createSourceCodePosition(ctx), op, args);
+				PredicateNode temp = new PredicateOperatorNode(Util.createSourceCodePosition(ctx), newOp, args);
 				args = new ArrayList<>();
 				args.add(temp);
 			}
@@ -838,13 +838,21 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public ExprNode visitAssignFunctionIdentifier(BParser.AssignFunctionIdentifierContext ctx) {
-		List<ExprNode> list = new ArrayList<>();
+
 		final ExprNode func = new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.IDENTIFIER().getText(), false);
-		list.add(func);
-		List<ExprNode> arguments = ctx.expression_list() == null ? new ArrayList<>()
-				: visitExpressionList(ctx.expression_list);
-		list.addAll(arguments);
-		return new ExpressionOperatorNode(Util.createSourceCodePosition(ctx), list, ExpressionOperator.FUNCTION_CALL);
+		ExprNode resultNode = func;
+
+		for(int i = 0; i < ctx.argument_lists.size(); i++) {
+			List<ExprNode> list = new ArrayList<>();
+			list.add(resultNode);
+			Expression_listContext listCtx = ctx.argument_lists.get(i);
+			List<ExprNode> arguments = listCtx == null ? new ArrayList<>()
+					: visitExpressionList(listCtx);
+			list.addAll(arguments);
+			resultNode = new ExpressionOperatorNode(Util.createSourceCodePosition(ctx), list, ExpressionOperator.FUNCTION_CALL);
+
+		}
+		return resultNode;
 	}
 
 	@Override
@@ -901,22 +909,27 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public Node visitRecord(BParser.RecordContext ctx) {
-		List<IdentifierExprNode> identifiers = new ArrayList<>();
+		List<DeclarationNode> declarations = new ArrayList<>();
 		List<ExprNode> expressions = new ArrayList<>();
 		for(BParser.Rec_entryContext entry : ctx.entries) {
-			identifiers.add((IdentifierExprNode) entry.identifier().accept(this));
+			String name = entry.identifier().getText();
+			DeclarationNode decl = new DeclarationNode(Util.createSourceCodePosition(entry.getStart()), name,
+					DeclarationNode.Kind.VARIABLE, null);
+			declarations.add(decl);
 			expressions.add((ExprNode) entry.expression_in_par().accept(this));
 		}
 		if(ctx.operator.getType() == BParser.STRUCT) {
-			return new StructNode(Util.createSourceCodePosition(ctx), identifiers, expressions);
+			return new StructNode(Util.createSourceCodePosition(ctx), declarations, expressions);
 		}
-		return new RecordNode(Util.createSourceCodePosition(ctx), identifiers, expressions);
+		return new RecordNode(Util.createSourceCodePosition(ctx), declarations, expressions);
 	}
 
 	@Override
 	public Node visitRecordFieldAccess(BParser.RecordFieldAccessContext ctx) {
 		ExprNode expression = (ExprNode) ctx.expression().accept(this);
-		IdentifierExprNode identifier = (IdentifierExprNode) ctx.identifier().accept(this);
+		String name = ctx.identifier().getText();
+		DeclarationNode identifier = new DeclarationNode(Util.createSourceCodePosition(ctx.identifier().getStart()), name,
+				DeclarationNode.Kind.VARIABLE, null);
 		return new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), expression, identifier);
 	}
 
@@ -930,10 +943,13 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		final ExprNode record = new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.name.getText(), false);
 		RecordFieldAccessNode result = null;
 		for(int i = 0; i < ctx.attributes.size(); i++) {
+			String name = ctx.attributes.get(i).getText();
+			DeclarationNode identifier = new DeclarationNode(Util.createSourceCodePosition(ctx.attributes.get(i)), name,
+					DeclarationNode.Kind.VARIABLE, null);
 			if(i == 0) {
-				result = new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), record, new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.attributes.get(i).getText(), false));
+				result = new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), record, identifier);
 			} else {
-				result = new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), result, new IdentifierExprNode(Util.createSourceCodePosition(ctx), ctx.attributes.get(i).getText(), false));
+				result = new RecordFieldAccessNode(Util.createSourceCodePosition(ctx), result, identifier);
 			}
 		}
 		return result;

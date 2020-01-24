@@ -72,6 +72,13 @@ public class MachineScopeChecker {
 			formulaScopeChecker.visitPredicateNode(machineNode.getProperties());
 		}
 
+		if (machineNode.getValues() != null) {
+			scopeTable.clear();
+			createNewScope(getSetsInScope());
+			createNewScope(getConstantsInScope());
+			machineNode.getValues().forEach(formulaScopeChecker::visitSubstitutionNode);
+		}
+
 		if (machineNode.getInvariant() != null) {
 			scopeTable.clear();
 			createNewScope(getSetsInScope());
@@ -108,7 +115,9 @@ public class MachineScopeChecker {
 		for (MachineReferenceNode ref : mNode.getMachineReferences()) {
 			MachineNode refMachine = ref.getMachineNode();
 			if (ref.getType() == MachineReferenceNode.Kind.EXTENDED
-					|| ref.getType() == MachineReferenceNode.Kind.INCLUDED) {
+					|| ref.getType() == MachineReferenceNode.Kind.INCLUDED
+					|| ref.getType() == MachineReferenceNode.Kind.IMPORTED
+					|| ref.getType() == MachineReferenceNode.Kind.SEEN) {
 				addOperationsToScope(refMachine, false);
 			}
 		}
