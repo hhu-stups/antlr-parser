@@ -36,8 +36,11 @@ public class ConditionSubstitutionNode extends SubstitutionNode {
 
 	@Override
 	public String toString() {
-
-		return "SELECT " + condition + " THEN " + substitution + " END";
+		if(this.kind == Kind.PRECONDITION) {
+			return "PRE " + condition + " THEN " + substitution + " END";
+		} else {
+			return "ASSERT " + condition + " THEN " + substitution + " END";
+		}
 	}
 
 	public void setSubstitution(SubstitutionNode substitution) {
