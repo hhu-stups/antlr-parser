@@ -25,8 +25,15 @@ public class MachineReferenceNode extends Node {
 		return name;
 	}
 
+	public String getPrefix() {
+		return prefix;
+	}
+
 	@Override
 	public String toString() {
+		if(prefix != null) {
+			return prefix + "." + name;
+		}
 		return name;
 	}
 

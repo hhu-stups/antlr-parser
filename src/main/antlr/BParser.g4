@@ -69,7 +69,7 @@ definition_clause
   ;
 
 machine_instantiation
-  : (prefix=IDENTIFIER)? name=IDENTIFIER ( '(' exprs+=expression (','  exprs+=expression)* ')' )?
+  : (prefix=IDENTIFIER DOT)? name=IDENTIFIER ( '(' exprs+=expression (','  exprs+=expression)* ')' )?
   ;
 
 set_definition
