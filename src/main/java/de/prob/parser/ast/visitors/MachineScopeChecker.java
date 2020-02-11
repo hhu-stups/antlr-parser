@@ -134,7 +134,7 @@ public class MachineScopeChecker {
 	public List<DeclarationNode> getConstantsInScope(List<MachineNode> list) {
 		List<DeclarationNode> result = new ArrayList<>();
 		for (MachineNode machine : list) {
-			if(machine.getPrefix() == null) {
+			if(machine.getPrefix() == null || machineNode.equals(machine)) {
 				result.addAll(machine.getConstants());
 			} else {
 				result.addAll(machine.getConstants().stream()
@@ -155,7 +155,7 @@ public class MachineScopeChecker {
 	public List<DeclarationNode> getVariablesInScope(List<MachineNode> list) {
 		List<DeclarationNode> result = new ArrayList<>();
 		for (MachineNode machine : list) {
-			if(machine.getPrefix() == null) {
+			if(machine.getPrefix() == null || machineNode.equals(machine)) {
 				result.addAll(machine.getVariables());
 			} else {
 				result.addAll(machine.getVariables().stream()
@@ -177,7 +177,7 @@ public class MachineScopeChecker {
 		List<DeclarationNode> result = new ArrayList<>();
 		for (MachineNode machine : list) {
 			for (EnumeratedSetDeclarationNode enumSet : machine.getEnumeratedSets()) {
-				if(machine.getPrefix() == null) {
+				if(machine.getPrefix() == null || machineNode.equals(machine)) {
 					result.add(enumSet.getSetDeclarationNode());
 					result.addAll(enumSet.getElements());
 				} else {
@@ -188,7 +188,7 @@ public class MachineScopeChecker {
 							.collect(Collectors.toList()));
 				}
 			}
-			if(machine.getPrefix() == null) {
+			if(machine.getPrefix() == null || machineNode.equals(machine)) {
 				result.addAll(machine.getDeferredSets());
 			} else {
 				result.addAll(machine.getDeferredSets().stream()
