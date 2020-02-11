@@ -135,6 +135,7 @@ public class Antlr4BParser {
 			set.add(refName);
 			final MachineNode refMachineNode = machineNodes.get(refName);
 			machineReferenceNode.setMachineNode(refMachineNode);
+			refMachineNode.setPrefix(machineReferenceNode.getPrefix());
 			determineMachineDependencies(refMachineNode, machineNodes, dependencies, new ArrayList<>(ancestors));
 			set.addAll(dependencies.get(refName));
 		}

@@ -10,6 +10,7 @@ import java.util.List;
 
 public class MachineNode extends Node {
 
+	private String prefix = null;
 	private String machineName;
 	private List<EnumeratedSetDeclarationNode> setEnumerations = new ArrayList<>();
 	private List<DeclarationNode> deferredSets = new ArrayList<>();
@@ -140,6 +141,14 @@ public class MachineNode extends Node {
 		this.machineName = name;
 	}
 
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+	public String getPrefix() {
+		return prefix;
+	}
+
 	@Override
 	public void removeChild(Node child) {
 
@@ -147,6 +156,9 @@ public class MachineNode extends Node {
 
 	@Override
 	public String toString() {
+		if(prefix != null) {
+			return this.prefix + "." + this.machineName;
+		}
 		return this.machineName;
 	}
 }

@@ -35,6 +35,7 @@ import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class MachineScopeChecker {
 	private final LinkedList<LinkedHashMap<String, DeclarationNode>> scopeTable = new LinkedList<>();
@@ -133,7 +134,13 @@ public class MachineScopeChecker {
 	public List<DeclarationNode> getConstantsInScope(List<MachineNode> list) {
 		List<DeclarationNode> result = new ArrayList<>();
 		for (MachineNode machine : list) {
-			result.addAll(machine.getConstants());
+			if(machine.getPrefix() == null) {
+				result.addAll(machine.getConstants());
+			} else {
+				result.addAll(machine.getConstants().stream()
+					.map(decl -> new DeclarationNode(decl.getSourceCodePosition(), machine.getPrefix() + "." + decl.getName(), decl.getKind(), decl.getSurroundingMachineNode()))
+					.collect(Collectors.toList()));
+			}
 		}
 		return result;
 	}
@@ -148,7 +155,13 @@ public class MachineScopeChecker {
 	public List<DeclarationNode> getVariablesInScope(List<MachineNode> list) {
 		List<DeclarationNode> result = new ArrayList<>();
 		for (MachineNode machine : list) {
-			result.addAll(machine.getVariables());
+			if(machine.getPrefix() == null) {
+				result.addAll(machine.getVariables());
+			} else {
+				result.addAll(machine.getVariables().stream()
+						.map(decl -> new DeclarationNode(decl.getSourceCodePosition(), machine.getPrefix() + "." + decl.getName(), decl.getKind(), decl.getSurroundingMachineNode()))
+						.collect(Collectors.toList()));
+			}
 		}
 		return result;
 	}
@@ -164,10 +177,24 @@ public class MachineScopeChecker {
 		List<DeclarationNode> result = new ArrayList<>();
 		for (MachineNode machine : list) {
 			for (EnumeratedSetDeclarationNode enumSet : machine.getEnumeratedSets()) {
-				result.add(enumSet.getSetDeclarationNode());
-				result.addAll(enumSet.getElements());
+				if(machine.getPrefix() == null) {
+					result.add(enumSet.getSetDeclarationNode());
+					result.addAll(enumSet.getElements());
+				} else {
+					DeclarationNode enumSetDeclarationNode = enumSet.getSetDeclarationNode();
+					result.add(new DeclarationNode(enumSetDeclarationNode.getSourceCodePosition(), enumSetDeclarationNode.getName(), enumSetDeclarationNode.getKind(), enumSetDeclarationNode.getSurroundingMachineNode()));
+					result.addAll(enumSet.getElements().stream()
+							.map(decl -> new DeclarationNode(decl.getSourceCodePosition(), machine.getPrefix() + "." + decl.getName(), decl.getKind(), decl.getSurroundingMachineNode()))
+							.collect(Collectors.toList()));
+				}
 			}
-			result.addAll(machine.getDeferredSets());
+			if(machine.getPrefix() == null) {
+				result.addAll(machine.getDeferredSets());
+			} else {
+				result.addAll(machine.getDeferredSets().stream()
+						.map(decl -> new DeclarationNode(decl.getSourceCodePosition(), machine.getPrefix() + "." + decl.getName(), decl.getKind(), decl.getSurroundingMachineNode()))
+						.collect(Collectors.toList()));
+			}
 		}
 		return result;
 	}
@@ -266,7 +293,6 @@ public class MachineScopeChecker {
 
 		@Override
 		public void visitIdentifierPredicateNode(IdentifierPredicateNode node) {
-			// TODO Auto-generated method stub
 			DeclarationNode declarationNode = lookUpIdentifier(node.getName(), node);
 			node.setDeclarationNode(declarationNode);
 		}
@@ -281,7 +307,6 @@ public class MachineScopeChecker {
 
 		@Override
 		public void visitAnySubstitution(AnySubstitutionNode node) {
-			// TODO Auto-generated method stub
 			createNewScope(node.getParameters());
 			visitPredicateNode(node.getWherePredicate());
 			visitSubstitutionNode(node.getThenSubstitution());
@@ -290,7 +315,6 @@ public class MachineScopeChecker {
 
 		@Override
 		public void visitLetSubstitution(LetSubstitutionNode node) {
-			// TODO Auto-generated method stub
 			createNewScope(node.getLocalIdentifiers());
 			visitPredicateNode(node.getPredicate());
 			visitSubstitutionNode(node.getBody());
@@ -315,7 +339,6 @@ public class MachineScopeChecker {
 
 		@Override
 		public void visitBecomesElementOfSubstitutionNode(BecomesElementOfSubstitutionNode node) {
-			// TODO Auto-generated method stub
 			for (ExprNode expr : node.getIdentifiers()) {
 				visitExprNode(expr);
 			}
@@ -324,7 +347,6 @@ public class MachineScopeChecker {
 
 		@Override
 		public void visitBecomesSuchThatSubstitutionNode(BecomesSuchThatSubstitutionNode node) {
-			// TODO Auto-generated method stub
 			for (ExprNode expr : node.getIdentifiers()) {
 				visitExprNode(expr);
 			}
