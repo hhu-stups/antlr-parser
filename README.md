@@ -28,4 +28,4 @@ The author(s) do not accept responsibility to anyone for the consequences of
 using it or for whether it serves any particular purpose or works at all.
 No warranty is made about the software or its performance.
 
-(c) 2011-2018 STUPS group, University of Düsseldorf
+(c) 2011-2020 STUPS group, University of Düsseldorf
