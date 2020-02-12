@@ -76,6 +76,7 @@ public class Antlr4BParser {
 				final File file = getFile(parentFolder, name);
 				final StartContext cst = parse(file);
 				final MachineNode ast = MachineASTCreator.createMachineAST(cst);
+				ast.setPrefix(next.getPrefix());
 				machines.add(ast);
 				for (MachineReferenceNode machineReferenceNode : ast.getMachineReferences()) {
 					final String refName = machineReferenceNode.getMachineName();
@@ -109,7 +110,7 @@ public class Antlr4BParser {
 	private static void sortMachineNodes(List<MachineNode> machineNodeList) {
 		final Map<String, MachineNode> machineNodeMap = new HashMap<>();
 		for (MachineNode machineNode : machineNodeList) {
-			machineNodeMap.put(machineNode.getName(), machineNode);
+			machineNodeMap.put(machineNode.toString(), machineNode);
 		}
 		Map<String, Set<String>> dependencies = new HashMap<>();
 		determineMachineDependencies(machineNodeList.get(0), machineNodeMap, dependencies, new ArrayList<>());
@@ -123,19 +124,18 @@ public class Antlr4BParser {
 	private static void determineMachineDependencies(final MachineNode machineNode,
 			final Map<String, MachineNode> machineNodes, final Map<String, Set<String>> dependencies,
 			final List<String> ancestors) {
-		final String name = machineNode.getName();
+		final String name = machineNode.toString();
 		ancestors.add(name);
 
 		final Set<String> set = new HashSet<>();
 		for (MachineReferenceNode machineReferenceNode : machineNode.getMachineReferences()) {
-			final String refName = machineReferenceNode.getMachineName();
+			final String refName = machineReferenceNode.toString();
 			if (ancestors.contains(refName)) {
 				throw new RuntimeException("Cycle detected");
 			}
 			set.add(refName);
 			final MachineNode refMachineNode = machineNodes.get(refName);
 			machineReferenceNode.setMachineNode(refMachineNode);
-			refMachineNode.setPrefix(machineReferenceNode.getPrefix());
 			determineMachineDependencies(refMachineNode, machineNodes, dependencies, new ArrayList<>(ancestors));
 			set.addAll(dependencies.get(refName));
 		}

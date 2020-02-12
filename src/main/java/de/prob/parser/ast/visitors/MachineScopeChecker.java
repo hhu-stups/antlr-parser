@@ -134,16 +134,17 @@ public class MachineScopeChecker {
 	public List<DeclarationNode> getConstantsInScope(List<MachineNode> list) {
 		List<DeclarationNode> result = new ArrayList<>();
 		for (MachineNode machine : list) {
-			result.addAll(machine.getConstants());
 			if(machine.getPrefix() != null && !machineNode.equals(machine)) {
 				result.addAll(machine.getConstants().stream()
 					.map(decl -> {
-						DeclarationNode newNode = new DeclarationNode(decl.getSourceCodePosition(), machine.getPrefix() + "." + decl.getName(), decl.getKind(), decl.getSurroundingMachineNode());
+						DeclarationNode newNode = new DeclarationNode(decl.getSourceCodePosition(), machine.getPrefix() + "." + decl.getName(), DeclarationNode.Kind.VARIABLE, decl.getSurroundingMachineNode());
 						newNode.setType(decl.getType());
 						newNode.setParent(decl.getParent());
 						return newNode;
 					})
 					.collect(Collectors.toList()));
+			} else {
+				result.addAll(machine.getConstants());
 			}
 		}
 		return result;
@@ -159,16 +160,17 @@ public class MachineScopeChecker {
 	public List<DeclarationNode> getVariablesInScope(List<MachineNode> list) {
 		List<DeclarationNode> result = new ArrayList<>();
 		for (MachineNode machine : list) {
-			result.addAll(machine.getVariables());
 			if(machine.getPrefix() != null && !machineNode.equals(machine)) {
 				result.addAll(machine.getVariables().stream()
 						.map(decl -> {
-							DeclarationNode newNode = new DeclarationNode(decl.getSourceCodePosition(), machine.getPrefix() + "." + decl.getName(), decl.getKind(), decl.getSurroundingMachineNode());
+							DeclarationNode newNode = new DeclarationNode(decl.getSourceCodePosition(), machine.getPrefix() + "." + decl.getName(), DeclarationNode.Kind.VARIABLE, decl.getSurroundingMachineNode());
 							newNode.setType(decl.getType());
 							newNode.setParent(decl.getParent());
 							return newNode;
 						})
 						.collect(Collectors.toList()));
+			} else {
+				result.addAll(machine.getVariables());
 			}
 		}
 		return result;
@@ -188,11 +190,9 @@ public class MachineScopeChecker {
 				result.add(enumSet.getSetDeclarationNode());
 				result.addAll(enumSet.getElements());
 				if(machine.getPrefix() != null && !machineNode.equals(machine)) {
-					DeclarationNode enumSetDeclarationNode = enumSet.getSetDeclarationNode();
-					result.add(new DeclarationNode(enumSetDeclarationNode.getSourceCodePosition(), enumSetDeclarationNode.getName(), enumSetDeclarationNode.getKind(), enumSetDeclarationNode.getSurroundingMachineNode()));
 					result.addAll(enumSet.getElements().stream()
 							.map(decl -> {
-								DeclarationNode newNode = new DeclarationNode(decl.getSourceCodePosition(), machine.getPrefix() + "." + decl.getName(), decl.getKind(), decl.getSurroundingMachineNode());
+								DeclarationNode newNode = new DeclarationNode(decl.getSourceCodePosition(), machine.getPrefix() + "." + decl.getName(), DeclarationNode.Kind.ENUMERATED_SET_ELEMENT, decl.getSurroundingMachineNode());
 								newNode.setType(decl.getType());
 								newNode.setParent(decl.getParent());
 								return newNode;
@@ -201,16 +201,6 @@ public class MachineScopeChecker {
 				}
 			}
 			result.addAll(machine.getDeferredSets());
-			if(machine.getPrefix() != null && !machineNode.equals(machine)) {
-				result.addAll(machine.getDeferredSets().stream()
-						.map(decl -> {
-							DeclarationNode newNode = new DeclarationNode(decl.getSourceCodePosition(), machine.getPrefix() + "." + decl.getName(), decl.getKind(), decl.getSurroundingMachineNode());
-							newNode.setType(decl.getType());
-							newNode.setParent(decl.getParent());
-							return newNode;
-						})
-						.collect(Collectors.toList()));
-			}
 		}
 		return result;
 	}
@@ -224,7 +214,7 @@ public class MachineScopeChecker {
 				machinesInScope.add(refMachine);
 				if (ref.getType() == MachineReferenceNode.Kind.EXTENDED
 						|| ref.getType() == MachineReferenceNode.Kind.INCLUDED) {
-					machinesInScope.addAll(getMachinesInScope(refMachine));
+					machinesInScope.addAll(getMachinesInScope(refMachine).stream().filter(m -> !machinesInScope.contains(m)).collect(Collectors.toList()));
 				}
 			}
 		}
@@ -239,7 +229,7 @@ public class MachineScopeChecker {
 			MachineNode refMachine = ref.getMachineNode();
 			if (ref.getType() == MachineReferenceNode.Kind.EXTENDED
 					|| ref.getType() == MachineReferenceNode.Kind.INCLUDED) {
-				result.addAll(getMachinesInScope(refMachine));
+				result.addAll(getMachinesInScope(refMachine).stream().filter(m -> !result.contains(m)).collect(Collectors.toList()));
 			}
 		}
 		return result;
