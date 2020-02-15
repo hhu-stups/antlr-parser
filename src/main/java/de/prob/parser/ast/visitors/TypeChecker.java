@@ -4,6 +4,7 @@ import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
 import de.prob.parser.ast.nodes.FormulaNode;
 import de.prob.parser.ast.nodes.MachineNode;
+import de.prob.parser.ast.nodes.MachineReferenceNode;
 import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.OperationNode;
 import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;
@@ -214,6 +215,14 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 
 		// set all variables to untyped
 		machineNode.getVariables().forEach(this::setInitialType);
+		machineNode.getIncludedRenamedVariables().forEach(this::setInitialType);
+		typecheckRenamedVariables(machineNode);
+
+
+		machineNode.getIncludedRenamedVariables().stream().filter(TypedNode::isUntyped).findFirst().ifPresent(var -> {
+			throw new TypeCheckerVisitorException(new TypeErrorException(
+					"Can not infer the type of variable " + var.getName() + ". Type variable: " + var.getType()));
+		});
 
 		// visit the invariant clause
 		if (machineNode.getInvariant() != null) {
@@ -235,6 +244,36 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		visitOperations(machineNode);
 
 		performPostActions();
+	}
+
+	private void typecheckRenamedVariables(MachineNode machineNode) {
+		if(machineNode.getIncludedRenamedVariables() != null) {
+			for (MachineReferenceNode reference : machineNode.getMachineReferences()) {
+				String prefix = reference.getPrefix() + ".";
+				if (reference.getPrefix() != null) {
+					for (DeclarationNode variable : machineNode.getIncludedRenamedVariables()) {
+						if (variable.getName().startsWith(prefix)) {
+							String identifier = variable.getName().replaceFirst(prefix, "");
+							for (DeclarationNode otherVariable : reference.getMachineNode().getVariables()) {
+								if (identifier.equals(otherVariable.getName())) {
+
+									variable.setType(otherVariable.getType());
+								}
+							}
+						}
+						for (DeclarationNode otherVariable : reference.getMachineNode().getIncludedRenamedVariables()) {
+							String includedMachinePrefix = variable.getSurroundingMachineNode().getPrefix();
+							if(includedMachinePrefix != null) {
+								if (variable.getName().startsWith(includedMachinePrefix) && otherVariable.getName().startsWith(includedMachinePrefix) && variable.getName().equals(otherVariable.getName())) {
+									variable.setType(otherVariable.getType());
+								}
+							}
+						}
+					}
+				}
+
+			}
+		}
 	}
 
 	private void visitOperations(MachineNode machineNode) {
@@ -295,9 +334,11 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		final List<ExprNode> expressionNodes = node.getExpressionNodes();
 		switch (node.getOperator()) {
 		case EQUAL:
-		case NOT_EQUAL:
-			visitExprNode(expressionNodes.get(1), visitExprNode(expressionNodes.get(0), new UntypedType()));
+		case NOT_EQUAL: {
+			BType left = visitExprNode(expressionNodes.get(0), new UntypedType());
+			visitExprNode(expressionNodes.get(1), left);
 			break;
+		}
 		case NOT_BELONGING:
 		case ELEMENT_OF: {
 			BType left = visitExprNode(expressionNodes.get(0), new UntypedType());
@@ -721,11 +762,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 
 	@Override
 	public BType visitIdentifierExprNode(IdentifierExprNode node, BType expected) {
-		if (node.getDeclarationNode() == null || node.getDeclarationNode().getType() == null) {
-			// TODO: Check whether semantic is correct or not
-			if(node.getDeclarationNode() != null) {
-				setInitialType(node.getDeclarationNode());
-			}
+		if(node.getDeclarationNode() == null || node.getDeclarationNode().getType() == null) {
+			//TODO: Implement scoping and type checking of included sets
 			return unify(expected, new UntypedType(), node);
 		}
 		return unify(expected, node.getDeclarationNode().getType(), node);

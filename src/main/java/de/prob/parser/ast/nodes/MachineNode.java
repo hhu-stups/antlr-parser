@@ -16,6 +16,7 @@ public class MachineNode extends Node {
 	private List<DeclarationNode> deferredSets = new ArrayList<>();
 	private List<DeclarationNode> constants = new ArrayList<>();
 	private List<DeclarationNode> variables = new ArrayList<>();
+	private List<DeclarationNode> includedRenamedVariables = new ArrayList<>();
 	private List<MachineReferenceNode> machineReferences = new ArrayList<>();
 	private PredicateNode properties;
 	private PredicateNode invariant;
@@ -36,6 +37,10 @@ public class MachineNode extends Node {
 	public void setVariables(List<DeclarationNode> variables) {
 		this.variables = variables;
 		this.variables.forEach(var -> var.setParent(this));
+	}
+
+	public List<DeclarationNode> getIncludedRenamedVariables() {
+		return includedRenamedVariables;
 	}
 
 	public MachineNode(SourceCodePosition sourceCodePosition) {

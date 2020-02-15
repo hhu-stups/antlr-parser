@@ -161,14 +161,15 @@ public class MachineScopeChecker {
 		List<DeclarationNode> result = new ArrayList<>();
 		for (MachineNode machine : list) {
 			if(machine.getPrefix() != null && !machineNode.equals(machine)) {
-				result.addAll(machine.getVariables().stream()
+				List<DeclarationNode> includedRenamedVariables = machine.getVariables().stream()
 						.map(decl -> {
 							DeclarationNode newNode = new DeclarationNode(decl.getSourceCodePosition(), machine.getPrefix() + "." + decl.getName(), DeclarationNode.Kind.VARIABLE, decl.getSurroundingMachineNode());
-							newNode.setType(decl.getType());
 							newNode.setParent(decl.getParent());
 							return newNode;
 						})
-						.collect(Collectors.toList()));
+						.collect(Collectors.toList());
+				result.addAll(includedRenamedVariables);
+				machineNode.getIncludedRenamedVariables().addAll(includedRenamedVariables);
 			} else {
 				result.addAll(machine.getVariables());
 			}

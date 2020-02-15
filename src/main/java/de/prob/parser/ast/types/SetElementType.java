@@ -32,7 +32,7 @@ public class SetElementType implements BType {
         if (otherType instanceof UntypedType) {
             return true;
         }
-        return otherType == this;
+        return this.equals(otherType);
     }
 
     @Override
@@ -42,6 +42,14 @@ public class SetElementType implements BType {
 
     @Override
     public boolean isUntyped() {
+        return false;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof SetElementType) {
+            return this.setName.equals(((SetElementType) obj).getSetName());
+        }
         return false;
     }
 }
