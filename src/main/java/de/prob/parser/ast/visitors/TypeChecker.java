@@ -335,8 +335,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		switch (node.getOperator()) {
 		case EQUAL:
 		case NOT_EQUAL: {
-			BType left = visitExprNode(expressionNodes.get(0), new UntypedType());
-			visitExprNode(expressionNodes.get(1), left);
+			visitExprNode(expressionNodes.get(0), visitExprNode(expressionNodes.get(1), new UntypedType()));
 			break;
 		}
 		case NOT_BELONGING:
