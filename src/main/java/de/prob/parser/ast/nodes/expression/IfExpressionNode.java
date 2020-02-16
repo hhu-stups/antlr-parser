@@ -37,12 +37,9 @@ public class IfExpressionNode extends ExprNode {
 		this.condition = condition;
 	}
 
-	String prepareToString(String selectIf) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(selectIf).append(" ").append(condition).append(" THEN ").append(thenExpr);
-		sb.append(" ELSE ").append(elseExpr);
-		sb.append(" END");
-		return sb.toString();
+	@Override
+	public String toString() {
+		return "IF " + condition + " THEN " + thenExpr + " ELSE " + elseExpr + " END";
 	}
 
 }
