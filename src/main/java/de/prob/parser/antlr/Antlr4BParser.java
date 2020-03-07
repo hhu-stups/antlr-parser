@@ -1,7 +1,7 @@
 package de.prob.parser.antlr;
 
-import de.prob.parser.ast.nodes.MachineReferenceNode;
 import de.prob.parser.ast.nodes.MachineNode;
+import de.prob.parser.ast.nodes.MachineReferenceNode;
 import de.prob.parser.ast.visitors.MachineScopeChecker;
 import de.prob.parser.ast.visitors.TypeChecker;
 import de.prob.parser.ast.visitors.TypeErrorException;
@@ -9,7 +9,6 @@ import de.prob.parser.util.Utils;
 import files.BLexer;
 import files.BParser;
 import files.BParser.StartContext;
-
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CodePointCharStream;
@@ -42,11 +41,11 @@ public class Antlr4BParser {
 		for (int i = machineNodeList.size() - 1; i >= 0; i--) {
 			new MachineScopeChecker(machineNodeList.get(i));
 		}
-
 		for (int i = machineNodeList.size() - 1; i >= 0; i--) {
 			MachineNode machineNode = machineNodeList.get(i);
 			TypeChecker.typecheckMachineNode(machineNode);
 		}
+
 		return new BProject(machineNodeList);
 	}
 
@@ -72,7 +71,6 @@ public class Antlr4BParser {
 			todo.remove(next);
 			final String name = next.getMachineName();
 			if (!parsedMachines.contains(name)) {
-
 				final File file = getFile(parentFolder, name);
 				final StartContext cst = parse(file);
 				final MachineNode ast = MachineASTCreator.createMachineAST(cst);

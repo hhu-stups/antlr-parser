@@ -249,24 +249,31 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	private void typecheckRenamedVariables(MachineNode machineNode) {
 		if(machineNode.getIncludedRenamedVariables() != null) {
 			for (MachineReferenceNode reference : machineNode.getMachineReferences()) {
-				String prefix = reference.getPrefix() + ".";
 				if (reference.getPrefix() != null) {
+					String prefix = reference.getPrefix() + ".";
 					for (DeclarationNode variable : machineNode.getIncludedRenamedVariables()) {
 						if (variable.getName().startsWith(prefix)) {
 							String identifier = variable.getName().replaceFirst(prefix, "");
 							for (DeclarationNode otherVariable : reference.getMachineNode().getVariables()) {
 								if (identifier.equals(otherVariable.getName())) {
-
 									variable.setType(otherVariable.getType());
 								}
 							}
 						}
-						for (DeclarationNode otherVariable : reference.getMachineNode().getIncludedRenamedVariables()) {
+						for (DeclarationNode otherVariable : machineNode.getIncludedRenamedVariables()) {
 							String includedMachinePrefix = variable.getSurroundingMachineNode().getPrefix();
 							if(includedMachinePrefix != null) {
 								if (variable.getName().startsWith(includedMachinePrefix) && otherVariable.getName().startsWith(includedMachinePrefix) && variable.getName().equals(otherVariable.getName())) {
 									variable.setType(otherVariable.getType());
 								}
+							}
+						}
+					}
+				} else {
+					for (DeclarationNode variable : machineNode.getIncludedRenamedVariables()) {
+						for (DeclarationNode otherVariable : reference.getMachineNode().getIncludedRenamedVariables()) {
+							if (variable.getName().equals(otherVariable.getName())) {
+								variable.setType(otherVariable.getType());
 							}
 						}
 					}
