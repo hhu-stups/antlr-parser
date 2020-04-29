@@ -138,13 +138,13 @@ public class MachineASTCreator {
 			case "CONSTANTS":
 			case "ABSTRACT_CONSTANTS":
 			case "CONCRETE_CONSTANTS":
-				machineNode.setConstants(
+				machineNode.addConstants(
 						createDeclarationList(ctx.identifier_list().IDENTIFIER(), DeclarationNode.Kind.CONSTANT));
 				break;
 			case "VARIABLES":
 			case "ABSTRACT_VARIABLES":
 			case "CONCRETE_VARIABLES":
-				machineNode.setVariables(
+				machineNode.addVariables(
 						createDeclarationList(ctx.identifier_list().IDENTIFIER(), DeclarationNode.Kind.VARIABLE));
 				break;
 			default:

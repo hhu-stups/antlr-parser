@@ -34,8 +34,8 @@ public class MachineNode extends Node {
 		return variables;
 	}
 
-	public void setVariables(List<DeclarationNode> variables) {
-		this.variables = variables;
+	public void addVariables(List<DeclarationNode> variables) {
+		this.variables.addAll(variables);
 		this.variables.forEach(var -> var.setParent(this));
 	}
 
@@ -51,8 +51,8 @@ public class MachineNode extends Node {
 		return constants;
 	}
 
-	public void setConstants(List<DeclarationNode> constants) {
-		this.constants = constants;
+	public void addConstants(List<DeclarationNode> constants) {
+		this.constants.addAll(constants);
 		this.constants.forEach(constant -> constant.setParent(this));
 	}
 
