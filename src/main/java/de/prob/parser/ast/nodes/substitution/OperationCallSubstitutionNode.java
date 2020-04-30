@@ -49,4 +49,8 @@ public class OperationCallSubstitutionNode extends SubstitutionNode {
 		return assignedVariables;
 	}
 
+	@Override
+	public String toString() {
+		return names + "(" + arguments + ")";
+	}
 }

@@ -109,8 +109,14 @@ public class MachineScopeChecker {
 
 	private void addOperationsToScope(MachineNode mNode, boolean first) {
 		if (!first) {
-			for (OperationNode op : mNode.getOperations()) {
-				this.operationsInScope.put(op.getName(), op);
+			if(mNode.getPrefix() == null) {
+				for (OperationNode op : mNode.getOperations()) {
+					this.operationsInScope.put(op.getName(), op);
+				}
+			} else {
+				for (OperationNode op : mNode.getOperations()) {
+					this.operationsInScope.put(mNode.getPrefix() + "." + op.getName(), op);
+				}
 			}
 		}
 		for (MachineReferenceNode ref : mNode.getMachineReferences()) {
@@ -266,7 +272,7 @@ public class MachineScopeChecker {
 		@Override
 		public void visitSubstitutionIdentifierCallNode(OperationCallSubstitutionNode node) {
 			List<String> names = node.getNames();
-			String opName = names.get(names.size() - 1);
+			String opName = String.join(".", names);
 			if (operationsInScope.containsKey(opName)) {
 				node.setOperationsNode(operationsInScope.get(opName));
 			} else {
