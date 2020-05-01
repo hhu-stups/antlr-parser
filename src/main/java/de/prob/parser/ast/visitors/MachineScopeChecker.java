@@ -31,15 +31,14 @@ import de.prob.parser.ast.visitors.generic.ASTVisitor;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class MachineScopeChecker {
-	private final LinkedList<LinkedHashMap<String, DeclarationNode>> scopeTable = new LinkedList<>();
-	private final LinkedHashMap<Node, DeclarationNode> declarationReferences = new LinkedHashMap<>();
+	private final LinkedList<Map<String, DeclarationNode>> scopeTable = new LinkedList<>();
 	private final Map<String, OperationNode> operationsInScope = new HashMap<>();
 
 	private MachineNode machineNode;
@@ -247,7 +246,7 @@ public class MachineScopeChecker {
 	}
 
 	private void createNewScope(List<DeclarationNode> list) {
-		LinkedHashMap<String, DeclarationNode> scope = new LinkedHashMap<>();
+		Map<String, DeclarationNode> scope = new TreeMap<>();
 		for (DeclarationNode declarationNode : list) {
 			scope.put(declarationNode.getName(), declarationNode);
 		}
@@ -398,18 +397,13 @@ public class MachineScopeChecker {
 
 	public DeclarationNode lookUpIdentifier(String name, Node node) {
 		for (int i = scopeTable.size() - 1; i >= 0; i--) {
-			LinkedHashMap<String, DeclarationNode> map = scopeTable.get(i);
+			Map<String, DeclarationNode> map = scopeTable.get(i);
 			if (map.containsKey(name)) {
 				DeclarationNode declarationNode = map.get(name);
-				addDeclarationReference(node, declarationNode);
 				return declarationNode;
 			}
 		}
 		throw new VisitorException(new ScopeException("Unknown identifier: " + name));
-	}
-
-	public void addDeclarationReference(Node identifierToken, DeclarationNode declarationToken) {
-		this.declarationReferences.put(identifierToken, declarationToken);
 	}
 
 }
