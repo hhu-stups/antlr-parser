@@ -55,12 +55,26 @@ public class Antlr4BParser {
 		return createBProject(parsedmachines);
 	}
 
+	private static void checkMachineName(File file, String name) {
+		if(!file.exists()) {
+			throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
+		}
+		String[] pathAsList = file.getPath().split("/");
+		String path = pathAsList[pathAsList.length - 1].replaceAll(".mch", "");
+		if(!path.equals(name)) {
+			throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
+		}
+	}
+
 	public static BProject createBProjectFromMainMachineFile(File mainBFile)
 			throws TypeErrorException, ScopeException, IOException {
 		final File parentFolder = mainBFile.getParentFile();
 		final List<MachineNode> machines = new ArrayList<>();
 		final StartContext mainMachineCST = parse(mainBFile);
 		final MachineNode main = MachineASTCreator.createMachineAST(mainMachineCST);
+
+		checkMachineName(mainBFile, main.getName());
+
 		machines.add(main);
 		final Set<String> parsedMachines = new HashSet<>();
 		parsedMachines.add(main.getName());
@@ -72,6 +86,7 @@ public class Antlr4BParser {
 			final String name = next.getMachineName();
 			if (!parsedMachines.contains(name)) {
 				final File file = getFile(parentFolder, name);
+				checkMachineName(file, name);
 				final StartContext cst = parse(file);
 				final MachineNode ast = MachineASTCreator.createMachineAST(cst);
 				ast.setPrefix(next.getPrefix());
