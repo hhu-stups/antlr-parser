@@ -30,7 +30,6 @@ import de.prob.parser.ast.nodes.substitution.VarSubstitutionNode;
 import de.prob.parser.ast.visitors.generic.ASTVisitor;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,7 @@ import java.util.stream.Collectors;
 
 public class MachineScopeChecker {
 	private final LinkedList<Map<String, DeclarationNode>> scopeTable = new LinkedList<>();
-	private final Map<String, OperationNode> operationsInScope = new HashMap<>();
+	private final Map<String, OperationNode> operationsInScope = new TreeMap<>();
 
 	private MachineNode machineNode;
 
