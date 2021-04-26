@@ -51,132 +51,266 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
         List<ExprNode> expressionNodes = node.getExpressionNodes();
         ExpressionOperatorNode.ExpressionOperator operator = node.getOperator();
         String functor = "";
-        switch (operator) {
-            case PLUS:
-                functor = "plus";
-                break;
-            case UNARY_MINUS:
-                functor = "uminus";
-                break;
-            case MOD:
-                functor = "mod";
-                break;
-            case DIVIDE:
-                functor = "div";
-                break;
-            case PRED:
-                functor = "pred";
-                break;
-            case SUCC:
-                functor = "succ";
-                break;
-            case POWER_OF:
-                functor = "power_of";
-                break;
-            case MULT:
-                // TODO: multiply, and cartesian product
-            case MINUS:
-                functor = "minus";
-                break;
-            case INTERVAL:
-                functor = "interval";
-                break;
-            case SET_ENUMERATION:
-            case MIN:
-                functor = "min";
-                break;
-            case MAX:
-                functor = "max";
-                break;
-            case MININT:
-            case MAXINT:
-            case INTEGER:
-            case NATURAL:
-            case NATURAL1:
-            case INT:
-            case NAT:
-            case NAT1:
-            case STRING:
-            case FALSE:
-            case TRUE:
-            case BOOL:
-            case SET_SUBTRACTION:
-            case INTERSECTION:
-            case UNION:
-            case COUPLE:
-            case DOMAIN:
-            case RANGE:
-            case ID:
-            case CLOSURE:
-            case CLOSURE1:
-            case ITERATE:
-            case PRJ1:
-            case PRJ2:
-            case FNC:
-                functor = "fnc";
-                break;
-            case REL:
-                functor = "rel";
-                break;
-            case CONCAT:
-                functor = "concat";
-                break;
-            case CONC:
-                functor = "conc";
-                break;
-            case DIRECT_PRODUCT:
-                functor = "direct_product";
-                break;
-            case PARALLEL_PRODUCT:
-            case COMPOSITION:
-            case DOMAIN_RESTRICTION:
-            case DOMAIN_SUBTRACTION:
-            case RANGE_RESTRICTION:
-            case RANGE_SUBTRACTION:
-            case INSERT_FRONT:
-            case INSERT_TAIL:
-            case OVERWRITE_RELATION:
-            case INVERSE_RELATION:
-            case RESTRICT_FRONT:
-            case RESTRICT_TAIL:
-            case GENERALIZED_INTER:
-            case GENERALIZED_UNION:
-            case EMPTY_SEQUENCE:
-            case SEQ_ENUMERATION:
-            case LAST:
-            case FIRST:
-            case REV:
-            case FRONT:
-            case TAIL:
-            case PERM:
-            case SEQ:
-            case SEQ1:
-            case ISEQ:
-            case ISEQ1:
-            case FUNCTION_CALL:
-            case RELATIONAL_IMAGE:
-            case SIZE:
-            case CARD:
-            case EMPTY_SET:
-            case TOTAL_FUNCTION:
-            case PARTIAL_FUNCTION:
-            case TOTAL_INJECTION:
-            case PARTIAL_INJECTION:
-            case TOTAL_BIJECTION:
-            case PARTIAL_BIJECTION:
-            case TOTAL_SURJECTION:
-            case PARTIAL_SURJECTION:
-            case SURJECTION_RELATION:
-            case TOTAL_RELATION:
-            case TOTAL_SURJECTION_RELATION:
-            case SET_RELATION:
-            case FIN:
-            case FIN1:
-            case POW1:
-            case POW:
-            default:
-                throw new AssertionError();
+        if(node.getArity() == 0) {
+            switch (operator) {
+                case MININT:
+                    return "minint(none)";
+                case MAXINT:
+                    return "maxint(none)";
+                case INTEGER:
+                    return "integer(none)";
+                case NATURAL:
+                    return "natural(none)";
+                case NATURAL1:
+                    return "natural1(none)";
+                case INT:
+                    return "int(none)";
+                case NAT:
+                    return "nat(none)";
+                case NAT1:
+                    return "nat1(none)";
+                case STRING:
+                    return "string(none)";
+                case FALSE:
+                    return "bfalse(none)";
+                case TRUE:
+                    return "btrue(none)";
+                case BOOL:
+                    return "bool_set(none)";
+                case EMPTY_SET:
+                    return "empty_set(none)";
+                case EMPTY_SEQUENCE:
+                    return "empty_sequence(none)";
+            }
+        } else {
+            switch (operator) {
+                case PLUS:
+                    functor = "plus";
+                    break;
+                case UNARY_MINUS:
+                    functor = "uminus";
+                    break;
+                case MOD:
+                    functor = "mod";
+                    break;
+                case DIVIDE:
+                    functor = "div";
+                    break;
+                case PRED:
+                    functor = "pred";
+                    break;
+                case SUCC:
+                    functor = "succ";
+                    break;
+                case POWER_OF:
+                    functor = "power_of";
+                    break;
+                case MULT:
+                    // TODO: multiply, and cartesian product
+                case MINUS:
+                    functor = "minus";
+                    break;
+                case INTERVAL:
+                    functor = "interval";
+                    break;
+                case SET_ENUMERATION:
+                    // TODO
+                case MIN:
+                    functor = "min";
+                    break;
+                case MAX:
+                    functor = "max";
+                    break;
+                case SET_SUBTRACTION:
+                    functor = "difference";
+                    break;
+                case INTERSECTION:
+                    functor = "intersection";
+                    break;
+                case UNION:
+                    functor = "union";
+                    break;
+                case COUPLE:
+                    functor = "couple";
+                    break;
+                case DOMAIN:
+                    functor = "domain";
+                    break;
+                case RANGE:
+                    functor = "range";
+                    break;
+                case ID:
+                    functor = "id";
+                    break;
+                case CLOSURE:
+                    functor = "closure";
+                    break;
+                case CLOSURE1:
+                    functor = "closure1";
+                    break;
+                case ITERATE:
+                    functor = "iterate";
+                    break;
+                case PRJ1:
+                    functor = "projection1";
+                    break;
+                case PRJ2:
+                    functor = "projection2";
+                    break;
+                case FNC:
+                    functor = "fnc";
+                    break;
+                case REL:
+                    functor = "rel";
+                    break;
+                case CONCAT:
+                    functor = "concat";
+                    break;
+                case CONC:
+                    functor = "conc";
+                    break;
+                case DIRECT_PRODUCT:
+                    functor = "direct_product";
+                    break;
+                case PARALLEL_PRODUCT:
+                    functor = "parallel_product";
+                    break;
+                case COMPOSITION:
+                    functor = "composition";
+                    break;
+                case DOMAIN_RESTRICTION:
+                    functor = "domain_restriction";
+                    break;
+                case DOMAIN_SUBTRACTION:
+                    functor = "domain_substraction";
+                    break;
+                case RANGE_RESTRICTION:
+                    functor = "range_restriction";
+                    break;
+                case RANGE_SUBTRACTION:
+                    functor = "range_substraction";
+                    break;
+                case INSERT_FRONT:
+                    functor = "insert_front";
+                    break;
+                case INSERT_TAIL:
+                    functor = "insert_tail";
+                    break;
+                case OVERWRITE_RELATION:
+                    functor = "overwrite";
+                    break;
+                case INVERSE_RELATION:
+                    functor = "inverse";
+                    break;
+                case RESTRICT_FRONT:
+                    functor = "restrict_front";
+                    break;
+                case RESTRICT_TAIL:
+                    functor = "restrict_tail";
+                    break;
+                case GENERALIZED_INTER:
+                    functor = "generalized_inter";
+                    break;
+                case GENERALIZED_UNION:
+                    functor = "generalized_union";
+                    break;
+                case SEQ_ENUMERATION:
+                case LAST:
+                    functor = "last";
+                    break;
+                case FIRST:
+                    functor = "first";
+                    break;
+                case REV:
+                    functor = "rev";
+                    break;
+                case FRONT:
+                    functor = "front";
+                    break;
+                case TAIL:
+                    functor = "tail";
+                    break;
+                case PERM:
+                    functor = "perm";
+                    break;
+                case SEQ:
+                    functor = "seq";
+                    break;
+                case SEQ1:
+                    functor = "seq1";
+                    break;
+                case ISEQ:
+                    functor = "iseq";
+                    break;
+                case ISEQ1:
+                    functor = "iseq1";
+                    break;
+                case FUNCTION_CALL:
+                    // TODO:
+                case RELATIONAL_IMAGE:
+                    functor = "relational_image";
+                    break;
+                case SIZE:
+                    functor = "size";
+                    break;
+                case CARD:
+                    functor = "card";
+                    break;
+                case TOTAL_FUNCTION:
+                    functor = "total_function";
+                    break;
+                case PARTIAL_FUNCTION:
+                    functor = "partial_function";
+                    break;
+                case TOTAL_INJECTION:
+                    functor = "total_injection";
+                    break;
+                case PARTIAL_INJECTION:
+                    functor = "partial_injection";
+                    break;
+                case TOTAL_BIJECTION:
+                    functor = "total_bijection";
+                    break;
+                case PARTIAL_BIJECTION:
+                    functor = "partial_bijection";
+                    break;
+                case TOTAL_SURJECTION:
+                    functor = "total_surjection";
+                    break;
+                case PARTIAL_SURJECTION:
+                    functor = "partial_surjection";
+                    break;
+                case SURJECTION_RELATION:
+                    functor = "surjection_relation";
+                    break;
+                case TOTAL_RELATION:
+                    functor = "total_relation";
+                    break;
+                case TOTAL_SURJECTION_RELATION:
+                    functor = "total_surjection_relation";
+                    break;
+                case SET_RELATION:
+                    functor = "set_relation";
+                    break;
+                case FIN:
+                    functor = "fin";
+                    break;
+                case FIN1:
+                    functor = "fin1";
+                    break;
+                case POW1:
+                    functor = "pow1";
+                    break;
+                case POW:
+                    functor = "pow";
+                    break;
+                default:
+                    throw new RuntimeException("Operator is not supported for ExpressionOperatorNode");
+            }
+            List<String> expressions = node.getExpressionNodes().stream().map(expr -> visitExprNode(expr, expected)).collect(Collectors.toList());
+            return String.format("%s(%s)", functor, String.join(", ", expressions));
         }
+
         return "";
     }
 
