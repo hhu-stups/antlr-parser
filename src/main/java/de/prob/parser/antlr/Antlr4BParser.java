@@ -224,6 +224,8 @@ public class Antlr4BParser {
 	public static void main(String[] args) throws TypeErrorException, ScopeException, IOException, URISyntaxException {
 		if(args.length != 1 && args.length != 2) {
 			System.out.println("Arguments for ANTLR B Parser is wrong");
+			System.out.println("Use java -jar antlr-parser-VERSION.jar FILE [TypeCheck]");
+			System.out.println(" where FILE is the B file to parse and TypeCheck is true or false");
 			return;
 		}
 
