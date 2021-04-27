@@ -111,6 +111,7 @@ wrapper {
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs) // What does this do?
 
 task fatJar(type: Jar) {
+    baseName = project.name + '-all'
     manifest {
         attributes 'Title': 'antlr-parser',
                 'Version': project.version,
