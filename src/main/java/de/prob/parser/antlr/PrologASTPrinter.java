@@ -46,7 +46,9 @@ import de.prob.parser.ast.visitors.AbstractVisitor;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
@@ -60,7 +62,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
         String properties = visitProperties(node.getProperties());
         String initialisation = visitInitialisation(node.getInitialisation());
         String operations = visitOperations(node.getOperations());
-        List<String> body = Arrays.asList(deferredSets, enumeratedSets, variables, constants, invariant, properties, initialisation, operations);
+        List<String> body = Stream.of(deferredSets, enumeratedSets, variables, constants, invariant, properties, initialisation, operations).filter(Objects::nonNull).collect(Collectors.toList());
         return String.format("machine(abstract_machine(none, machine(none), machine_header(none, %s, []), [%s]))", machineName, String.join(", ", body));
     }
 
@@ -91,11 +93,17 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
     }
 
     public String visitInvariant(PredicateNode node) {
+        if(node == null) {
+            return null;
+        }
         String invariant = visitPredicateNode(node, null);
         return String.format("invariant(none, %s)", invariant);
     }
 
     public String visitProperties(PredicateNode node) {
+        if(node == null) {
+            return null;
+        }
         String properties = visitPredicateNode(node, null);
         return String.format("properties(none, %s)", properties);
     }

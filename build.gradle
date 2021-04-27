@@ -1,16 +1,15 @@
-plugins {
-	id "org.sonarqube" version "2.5"
-}
-
 apply plugin: 'java'
 apply plugin: 'jacoco'
 apply plugin: 'antlr'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
+apply plugin: 'application'
 
 project.version = '0.1.0-SNAPSHOT'
 project.group = 'de.hhu.stups'
+
+mainClassName = "de.prob.parser.antlr.Antlr4BParser"
 
 repositories {
     mavenLocal()
@@ -42,6 +41,7 @@ sourceSets {
         }
     }
 }
+
 
 def getCheckedOutGitCommitHash() {
     def gitFolder = "$projectDir/.git/"
@@ -104,5 +104,20 @@ task uberjar(type: Jar, dependsOn: deploy) {
     }
 }
 
+wrapper {
+    gradleVersion = "6.8.2"
+    distributionType = Wrapper.DistributionType.ALL
+}
+
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs) // What does this do?
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Title': 'antlr-parser',
+                'Version': project.version,
+                'Main-Class': mainClassName
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
 

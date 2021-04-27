@@ -18,6 +18,8 @@ import org.antlr.v4.runtime.DiagnosticErrorListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -206,6 +208,19 @@ public class Antlr4BParser {
 		// System.out.println("-------------");
 
 		return tree;
+	}
+
+	public static void main(String[] args) throws TypeErrorException, ScopeException, IOException {
+		if(args.length != 1) {
+			System.out.println("Arguments for ANTLR B Parser is wrong");
+			return;
+		}
+		Path path = Paths.get(args[0]);
+		BProject project = createBProjectFromMainMachineFile(path.toFile());
+		PrologASTPrinter astPrinter = new PrologASTPrinter();
+		String prologAST = astPrinter.visitMachineNode(project.getMainMachine());
+		System.out.println("Generate AST for machine: " + project.getMainMachine().getName());
+		System.out.println(prologAST);
 	}
 
 }
