@@ -685,10 +685,14 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                 String substitution = visitSubstitutionNode(substitutionNode, expected);
                 return String.format("select(none, %s, %s)", predicate, substitution);
             case IF:
-                // TODO
-                break;
+                // TODO: Check whether this representation is close to ProB's Prolog representation
+                List<String> conditions = node.getConditions().stream().map(condition -> visitPredicateNode(condition, expected)).collect(Collectors.toList());
+                List<String> substitutions = node.getSubstitutions().stream().map(subst -> visitSubstitutionNode(subst, expected)).collect(Collectors.toList());
+                String elseSubstitution = node.getElseSubstitution() == null ? "skip(none)" : visitSubstitutionNode(node.getElseSubstitution(), expected);
+                return String.format("if(none, [%s], [%s], %s)", String.join(", ", conditions), String.join(", ", substitutions), elseSubstitution);
+            default:
+                throw new RuntimeException("Operator for IfOrSelectSubstitutionsNode is not supported");
         }
-        return null;
     }
 
     @Override
