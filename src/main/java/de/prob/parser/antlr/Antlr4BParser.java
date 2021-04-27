@@ -240,6 +240,10 @@ public class Antlr4BParser {
 		final long end = System.currentTimeMillis();
 		System.out.println("Generated AST for machine: " + project.getMainMachine().getName() + " (Parsing: " + (mid - start) + " ms, AST: " + (end - start) + " ms)");
 		System.out.println(prologAST);
+		
+        System.out.println("% Used memory : " + 
+                   (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory())/ 1000 + " KB");
+        System.out.println("% Total memory: " + Runtime.getRuntime().totalMemory() / 1000 + " KB");
 	}
 
 }
