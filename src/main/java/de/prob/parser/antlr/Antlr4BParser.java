@@ -228,10 +228,7 @@ public class Antlr4BParser {
 		}
 
 		boolean typecheck = args.length == 1 || Boolean.parseBoolean(args[1]);
-
 		Path filePath = Paths.get(args[0]);
-		System.out.println(args[0]);
-		//System.out.println(new File(args[0]).getPath());
 
 		BProject project = createBProjectFromMainMachineFile(filePath.toFile(), typecheck);
 		PrologASTPrinter astPrinter = new PrologASTPrinter();
