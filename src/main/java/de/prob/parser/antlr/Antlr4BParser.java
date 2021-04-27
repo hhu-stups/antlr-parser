@@ -232,10 +232,13 @@ public class Antlr4BParser {
 		boolean typecheck = args.length == 1 || Boolean.parseBoolean(args[1]);
 		Path filePath = Paths.get(args[0]);
 
+		final long start = System.currentTimeMillis();
 		BProject project = createBProjectFromMainMachineFile(filePath.toFile(), typecheck);
+		final long mid = System.currentTimeMillis();
 		PrologASTPrinter astPrinter = new PrologASTPrinter();
 		String prologAST = astPrinter.visitMachineNode(project.getMainMachine());
-		System.out.println("Generate AST for machine: " + project.getMainMachine().getName());
+		final long end = System.currentTimeMillis();
+		System.out.println("Generated AST for machine: " + project.getMainMachine().getName() + " (Parsing: " + (mid - start) + " ms, AST: " + (end - start) + " ms)");
 		System.out.println(prologAST);
 	}
 
