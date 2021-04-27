@@ -1,5 +1,4 @@
 apply plugin: 'java'
-apply plugin: 'jacoco'
 apply plugin: 'antlr'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
