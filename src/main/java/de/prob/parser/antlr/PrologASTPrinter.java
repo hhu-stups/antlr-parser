@@ -187,8 +187,10 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                 case POWER_OF:
                     functor = "power_of";
                     break;
+                case CARTESIAN_PRODUCT:
+                    functor = "cartesian_product";
+                    break;
                 case MULT:
-                    // TODO: multiply, and cartesian product
                     functor = "multiply";
                     break;
                 case MINUS:
@@ -393,7 +395,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "pow";
                     break;
                 default:
-                    throw new RuntimeException("Operator is not supported for ExpressionOperatorNode");
+                    throw new RuntimeException("Operator is not supported for ExpressionOperatorNode: " + operator);
             }
             List<String> expressions = node.getExpressionNodes().stream().map(expr -> visitExprNode(expr, expected)).collect(Collectors.toList());
             return String.format("%s(%s)", functor, String.join(", ", expressions));
@@ -437,7 +439,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                 functor = "union";
                 break;
             default:
-                throw new RuntimeException("Operator for QuantifiedExpressionNode is not supported");
+                throw new RuntimeException("Operator for QuantifiedExpressionNode is not supported: " + operator);
         }
         List<String> identifiers = node.getDeclarationList().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String predicate = visitPredicateNode(node.getPredicateNode(), expected);
@@ -537,7 +539,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                 case FALSE:
                     return "boolean_false(none)";
                 default:
-                    throw new RuntimeException("PredicateOperator for PredicateOperatorNode is not supprted");
+                    throw new RuntimeException("PredicateOperator for PredicateOperatorNode is not supprted: " + operator);
             }
         } else {
             String functor = "";
@@ -621,7 +623,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                 functor = "exists";
                 break;
             default:
-                throw new RuntimeException("Operator for QuantifiedPredicateNode is not supported");
+                throw new RuntimeException("Operator for QuantifiedPredicateNode is not supported: " + operator);
         }
         List<String> identifiers = node.getDeclarationList().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String predicate = visitPredicateNode(node.getPredicateNode(), expected);
@@ -670,7 +672,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
             case Sequential:
                 return String.format("sequential(none, [%s])", String.join(", ", substitutions));
             default:
-                throw new RuntimeException("List operator for ListSubstitutionNode is not supported");
+                throw new RuntimeException("List operator for ListSubstitutionNode is not supported: " + operator);
         }
     }
 
@@ -691,7 +693,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                 String elseSubstitution = node.getElseSubstitution() == null ? "skip(none)" : visitSubstitutionNode(node.getElseSubstitution(), expected);
                 return String.format("if(none, [%s], [%s], %s)", String.join(", ", conditions), String.join(", ", substitutions), elseSubstitution);
             default:
-                throw new RuntimeException("Operator for IfOrSelectSubstitutionsNode is not supported");
+                throw new RuntimeException("Operator for IfOrSelectSubstitutionsNode is not supported: " + operator);
         }
     }
 
@@ -717,7 +719,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
             case PRECONDITION:
                 return String.format("precondition(none, %s)", substitution);
             default:
-                throw new RuntimeException("Kind for ConditionSubstitutionNode is not supported");
+                throw new RuntimeException("Kind for ConditionSubstitutionNode is not supported: " + kind);
         }
     }
 
