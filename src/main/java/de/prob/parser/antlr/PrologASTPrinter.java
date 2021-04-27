@@ -1,9 +1,9 @@
 package de.prob.parser.antlr;
 
 import de.prob.parser.ast.nodes.DeclarationNode;
+import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.OperationNode;
-import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 import de.prob.parser.ast.nodes.expression.IfExpressionNode;
@@ -52,14 +52,32 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
     public String visitMachineNode(MachineNode node) {
         String machineName = node.getName();
+        String deferredSets = visitDeferredSets(node.getDeferredSets());
+        String enumeratedSets = visitEnumeratedSets(node.getEnumeratedSets());
         String variables = visitVariables(node.getVariables());
         String constants = visitConstants(node.getConstants());
         String invariant = visitInvariant(node.getInvariant());
         String properties = visitProperties(node.getProperties());
         String initialisation = visitInitialisation(node.getInitialisation());
         String operations = visitOperations(node.getOperations());
-        List<String> body = Arrays.asList(variables, constants, invariant, properties, initialisation, operations);
+        List<String> body = Arrays.asList(deferredSets, enumeratedSets, variables, constants, invariant, properties, initialisation, operations);
         return String.format("machine(abstract_machine(none, machine(none), machine_header(none, %s, []), [%s]))", machineName, String.join(", ", body));
+    }
+
+    public String visitEnumeratedSets(List<EnumeratedSetDeclarationNode> setsNodes) {
+        List<String> sets = setsNodes.stream().map(this::visitEnumeratedSet).collect(Collectors.toList());
+        return String.format("enumerated_sets(none, [%s])", String.join(", ", sets));
+    }
+
+    public String visitEnumeratedSet(EnumeratedSetDeclarationNode setNode) {
+        String set = visitDeclarationNode(setNode.getSetDeclarationNode());
+        List<String> elements = setNode.getElements().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
+        return String.format("enumerated_set(none, %s, [%s])", set, String.join(", ", elements));
+    }
+
+    public String visitDeferredSets(List<DeclarationNode> setsNodes) {
+        List<String> sets = setsNodes.stream().map(this::visitDeclarationNode).collect(Collectors.toList());
+        return String.format("deferred_sets(none, [%s])", String.join(", ", sets));
     }
 
     public String visitVariables(List<DeclarationNode> variablesNodes) {
@@ -450,36 +468,43 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
     @Override
     public String visitRecordNode(RecordNode node, Void expected) {
+        // TODO
         return null;
     }
 
     @Override
     public String visitStructNode(StructNode node, Void expected) {
+        // TODO
         return null;
     }
 
     @Override
     public String visitRecordFieldAccessNode(RecordFieldAccessNode node, Void expected) {
+        // TODO
         return null;
     }
 
     @Override
     public String visitLTLPrefixOperatorNode(LTLPrefixOperatorNode node, Void expected) {
+        // TODO
         return null;
     }
 
     @Override
     public String visitLTLKeywordNode(LTLKeywordNode node, Void expected) {
+        // TODO
         return null;
     }
 
     @Override
     public String visitLTLInfixOperatorNode(LTLInfixOperatorNode node, Void expected) {
+        // TODO
         return null;
     }
 
     @Override
     public String visitLTLBPredicateNode(LTLBPredicateNode node, Void expected) {
+        // TODO
         return null;
     }
 
