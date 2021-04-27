@@ -53,7 +53,7 @@ import java.util.stream.Stream;
 public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
     public String visitMachineNode(MachineNode node) {
-        String machineName = node.getName();
+        String machineName = handleName(node.getName());
         String deferredSets = visitDeferredSets(node.getDeferredSets());
         String enumeratedSets = visitEnumeratedSets(node.getEnumeratedSets());
         String variables = visitVariables(node.getVariables());
@@ -109,7 +109,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
     }
 
     public String visitDeclarationNode(DeclarationNode node) {
-        return String.format("identifier(none, %s)", node.getName());
+        return String.format("identifier(none, %s)", handleName(node.getName()));
     }
 
     public String visitInitialisation(SubstitutionNode node) {
@@ -123,7 +123,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
     }
 
     public String visitOperation(OperationNode operationNode) {
-        String opName = operationNode.getName();
+        String opName = handleName(operationNode.getName());
         List<String> params = operationNode.getParams().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         List<String> outputs = operationNode.getOutputParams().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String substitution = visitSubstitutionNode(operationNode.getSubstitution(), null);
@@ -405,7 +405,14 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
     @Override
     public String visitIdentifierExprNode(IdentifierExprNode node, Void expected) {
-        return String.format("identifier(none, %s)", node.getName());
+        return String.format("identifier(none, %s)", handleName(node.getName()));
+    }
+
+    private String handleName(String name) {
+        if(Character.isUpperCase(name.charAt(0))) {
+            return String.format("'%s'", name);
+        }
+        return name;
     }
 
     @Override
@@ -433,21 +440,21 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
             default:
                 throw new RuntimeException("Operator for QuantifiedExpressionNode is not supported");
         }
-        List<String> identifiers = node.getDeclarationList().stream().map(DeclarationNode::getName).collect(Collectors.toList());
+        List<String> identifiers = node.getDeclarationList().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String predicate = visitPredicateNode(node.getPredicateNode(), expected);
         return String.format("%s(none, [%s], %s)", functor, String.join(", ", identifiers), predicate);
     }
 
     @Override
     public String visitSetComprehensionNode(SetComprehensionNode node, Void expected) {
-        List<String> identifiers = node.getDeclarationList().stream().map(DeclarationNode::getName).collect(Collectors.toList());
+        List<String> identifiers = node.getDeclarationList().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String predicate = visitPredicateNode(node.getPredicateNode(), expected);
         return String.format("set_comprehension(none, [%s], %s)", String.join(", ", identifiers), predicate);
     }
 
     @Override
     public String visitLambdaNode(LambdaNode node, Void expected) {
-        List<String> identifiers = node.getDeclarations().stream().map(DeclarationNode::getName).collect(Collectors.toList());
+        List<String> identifiers = node.getDeclarations().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String predicate = visitPredicateNode(node.getPredicate(), expected);
         String expression = visitExprNode(node.getExpression(), expected);
         return String.format("lambda(none, [%s], %s, %s)", String.join(", ", identifiers), predicate, expression);
@@ -455,7 +462,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
     @Override
     public String visitLetExpressionNode(LetExpressionNode node, Void expected) {
-        List<String> identifiers = node.getLocalIdentifiers().stream().map(DeclarationNode::getName).collect(Collectors.toList());
+        List<String> identifiers = node.getLocalIdentifiers().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String predicate = visitPredicateNode(node.getPredicate(), expected);
         String body = visitExprNode(node.getExpression(), expected);
         return String.format("let_expr(none, [%s], %s, %s)", String.join(", ", identifiers), predicate, body);
@@ -518,7 +525,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
     @Override
     public String visitIdentifierPredicateNode(IdentifierPredicateNode node, Void expected) {
-        return String.format("identifier(none, %s)", node.getName());
+        return String.format("identifier(none, %s)", handleName(node.getName()));
     }
 
     @Override
@@ -617,14 +624,14 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
             default:
                 throw new RuntimeException("Operator for QuantifiedPredicateNode is not supported");
         }
-        List<String> identifiers = node.getDeclarationList().stream().map(DeclarationNode::getName).collect(Collectors.toList());
+        List<String> identifiers = node.getDeclarationList().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String predicate = visitPredicateNode(node.getPredicateNode(), expected);
         return String.format("%s(none, [%s], %s)", functor, String.join(", ", identifiers), predicate);
     }
 
     @Override
     public String visitLetPredicateNode(LetPredicateNode node, Void expected) {
-        List<String> identifiers = node.getLocalIdentifiers().stream().map(DeclarationNode::getName).collect(Collectors.toList());
+        List<String> identifiers = node.getLocalIdentifiers().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String predicate = visitPredicateNode(node.getWherePredicate(), expected);
         String body = visitPredicateNode(node.getPredicate(), expected);
         return String.format("let_pred(none, [%s], %s, %s)", String.join(", ", identifiers), predicate, body);
@@ -640,7 +647,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
     @Override
     public String visitVarSubstitutionNode(VarSubstitutionNode node, Void expected) {
-        List<String> identifiers = node.getLocalIdentifiers().stream().map(DeclarationNode::getName).collect(Collectors.toList());
+        List<String> identifiers = node.getLocalIdentifiers().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String body = visitSubstitutionNode(node.getBody(), expected);
         return String.format("var(none, [%s], %s)", String.join(", ", identifiers), body);
     }
@@ -713,7 +720,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
     @Override
     public String visitAnySubstitution(AnySubstitutionNode node, Void expected) {
-        List<String> identifiers = node.getParameters().stream().map(DeclarationNode::getName).collect(Collectors.toList());
+        List<String> identifiers = node.getParameters().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String predicate = visitPredicateNode(node.getWherePredicate(), expected);
         String body = visitSubstitutionNode(node.getThenSubstitution(), expected);
         return String.format("any(none, [%s], %s, %s)", String.join(", ", identifiers), predicate, body);
@@ -721,7 +728,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
     @Override
     public String visitLetSubstitution(LetSubstitutionNode node, Void expected) {
-        List<String> identifiers = node.getLocalIdentifiers().stream().map(DeclarationNode::getName).collect(Collectors.toList());
+        List<String> identifiers = node.getLocalIdentifiers().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String predicate = visitPredicateNode(node.getPredicate(), expected);
         String body = visitSubstitutionNode(node.getBody(), expected);
         return String.format("let(none, [%s], %s, %s)", String.join(", ", identifiers), predicate, body);
@@ -744,7 +751,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
     @Override
     public String visitSubstitutionIdentifierCallNode(OperationCallSubstitutionNode node, Void expected) {
         List<String> assignedVariables = node.getAssignedVariables().stream().map(var -> visitExprNode(var, expected)).collect(Collectors.toList());
-        String opName = node.getOperationNode().getName();
+        String opName = handleName(node.getOperationNode().getName());
         List<String> arguments = node.getArguments().stream().map(arg -> visitExprNode(arg, expected)).collect(Collectors.toList());
         return String.format("op_call(none, [%s], %s, [%s])", String.join(", ", assignedVariables), opName, String.join(", ", arguments));
     }
