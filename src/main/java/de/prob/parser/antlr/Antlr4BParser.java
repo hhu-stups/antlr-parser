@@ -18,6 +18,8 @@ import org.antlr.v4.runtime.DiagnosticErrorListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -38,16 +40,21 @@ public class Antlr4BParser {
 	}
 
 	public static BProject createBProject(List<MachineNode> machineNodeList) throws TypeErrorException, ScopeException {
+		return createBProject(machineNodeList, true);
+	}
+
+	public static BProject createBProject(List<MachineNode> machineNodeList, boolean typecheck) throws TypeErrorException, ScopeException {
 		// determine machine order
 		sortMachineNodes(machineNodeList);
 		for (int i = machineNodeList.size() - 1; i >= 0; i--) {
 			new MachineScopeChecker(machineNodeList.get(i));
 		}
-		for (int i = machineNodeList.size() - 1; i >= 0; i--) {
-			MachineNode machineNode = machineNodeList.get(i);
-			TypeChecker.typecheckMachineNode(machineNode);
+		if(typecheck) {
+			for (int i = machineNodeList.size() - 1; i >= 0; i--) {
+				MachineNode machineNode = machineNodeList.get(i);
+				TypeChecker.typecheckMachineNode(machineNode);
+			}
 		}
-
 		return new BProject(machineNodeList);
 	}
 
@@ -68,8 +75,7 @@ public class Antlr4BParser {
 		}
 	}
 
-	public static BProject createBProjectFromMainMachineFile(File mainBFile)
-			throws TypeErrorException, ScopeException, IOException {
+	public static BProject createBProjectFromMainMachineFile(File mainBFile, boolean typecheck) throws IOException, TypeErrorException, ScopeException {
 		final File parentFolder = mainBFile.getParentFile();
 		final List<MachineNode> machines = new ArrayList<>();
 		final StartContext mainMachineCST = parse(mainBFile);
@@ -101,7 +107,12 @@ public class Antlr4BParser {
 				}
 			}
 		}
-		return createBProject(machines);
+		return createBProject(machines, typecheck);
+	}
+
+	public static BProject createBProjectFromMainMachineFile(File mainBFile)
+			throws TypeErrorException, ScopeException, IOException {
+;		return createBProjectFromMainMachineFile(mainBFile, true);
 	}
 
 	private static File getFile(File parentFolder, String name) {
@@ -210,13 +221,19 @@ public class Antlr4BParser {
 		return tree;
 	}
 
-	public static void main(String[] args) throws TypeErrorException, ScopeException, IOException {
-		if(args.length != 1) {
+	public static void main(String[] args) throws TypeErrorException, ScopeException, IOException, URISyntaxException {
+		if(args.length != 1 && args.length != 2) {
 			System.out.println("Arguments for ANTLR B Parser is wrong");
 			return;
 		}
-		Path path = Paths.get(args[0]);
-		BProject project = createBProjectFromMainMachineFile(path.toFile());
+
+		boolean typecheck = args.length == 1 || Boolean.parseBoolean(args[1]);
+
+		Path filePath = Paths.get(args[0]);
+		System.out.println(args[0]);
+		//System.out.println(new File(args[0]).getPath());
+
+		BProject project = createBProjectFromMainMachineFile(filePath.toFile());
 		PrologASTPrinter astPrinter = new PrologASTPrinter();
 		String prologAST = astPrinter.visitMachineNode(project.getMainMachine());
 		System.out.println("Generate AST for machine: " + project.getMainMachine().getName());

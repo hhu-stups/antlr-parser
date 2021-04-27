@@ -123,6 +123,10 @@ task fatJar(type: Jar) {
 
 tasks.withType(JavaExec) {
     if(project.hasProperty('file')) {
-        args([project.rootDir.path.toString() + File.separator +  file])
+        if (project.hasProperty('typecheck')) {
+            args([file, typecheck])
+        } else {
+            args([file, true])
+        }
     }
 }
