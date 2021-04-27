@@ -121,3 +121,8 @@ task fatJar(type: Jar) {
     with jar
 }
 
+tasks.withType(JavaExec) {
+    if(project.hasProperty('file')) {
+        args([project.rootDir.path.toString() + File.separator +  file])
+    }
+}
