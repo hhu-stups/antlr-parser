@@ -1,6 +1,8 @@
 package de.prob.parser.antlr;
 
 import de.prob.parser.ast.nodes.DeclarationNode;
+import de.prob.parser.ast.nodes.MachineNode;
+import de.prob.parser.ast.nodes.OperationNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
@@ -22,6 +24,7 @@ import de.prob.parser.ast.nodes.predicate.CastPredicateExpressionNode;
 import de.prob.parser.ast.nodes.predicate.IdentifierPredicateNode;
 import de.prob.parser.ast.nodes.predicate.IfPredicateNode;
 import de.prob.parser.ast.nodes.predicate.LetPredicateNode;
+import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorWithExprArgsNode;
 import de.prob.parser.ast.nodes.predicate.QuantifiedPredicateNode;
@@ -36,19 +39,73 @@ import de.prob.parser.ast.nodes.substitution.LetSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.ListSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.OperationCallSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.SkipSubstitutionNode;
+import de.prob.parser.ast.nodes.substitution.SubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.VarSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.WhileSubstitutionNode;
 import de.prob.parser.ast.visitors.AbstractVisitor;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
+    public String visitMachineNode(MachineNode node) {
+        String machineName = node.getName();
+        String variables = visitVariables(node.getVariables());
+        String constants = visitConstants(node.getConstants());
+        String invariant = visitInvariant(node.getInvariant());
+        String properties = visitProperties(node.getProperties());
+        String initialisation = visitInitialisation(node.getInitialisation());
+        String operations = visitOperations(node.getOperations());
+        List<String> body = Arrays.asList(variables, constants, invariant, properties, initialisation, operations);
+        return String.format("machine(abstract_machine(none, machine(none), machine_header(none, %s, []), [%s]))", machineName, String.join(", ", body));
+    }
+
+    public String visitVariables(List<DeclarationNode> variablesNodes) {
+        List<String> variables = variablesNodes.stream().map(this::visitDeclarationNode).collect(Collectors.toList());
+        return String.format("variables(none, [%s])", String.join(", ", variables));
+    }
+
+    public String visitConstants(List<DeclarationNode> constantsNodes) {
+        List<String> constants = constantsNodes.stream().map(this::visitDeclarationNode).collect(Collectors.toList());
+        return String.format("constants(none, [%s])", String.join(", ", constants));
+    }
+
+    public String visitInvariant(PredicateNode node) {
+        String invariant = visitPredicateNode(node, null);
+        return String.format("invariant(none, %s)", invariant);
+    }
+
+    public String visitProperties(PredicateNode node) {
+        String properties = visitPredicateNode(node, null);
+        return String.format("properties(none, %s)", properties);
+    }
+
+    public String visitDeclarationNode(DeclarationNode node) {
+        return String.format("identifier(none, %s)", node.getName());
+    }
+
+    public String visitInitialisation(SubstitutionNode node) {
+        String substitution = visitSubstitutionNode(node, null);
+        return String.format("initialisation(none, %s)", substitution);
+    }
+
+    public String visitOperations(List<OperationNode> operationNodes) {
+        List<String> operations = operationNodes.stream().map(this::visitOperation).collect(Collectors.toList());
+        return String.format("operations(none, [%s])", String.join(", ", operations));
+    }
+
+    public String visitOperation(OperationNode operationNode) {
+        String opName = operationNode.getName();
+        List<String> params = operationNode.getParams().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
+        List<String> outputs = operationNode.getOutputParams().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
+        String substitution = visitSubstitutionNode(operationNode.getSubstitution(), null);
+        return String.format("operation(none, %s, [%s], [%s], %s)", opName, String.join(", ", params), String.join(", ", outputs), substitution);
+    }
 
     @Override
     public String visitExprOperatorNode(ExpressionOperatorNode node, Void expected) {
-        List<ExprNode> expressionNodes = node.getExpressionNodes();
         ExpressionOperatorNode.ExpressionOperator operator = node.getOperator();
         String functor = "";
         if(node.getArity() == 0) {
@@ -107,6 +164,8 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     break;
                 case MULT:
                     // TODO: multiply, and cartesian product
+                    functor = "multiply";
+                    break;
                 case MINUS:
                     functor = "minus";
                     break;
@@ -114,7 +173,8 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "interval";
                     break;
                 case SET_ENUMERATION:
-                    // TODO
+                    functor = "set_enumeration";
+                    break;
                 case MIN:
                     functor = "min";
                     break;
@@ -215,6 +275,8 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "generalized_union";
                     break;
                 case SEQ_ENUMERATION:
+                    functor = "seq_enumeration";
+                    break;
                 case LAST:
                     functor = "last";
                     break;
@@ -246,7 +308,8 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "iseq1";
                     break;
                 case FUNCTION_CALL:
-                    // TODO:
+                    functor = "function_call";
+                    break;
                 case RELATIONAL_IMAGE:
                     functor = "relational_image";
                     break;
@@ -574,6 +637,18 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
     @Override
     public String visitIfOrSelectSubstitutionsNode(IfOrSelectSubstitutionsNode node, Void expected) {
+        IfOrSelectSubstitutionsNode.Operator operator = node.getOperator();
+        switch (operator) {
+            case SELECT:
+                PredicateNode predicateNode = node.getConditions().get(0);
+                SubstitutionNode substitutionNode = node.getSubstitutions().get(0);
+                String predicate = visitPredicateNode(predicateNode, expected);
+                String substitution = visitSubstitutionNode(substitutionNode, expected);
+                return String.format("select(none, %s, %s)", predicate, substitution);
+            case IF:
+                // TODO
+                break;
+        }
         return null;
     }
 
@@ -635,7 +710,10 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
     @Override
     public String visitSubstitutionIdentifierCallNode(OperationCallSubstitutionNode node, Void expected) {
-        return null;
+        List<String> assignedVariables = node.getAssignedVariables().stream().map(var -> visitExprNode(var, expected)).collect(Collectors.toList());
+        String opName = node.getOperationNode().getName();
+        List<String> arguments = node.getArguments().stream().map(arg -> visitExprNode(arg, expected)).collect(Collectors.toList());
+        return String.format("op_call(none, [%s], %s, [%s])", String.join(", ", assignedVariables), opName, String.join(", ", arguments));
     }
 
     @Override
