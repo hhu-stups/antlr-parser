@@ -28,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
 
 public class Antlr4BParser {
 
@@ -68,7 +69,7 @@ public class Antlr4BParser {
 		if(!file.exists()) {
 			throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
 		}
-		String[] pathAsList = file.getPath().split(File.separator);
+		String[] pathAsList = file.getPath().split(Pattern.quote(File.separator));
 		String path = pathAsList[pathAsList.length - 1].replaceAll(".mch", "");
 		if(!path.equals(name)) {
 			throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
