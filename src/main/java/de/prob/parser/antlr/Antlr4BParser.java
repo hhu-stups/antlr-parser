@@ -68,7 +68,7 @@ public class Antlr4BParser {
 		if(!file.exists()) {
 			throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
 		}
-		String[] pathAsList = file.getPath().split("/");
+		String[] pathAsList = file.getPath().split(File.separator);
 		String path = pathAsList[pathAsList.length - 1].replaceAll(".mch", "");
 		if(!path.equals(name)) {
 			throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
