@@ -8,11 +8,48 @@ WE WILL _NOT CARE_.**
 
 This repo contains a standalone version of the
 _still in development_ ANTLR4 Parser feature of the
-[ProB Parsers Library](https://github.com/bendisposto/probparsers).
+[ProB Parsers Library](https://github.com/hhu-stups/probparsers).
 
 The code is still in a very early and experimental state.
 Just do not use it unless you have contacted us
 and we deemed usage of this library suitable for your goals.
+
+
+## Using the Parser on the Command Line
+
+You can use gradle to parse a FILE like this:
+```
+	./gradlew run -Pfile="FILE"
+```
+To disable type checking (which can still be slow and is less powerful than ProB's typechecking) you can do this:
+
+```
+	./gradlew run -Pfile="FILE" -Ptypecheck="false"
+```
+
+You can also build a stand-alone JAR like this:
+```
+	./gradlew fatJar
+```
+
+You can then use it as follows:
+
+```
+	time java -jar build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar $(FILE) false
+```
+
+Note this is more or less equivalent to using [ProB](https://prob.hhu.de/)'s SableCC parser (available in ProB's lib folder):
+```
+	time java -jar probcliparser.jar FILE -prolog -time
+```
+
+## Limitations
+
+Compared to ProB's parser there are still quite a few limitations:
+- no support for DEFINITIONS
+- no support for pragmas
+- no support for locating files in the stdlib folder of ProB (LibraryStrings.def, ...)
+
 
 
 ## Licence
