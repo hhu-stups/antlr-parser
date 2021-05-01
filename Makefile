@@ -7,6 +7,14 @@ build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar: src/main/java/de/prob/parser/ant
 testjar: build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar
 	time java -jar build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar $(FILE) false
 
+DFILE=~/git_root/prob_examples/public_examples/B/Benchmarks/scheduler
+PBFILE=antlr.prob
+diff: build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar
+	time java -jar build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar $(DFILE).mch false >$(PBFILE)
+	time java -jar $(PHOME)/lib/probcliparser.jar $(DFILE).mch -prolog -time
+	probcli $(PBFILE) -pp antlr_pp.mch
+	diff $(PBFILE) $(DFILE).prob
+
 PHOME=~/git_root/prob_prolog/
 testoriginal:
 	time java -jar $(PHOME)/lib/probcliparser.jar $(FILE) -prolog -time
