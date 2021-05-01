@@ -126,7 +126,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
         List<String> params = operationNode.getParams().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         List<String> outputs = operationNode.getOutputParams().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String substitution = visitSubstitutionNode(operationNode.getSubstitution(), null);
-        return String.format("operation(none, %s, [%s], [%s], %s)", opName, String.join(", ", params), String.join(", ", outputs), substitution);
+        return String.format("operation(none, identifier(none,%s), [%s], [%s], %s)", opName, String.join(", ", params), String.join(", ", outputs), substitution);
     }
 
     @Override
@@ -160,9 +160,12 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                 case BOOL:
                     return "bool_set(none)";
                 case EMPTY_SET:
+                case SET_ENUMERATION: // an empty set_extension of arity 0 is the empty set ?
                     return "empty_set(none)";
                 case EMPTY_SEQUENCE:
                     return "empty_sequence(none)";
+                default:
+                    throw new RuntimeException("Constant is not supported for ExpressionOperatorNode: " + operator);
             }
         } else {
             switch (operator) {
@@ -191,16 +194,16 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "cartesian_product";
                     break;
                 case MULT:
-                    functor = "multiply";
+                    functor = "mult_or_cart";
                     break;
                 case MINUS:
-                    functor = "minus";
+                    functor = "minus_or_set_subtract";
                     break;
                 case INTERVAL:
                     functor = "interval";
                     break;
                 case SET_ENUMERATION:
-                    functor = "set_enumeration";
+                    functor = "set_extension";
                     break;
                 case MIN:
                     functor = "min";
@@ -239,16 +242,16 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "iterate";
                     break;
                 case PRJ1:
-                    functor = "projection1";
+                    functor = "first_projection"; // prj1
                     break;
                 case PRJ2:
-                    functor = "projection2";
+                    functor = "second_projection"; //prj2
                     break;
                 case FNC:
-                    functor = "fnc";
+                    functor = "trans_function"; // fnc()
                     break;
                 case REL:
-                    functor = "rel";
+                    functor = "trans_relation"; // rel(.)
                     break;
                 case CONCAT:
                     functor = "concat";
@@ -338,7 +341,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "function_call";
                     break;
                 case RELATIONAL_IMAGE:
-                    functor = "relational_image";
+                    functor = "image";
                     break;
                 case SIZE:
                     functor = "size";
@@ -400,8 +403,6 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
             List<String> expressions = node.getExpressionNodes().stream().map(expr -> visitExprNode(expr, expected)).collect(Collectors.toList());
             return String.format("%s(%s)", functor, String.join(", ", expressions));
         }
-
-        return "";
     }
 
     @Override
