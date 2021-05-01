@@ -401,7 +401,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     throw new RuntimeException("Operator is not supported for ExpressionOperatorNode: " + operator);
             }
             List<String> expressions = node.getExpressionNodes().stream().map(expr -> visitExprNode(expr, expected)).collect(Collectors.toList());
-            return String.format("%s(%s)", functor, String.join(", ", expressions));
+            return String.format("%s(none,%s)", functor, String.join(", ", expressions));
         }
     }
 
@@ -546,23 +546,23 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
             String functor = "";
             switch (operator) {
                 case OR:
-                    functor = "or";
+                    functor = "disjunct";
                     break;
                 case AND:
-                    functor = "and";
+                    functor = "conjunct";
                     break;
                 case NOT:
-                    functor = "not";
+                    functor = "negation";
                     break;
                 case IMPLIES:
-                    functor = "implies";
+                    functor = "implication";
                     break;
                 case EQUIVALENCE:
                     functor = "equivalence";
                     break;
             }
             List<String> predicates = node.getPredicateArguments().stream().map(pred -> visitPredicateNode(pred, expected)).collect(Collectors.toList());
-            return String.format("%s(%s)", functor, String.join(", ", predicates));
+            return String.format("%s(none,%s)", functor, String.join(", ", predicates));
         }
     }
 
@@ -581,13 +581,13 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                 functor = "greater";
                 break;
             case INCLUSION:
-                functor = "subset_of";
+                functor = "subset";
                 break;
             case NOT_EQUAL:
                 functor = "not_equal";
                 break;
             case ELEMENT_OF:
-                functor = "element_of";
+                functor = "member";
                 break;
             case LESS_EQUAL:
                 functor = "less_equal";
@@ -596,20 +596,20 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                 functor = "greater_equal";
                 break;
             case NON_INCLUSION:
-                functor = "not_subset_of";
+                functor = "not_subset";
                 break;
             case NOT_BELONGING:
-                functor = "not_belonging";
+                functor = "not_member";
                 break;
             case STRICT_INCLUSION:
-                functor = "strict_subset_of";
+                functor = "strict_subset";
                 break;
             case STRICT_NON_INCLUSION:
-                functor = "not_strict_subset_of";
+                functor = "not_subset_strict";
                 break;
         }
         List<String> expressions = node.getExpressionNodes().stream().map(expression -> visitExprNode(expression, expected)).collect(Collectors.toList());
-        return String.format("%s(%s)", functor, String.join(", ", expressions));
+        return String.format("%s(none,%s)", functor, String.join(", ", expressions));
     }
 
     @Override
