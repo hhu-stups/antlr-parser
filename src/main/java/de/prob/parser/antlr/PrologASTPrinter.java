@@ -168,6 +168,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     throw new RuntimeException("Constant is not supported for ExpressionOperatorNode: " + operator);
             }
         } else {
+            boolean operator_expects_list = false;
             switch (operator) {
                 case PLUS:
                     functor = "plus";
@@ -204,6 +205,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     break;
                 case SET_ENUMERATION:
                     functor = "set_extension";
+                    operator_expects_list = true;
                     break;
                 case MIN:
                     functor = "min";
@@ -305,7 +307,8 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "generalized_union";
                     break;
                 case SEQ_ENUMERATION:
-                    functor = "seq_enumeration";
+                    functor = "sequence_extension";
+                    operator_expects_list = true;
                     break;
                 case LAST:
                     functor = "last";
@@ -401,7 +404,11 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     throw new RuntimeException("Operator is not supported for ExpressionOperatorNode: " + operator);
             }
             List<String> expressions = node.getExpressionNodes().stream().map(expr -> visitExprNode(expr, expected)).collect(Collectors.toList());
-            return String.format("%s(none,%s)", functor, String.join(", ", expressions));
+            if (operator_expects_list) {
+                return String.format("%s(none,[%s])", functor, String.join(", ", expressions));
+            } else {
+                return String.format("%s(none,%s)", functor, String.join(", ", expressions));
+            }
         }
     }
 
@@ -686,13 +693,13 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                 SubstitutionNode substitutionNode = node.getSubstitutions().get(0);
                 String predicate = visitPredicateNode(predicateNode, expected);
                 String substitution = visitSubstitutionNode(substitutionNode, expected);
-                return String.format("select(none, %s, %s)", predicate, substitution);
+                return String.format("select(none, %s, %s,[])", predicate, substitution); // [] means no ELSE; TO DO
             case IF:
                 // TODO: Check whether this representation is close to ProB's Prolog representation
                 List<String> conditions = node.getConditions().stream().map(condition -> visitPredicateNode(condition, expected)).collect(Collectors.toList());
                 List<String> substitutions = node.getSubstitutions().stream().map(subst -> visitSubstitutionNode(subst, expected)).collect(Collectors.toList());
                 String elseSubstitution = node.getElseSubstitution() == null ? "skip(none)" : visitSubstitutionNode(node.getElseSubstitution(), expected);
-                return String.format("if(none, [%s], [%s], %s)", String.join(", ", conditions), String.join(", ", substitutions), elseSubstitution);
+                return String.format("if(none, %s, %s, [], %s)", String.join("& ", conditions), String.join("|| ", substitutions), elseSubstitution); // [] means no ELSIFs : TO DO :treat them
             default:
                 throw new RuntimeException("Operator for IfOrSelectSubstitutionsNode is not supported: " + operator);
         }
