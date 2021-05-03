@@ -73,7 +73,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
     }
 
     public String visitEnumeratedSet(EnumeratedSetDeclarationNode setNode) {
-        String set = visitDeclarationNode(setNode.getSetDeclarationNode()); // TO DO: do not generated identifier node
+        String set = handleName(setNode.getSetDeclarationNode().getName());
         List<String> elements = setNode.getElements().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         return String.format("enumerated_set(none, %s, [%s])", set, String.join(", ", elements));
     }
