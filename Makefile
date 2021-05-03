@@ -13,7 +13,9 @@ diff: build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar
 	time java -jar build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar $(DFILE).mch false >$(PBFILE)
 	time java -jar $(PHOME)/lib/probcliparser.jar $(DFILE).mch -prolog -time
 	probcli $(PBFILE) -pp antlr_pp.mch
-	diff $(PBFILE) $(DFILE).prob
+	probcli $(DFILE).mch -pp sable_pp.mch
+	#diff $(PBFILE) $(DFILE).prob
+	diff antlr_pp.mch sable_pp.mch
 
 PHOME=~/git_root/prob_prolog/
 testoriginal:

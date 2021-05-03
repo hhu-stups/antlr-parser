@@ -53,33 +53,32 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
     public String visitMachineNode(MachineNode node) {
         String machineName = handleName(node.getName());
-        String deferredSets = visitDeferredSets(node.getDeferredSets());
-        String enumeratedSets = visitEnumeratedSets(node.getEnumeratedSets());
+        String deferredEnumSets = visitDeferredEnumeratedSets(node.getDeferredSets(),node.getEnumeratedSets());
         String variables = visitVariables(node.getVariables());
         String constants = visitConstants(node.getConstants());
         String invariant = visitInvariant(node.getInvariant());
         String properties = visitProperties(node.getProperties());
         String initialisation = visitInitialisation(node.getInitialisation());
         String operations = visitOperations(node.getOperations());
-        List<String> body = Stream.of(deferredSets, enumeratedSets, variables, constants, invariant, properties, initialisation, operations).filter(Objects::nonNull).collect(Collectors.toList());
+        List<String> body = Stream.of(deferredEnumSets, variables, constants, invariant, properties, initialisation, operations).filter(Objects::nonNull).collect(Collectors.toList());
         return String.format("machine(abstract_machine(none, machine(none), machine_header(none, %s, []), [%s]))", machineName, String.join(", ", body));
     }
 
-    public String visitEnumeratedSets(List<EnumeratedSetDeclarationNode> setsNodes) {
-        List<String> sets = setsNodes.stream().map(this::visitEnumeratedSet).collect(Collectors.toList());
-        return String.format("enumerated_sets(none, [%s])", String.join(", ", sets));
+    public String visitDeferredEnumeratedSets(List<DeclarationNode> setsNodes1,
+                                              List<EnumeratedSetDeclarationNode> setsNodes2) {
+        List<String> sets1 = setsNodes1.stream().map(this::visitDeclarationNode).collect(Collectors.toList());
+        List<String> sets2 = setsNodes2.stream().map(this::visitEnumeratedSet).collect(Collectors.toList());
+        List<String> sets = Stream.concat(sets1.stream(), sets2.stream())
+                             .collect(Collectors.toList()); // TO DO: avoid this ugly concatenation
+        return String.format("sets(none, [%s])", String.join(", ", sets));
     }
 
     public String visitEnumeratedSet(EnumeratedSetDeclarationNode setNode) {
-        String set = visitDeclarationNode(setNode.getSetDeclarationNode());
+        String set = visitDeclarationNode(setNode.getSetDeclarationNode()); // TO DO: do not generated identifier node
         List<String> elements = setNode.getElements().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         return String.format("enumerated_set(none, %s, [%s])", set, String.join(", ", elements));
     }
 
-    public String visitDeferredSets(List<DeclarationNode> setsNodes) {
-        List<String> sets = setsNodes.stream().map(this::visitDeclarationNode).collect(Collectors.toList());
-        return String.format("deferred_sets(none, [%s])", String.join(", ", sets));
-    }
 
     public String visitVariables(List<DeclarationNode> variablesNodes) {
         List<String> variables = variablesNodes.stream().map(this::visitDeclarationNode).collect(Collectors.toList());
@@ -126,7 +125,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
         List<String> params = operationNode.getParams().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         List<String> outputs = operationNode.getOutputParams().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String substitution = visitSubstitutionNode(operationNode.getSubstitution(), null);
-        return String.format("operation(none, identifier(none,%s), [%s], [%s], %s)", opName, String.join(", ", params), String.join(", ", outputs), substitution);
+        return String.format("operation(none, identifier(none,%s), [%s], [%s], %s)", opName, String.join(", ", outputs), String.join(", ", params),  substitution);
     }
 
     @Override
