@@ -67,7 +67,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
     public String visitDeferredEnumeratedSets(List<DeclarationNode> setsNodes1,
                                               List<EnumeratedSetDeclarationNode> setsNodes2) {
         List<String> sets = Stream.concat(
-                                 setsNodes1.stream().map(this::visitDeclarationNode),
+                                 setsNodes1.stream().map(this::visitDeferredSet),
                                  setsNodes2.stream().map(this::visitEnumeratedSet)).collect(Collectors.toList());
         return String.format("sets(none, [%s])", String.join(", ", sets));
     }
@@ -76,6 +76,11 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
         String set = handleName(setNode.getSetDeclarationNode().getName());
         List<String> elements = setNode.getElements().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         return String.format("enumerated_set(none, %s, [%s])", set, String.join(", ", elements));
+    }
+    
+    public String visitDeferredSet(DeclarationNode setNode) {
+        String set = handleName(setNode.getName());
+        return String.format("deferred_set(none, %s)", set);
     }
 
 
@@ -339,7 +344,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "iseq1";
                     break;
                 case FUNCTION_CALL:
-                    functor = "function_call";
+                    functor = "function";
                     break;
                 case RELATIONAL_IMAGE:
                     functor = "image";
@@ -387,16 +392,16 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "set_relation";
                     break;
                 case FIN:
-                    functor = "fin";
+                    functor = "fin_subset";
                     break;
                 case FIN1:
-                    functor = "fin1";
+                    functor = "fin1_subset";
                     break;
                 case POW1:
-                    functor = "pow1";
+                    functor = "pow1_subset";
                     break;
                 case POW:
-                    functor = "pow";
+                    functor = "pow_subset";
                     break;
                 default:
                     throw new RuntimeException("Operator is not supported for ExpressionOperatorNode: " + operator);
