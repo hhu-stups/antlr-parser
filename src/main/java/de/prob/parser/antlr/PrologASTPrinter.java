@@ -134,27 +134,27 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
         if(node.getArity() == 0) {
             switch (operator) {
                 case MININT:
-                    return "minint(none)";
+                    return "min_int(none)";
                 case MAXINT:
-                    return "maxint(none)";
+                    return "max_int(none)";
                 case INTEGER:
-                    return "integer(none)";
+                    return "integer_set(none)";
                 case NATURAL:
-                    return "natural(none)";
+                    return "natural_set(none)";
                 case NATURAL1:
-                    return "natural1(none)";
+                    return "natural1_set(none)";
                 case INT:
-                    return "int(none)";
+                    return "int_set(none)";
                 case NAT:
-                    return "nat(none)";
+                    return "nat_set(none)";
                 case NAT1:
-                    return "nat1(none)";
+                    return "nat1_set(none)";
                 case STRING:
-                    return "string(none)";
+                    return "string_set(none)";
                 case FALSE:
-                    return "bfalse(none)";
+                    return "boolean_false(none)";
                 case TRUE:
-                    return "btrue(none)";
+                    return "boolean_true(none)";
                 case BOOL:
                     return "bool_set(none)";
                 case EMPTY_SET:
@@ -169,13 +169,13 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
             boolean operator_expects_list = false;
             switch (operator) {
                 case PLUS:
-                    functor = "plus";
+                    functor = "add";
                     break;
                 case UNARY_MINUS:
-                    functor = "uminus";
+                    functor = "unary_minus";
                     break;
                 case MOD:
-                    functor = "mod";
+                    functor = "modulo";
                     break;
                 case DIVIDE:
                     functor = "div";
@@ -425,7 +425,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
     @Override
     public String visitCastPredicateExpressionNode(CastPredicateExpressionNode node, Void expected) {
         String predicate = visitPredicateNode(node.getPredicate(), expected);
-        return String.format("boolean_cast(none, %s)", predicate);
+        return String.format("convert_bool(none, %s)", predicate);
     }
 
     @Override
@@ -718,12 +718,13 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
     @Override
     public String visitConditionSubstitutionNode(ConditionSubstitutionNode node, Void expected) {
         ConditionSubstitutionNode.Kind kind = node.getKind();
+        String predicate = visitPredicateNode(node.getCondition(), expected);
         String substitution = visitSubstitutionNode(node.getSubstitution(), expected);
         switch (kind) {
             case ASSERT:
-                return String.format("assert(none, %s)", substitution);
+                return String.format("assertion(none, %s, %s)", predicate, substitution);
             case PRECONDITION:
-                return String.format("precondition(none, %s)", substitution);
+                return String.format("precondition(none, %s, %s)", predicate, substitution); // TO DO: precondition(none,PRE,BODY)
             default:
                 throw new RuntimeException("Kind for ConditionSubstitutionNode is not supported: " + kind);
         }
