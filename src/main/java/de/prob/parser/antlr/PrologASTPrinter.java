@@ -66,10 +66,9 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 
     public String visitDeferredEnumeratedSets(List<DeclarationNode> setsNodes1,
                                               List<EnumeratedSetDeclarationNode> setsNodes2) {
-        List<String> sets1 = setsNodes1.stream().map(this::visitDeclarationNode).collect(Collectors.toList());
-        List<String> sets2 = setsNodes2.stream().map(this::visitEnumeratedSet).collect(Collectors.toList());
-        List<String> sets = Stream.concat(sets1.stream(), sets2.stream())
-                             .collect(Collectors.toList()); // TO DO: avoid this ugly concatenation
+        List<String> sets = Stream.concat(
+                                 setsNodes1.stream().map(this::visitDeclarationNode),
+                                 setsNodes2.stream().map(this::visitEnumeratedSet)).collect(Collectors.toList());
         return String.format("sets(none, [%s])", String.join(", ", sets));
     }
 
