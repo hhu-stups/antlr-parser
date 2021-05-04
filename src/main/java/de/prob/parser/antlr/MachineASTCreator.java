@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MachineASTCreator {
 	private final MachineNode machineNode;
@@ -175,8 +176,8 @@ public class MachineASTCreator {
 
 		@Override
 		public Void visitAssertionClause(BParser.AssertionClauseContext ctx) {
-			PredicateNode pred = (PredicateNode) ctx.predicate.accept(formulaAstCreator);
-			machineNode.setAssertion(pred);
+			List<PredicateNode> preds = ctx.predicate().stream().map(pred -> (PredicateNode) pred.accept(formulaAstCreator)).collect(Collectors.toList());
+			machineNode.setAssertions(preds);
 			return null;
 		}
 

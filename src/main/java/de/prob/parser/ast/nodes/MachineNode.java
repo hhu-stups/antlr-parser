@@ -20,7 +20,7 @@ public class MachineNode extends Node {
 	private List<MachineReferenceNode> machineReferences = new ArrayList<>();
 	private PredicateNode properties;
 	private PredicateNode invariant;
-	private PredicateNode assertion;
+	private List<PredicateNode> assertions;
 	private SubstitutionNode initialisation;
 	private List<OperationNode> operations = new ArrayList<>();
 	private List<SubstitutionNode> values = new ArrayList<>();
@@ -98,13 +98,13 @@ public class MachineNode extends Node {
 		this.properties.setParent(this);
 	}
 
-	public PredicateNode getAssertion() {
-		return assertion;
+	public List<PredicateNode> getAssertions() {
+		return assertions;
 	}
 
-	public void setAssertion(PredicateNode assertion) {
-		this.assertion = assertion;
-		this.assertion.setParent(this);
+	public void setAssertions(List<PredicateNode> assertions) {
+		this.assertions = assertions;
+		this.assertions.forEach(assertion -> assertion.setParent(this));
 	}
 
 	public void addSetEnumeration(EnumeratedSetDeclarationNode setEnumeration) {

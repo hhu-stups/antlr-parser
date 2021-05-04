@@ -86,12 +86,12 @@ public class MachineScopeChecker {
 			formulaScopeChecker.visitPredicateNode(machineNode.getInvariant());
 		}
 
-		if (machineNode.getAssertion() != null) {
+		if (machineNode.getAssertions() != null) {
 			scopeTable.clear();
 			createNewScope(getSetsInScope());
 			createNewScope(getConstantsInScope());
 			createNewScope(getVariablesInScope());
-			formulaScopeChecker.visitPredicateNode(machineNode.getAssertion());
+			machineNode.getAssertions().forEach(formulaScopeChecker::visitPredicateNode);
 		}
 
 		addOperationsToScope(machineNode, true);
