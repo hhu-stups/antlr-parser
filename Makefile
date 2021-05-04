@@ -12,6 +12,8 @@ DFILE=~/git_root/prob_examples/public_examples/B/Benchmarks/scheduler
 DFILE=~/git_root/prob_examples/public_examples/B/Benchmarks/phonebook7
 #DFILE=~/git_root/prob_examples/public_examples/B/Benchmarks/CSM
 DFILE=~/git_root/prob_examples/public_examples/B/Benchmarks/CarlaTravelAgencyErr
+DFILE=~/git_root/prob_examples/public_examples/B/Benchmarks/NatRangeLaws
+DFILE=~/git_root/prob_examples/public_examples/B/Benchmarks/RouteIsSeq
 PBFILE=antlr.prob
 diff: build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar
 	time java -jar build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar $(DFILE).mch false >$(PBFILE)

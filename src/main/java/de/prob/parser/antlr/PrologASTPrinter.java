@@ -174,9 +174,10 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                 case BOOL:
                     return "bool_set(none)";
                 case EMPTY_SET:
-                case SET_ENUMERATION: // an empty set_extension of arity 0 is the empty set ?
+                case SET_ENUMERATION: // an empty set_extension of arity 0 is the empty set
                     return "empty_set(none)";
                 case EMPTY_SEQUENCE:
+                case SEQ_ENUMERATION: // an empty sequence_extension of arity 0 is the empty set
                     return "empty_sequence(none)";
                 default:
                     throw new RuntimeException("Constant is not supported for ExpressionOperatorNode: " + operator);
