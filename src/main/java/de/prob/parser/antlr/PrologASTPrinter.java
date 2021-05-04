@@ -44,6 +44,7 @@ import de.prob.parser.ast.nodes.substitution.VarSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.WhileSubstitutionNode;
 import de.prob.parser.ast.visitors.AbstractVisitor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -699,21 +700,35 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
     @Override
     public String visitIfOrSelectSubstitutionsNode(IfOrSelectSubstitutionsNode node, Void expected) {
         IfOrSelectSubstitutionsNode.Operator operator = node.getOperator();
+        // TODO: Check whether this representation is close to ProB's Prolog representation
+        String ifCondition = visitPredicateNode(node.getConditions().get(0), expected);
+        String ifSubstitution = visitSubstitutionNode(node.getSubstitutions().get(0), expected);
+        List<String> elses = new ArrayList<>();
+        for(int i = 1; i < node.getConditions().size(); i++) {
+            elses.add(visitElse(operator, node.getConditions().get(i), node.getSubstitutions().get(i)));
+        }
+        String elseSubstitution = node.getElseSubstitution() == null ? "skip(none)" : visitSubstitutionNode(node.getElseSubstitution(), expected);
+
         switch (operator) {
             case SELECT:
-                PredicateNode predicateNode = node.getConditions().get(0);
-                SubstitutionNode substitutionNode = node.getSubstitutions().get(0);
-                String predicate = visitPredicateNode(predicateNode, expected);
-                String substitution = visitSubstitutionNode(substitutionNode, expected);
-                return String.format("select(none, %s, %s,[])", predicate, substitution); // [] means no ELSE; TO DO
+                return String.format("select(none, %s, %s, [%s])", ifCondition, ifSubstitution, String.join(", ", elses)); // [] means no ELSE; TO DO
             case IF:
-                // TODO: Check whether this representation is close to ProB's Prolog representation
-                List<String> conditions = node.getConditions().stream().map(condition -> visitPredicateNode(condition, expected)).collect(Collectors.toList());
-                List<String> substitutions = node.getSubstitutions().stream().map(subst -> visitSubstitutionNode(subst, expected)).collect(Collectors.toList());
-                String elseSubstitution = node.getElseSubstitution() == null ? "skip(none)" : visitSubstitutionNode(node.getElseSubstitution(), expected);
-                return String.format("if(none, %s, %s, [], %s)", String.join("& ", conditions), String.join("|| ", substitutions), elseSubstitution); // [] means no ELSIFs : TO DO :treat them
+                return String.format("if(none, %s, %s, [%s], %s)", ifCondition, ifSubstitution, String.join(", ", elses), elseSubstitution); // [] means no ELSIFs : TO DO :treat them
             default:
                 throw new RuntimeException("Operator for IfOrSelectSubstitutionsNode is not supported: " + operator);
+        }
+    }
+
+    public String visitElse(IfOrSelectSubstitutionsNode.Operator operator, PredicateNode predicate, SubstitutionNode substitution) {
+        String predicateString = visitPredicateNode(predicate, null);
+        String substitutionString = visitSubstitutionNode(substitution, null);
+        switch (operator) {
+            case SELECT:
+                return String.format("select_when(none, %s, %s)", predicateString, substitutionString);
+            case IF:
+                return String.format("if_elsif(none, %s, %s)", predicateString, substitutionString);
+            default:
+                throw new RuntimeException("Operator for IfOrSelectSubstitutionsNode is not supported");
         }
     }
 
