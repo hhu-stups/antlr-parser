@@ -288,13 +288,13 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "domain_restriction";
                     break;
                 case DOMAIN_SUBTRACTION:
-                    functor = "domain_substraction";
+                    functor = "domain_subtraction";
                     break;
                 case RANGE_RESTRICTION:
                     functor = "range_restriction";
                     break;
                 case RANGE_SUBTRACTION:
-                    functor = "range_substraction";
+                    functor = "range_subtraction";
                     break;
                 case INSERT_FRONT:
                     functor = "insert_front";
@@ -306,7 +306,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "overwrite";
                     break;
                 case INVERSE_RELATION:
-                    functor = "inverse";
+                    functor = "reverse"; // this is not rev for sequences it is f~
                     break;
                 case RESTRICT_FRONT:
                     functor = "restrict_front";
@@ -331,7 +331,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "first";
                     break;
                 case REV:
-                    functor = "rev";
+                    functor = "rev"; // reverse of sequence
                     break;
                 case FRONT:
                     functor = "front";
@@ -472,7 +472,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
     public String visitSetComprehensionNode(SetComprehensionNode node, Void expected) {
         List<String> identifiers = node.getDeclarationList().stream().map(this::visitDeclarationNode).collect(Collectors.toList());
         String predicate = visitPredicateNode(node.getPredicateNode(), expected);
-        return String.format("set_comprehension(none, [%s], %s)", String.join(", ", identifiers), predicate);
+        return String.format("comprehension_set(none, [%s], %s)", String.join(", ", identifiers), predicate);
     }
 
     @Override
@@ -623,7 +623,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                 functor = "not_member";
                 break;
             case STRICT_INCLUSION:
-                functor = "strict_subset";
+                functor = "subset_strict";
                 break;
             case STRICT_NON_INCLUSION:
                 functor = "not_subset_strict";
