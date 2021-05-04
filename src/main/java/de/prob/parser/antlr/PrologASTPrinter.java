@@ -692,7 +692,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
             case Parallel:
                 return String.format("parallel(none, [%s])", String.join(", ", substitutions));
             case Sequential:
-                return String.format("sequential(none, [%s])", String.join(", ", substitutions));
+                return String.format("sequence(none, [%s])", String.join(", ", substitutions));
             default:
                 throw new RuntimeException("List operator for ListSubstitutionNode is not supported: " + operator);
         }
