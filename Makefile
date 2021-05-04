@@ -8,12 +8,15 @@ testjar: build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar
 	time java -jar build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar $(FILE) false
 
 DFILE=~/git_root/prob_examples/public_examples/B/Benchmarks/scheduler
+#DFILE=~/git_root/prob_examples/public_examples/B/Benchmarks/Cruise_finite1
+DFILE=~/git_root/prob_examples/public_examples/B/Benchmarks/phonebook7
+#DFILE=~/git_root/prob_examples/public_examples/B/Benchmarks/CSM
 PBFILE=antlr.prob
 diff: build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar
 	time java -jar build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar $(DFILE).mch false >$(PBFILE)
 	time java -jar $(PHOME)/lib/probcliparser.jar $(DFILE).mch -prolog -time
-	probcli $(PBFILE) -pp antlr_pp.mch
-	probcli $(DFILE).mch -pp sable_pp.mch
+	probcli $(PBFILE) -pp_with_name PPDIFF antlr_pp.mch
+	probcli $(DFILE).mch -pp_with_name PPDIFF sable_pp.mch
 	#diff $(PBFILE) $(DFILE).prob
 	diff antlr_pp.mch sable_pp.mch
 

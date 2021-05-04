@@ -117,7 +117,8 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
             return null;
         }
         String assertions = visitPredicateNode(node, null);
-        return String.format("assertions(none, %s)", assertions);
+        
+        return String.format("assertions(none, [%s])", assertions); // TO DO: produce a real list of ASSERTIONS rather than always a list with a single assertion
     }
 
     public String visitDeclarationNode(DeclarationNode node) {
