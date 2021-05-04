@@ -86,6 +86,14 @@ public class MachineScopeChecker {
 			formulaScopeChecker.visitPredicateNode(machineNode.getInvariant());
 		}
 
+		if (machineNode.getAssertion() != null) {
+			scopeTable.clear();
+			createNewScope(getSetsInScope());
+			createNewScope(getConstantsInScope());
+			createNewScope(getVariablesInScope());
+			formulaScopeChecker.visitPredicateNode(machineNode.getAssertion());
+		}
+
 		addOperationsToScope(machineNode, true);
 		if (machineNode.getInitialisation() != null) {
 			scopeTable.clear();

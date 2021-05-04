@@ -58,9 +58,10 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
         String constants = visitConstants(node.getConstants());
         String invariant = visitInvariant(node.getInvariant());
         String properties = visitProperties(node.getProperties());
+        String assertions = visitAssertions(node.getAssertion());
         String initialisation = visitInitialisation(node.getInitialisation());
         String operations = visitOperations(node.getOperations());
-        List<String> body = Stream.of(deferredEnumSets, variables, constants, invariant, properties, initialisation, operations).filter(Objects::nonNull).collect(Collectors.toList());
+        List<String> body = Stream.of(deferredEnumSets, variables, constants, invariant, properties, assertions, initialisation, operations).filter(Objects::nonNull).collect(Collectors.toList());
         return String.format("machine(abstract_machine(none, machine(none), machine_header(none, %s, []), [%s]))", machineName, String.join(", ", body));
     }
 
@@ -108,6 +109,14 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
         }
         String properties = visitPredicateNode(node, null);
         return String.format("properties(none, %s)", properties);
+    }
+
+    public String visitAssertions(PredicateNode node) {
+        if(node == null) {
+            return null;
+        }
+        String assertions = visitPredicateNode(node, null);
+        return String.format("assertions(none, %s)", assertions);
     }
 
     public String visitDeclarationNode(DeclarationNode node) {

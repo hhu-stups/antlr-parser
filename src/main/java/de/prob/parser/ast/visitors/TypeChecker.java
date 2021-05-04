@@ -229,6 +229,11 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			visitPredicateNode(machineNode.getInvariant(), BoolType.getInstance());
 		}
 
+		// visit the assertion clause
+		if (machineNode.getAssertion() != null) {
+			visitPredicateNode(machineNode.getAssertion(), BoolType.getInstance());
+		}
+
 		// check that all variables have type, otherwise throw an exception
 		machineNode.getVariables().stream().filter(TypedNode::isUntyped).findFirst().ifPresent(var -> {
 			throw new TypeCheckerVisitorException(new TypeErrorException(

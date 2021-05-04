@@ -174,6 +174,13 @@ public class MachineASTCreator {
 		}
 
 		@Override
+		public Void visitAssertionClause(BParser.AssertionClauseContext ctx) {
+			PredicateNode pred = (PredicateNode) ctx.predicate.accept(formulaAstCreator);
+			machineNode.setAssertion(pred);
+			return null;
+		}
+
+		@Override
 		public Void visitPredicateClause(BParser.PredicateClauseContext ctx) {
 			PredicateNode pred = (PredicateNode) ctx.pred.accept(formulaAstCreator);
 			switch (ctx.name.getText()) {
