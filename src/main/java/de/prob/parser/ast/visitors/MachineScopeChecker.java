@@ -114,6 +114,9 @@ public class MachineScopeChecker {
 	}
 
 	private void addOperationsToScope(MachineNode mNode, boolean first) {
+		// TODO: Implement semantics for PROMOTES
+		// A machine can invoke all operations in directly included machines
+		// Operations from transitively included machines cannot be invoked directly unless they are promoted by a directly included machine
 		if (!first) {
 			if(mNode.getPrefix() == null) {
 				for (OperationNode op : mNode.getOperations()) {

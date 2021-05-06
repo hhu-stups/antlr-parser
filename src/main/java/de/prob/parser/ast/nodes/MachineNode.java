@@ -18,6 +18,7 @@ public class MachineNode extends Node {
 	private List<DeclarationNode> variables = new ArrayList<>();
 	private List<DeclarationNode> includedRenamedVariables = new ArrayList<>();
 	private List<MachineReferenceNode> machineReferences = new ArrayList<>();
+	private List<OperationReferenceNode> operationReferences = new ArrayList<>();
 	private PredicateNode properties;
 	private PredicateNode invariant;
 	private List<PredicateNode> assertions;
@@ -142,6 +143,17 @@ public class MachineNode extends Node {
 	public List<MachineReferenceNode> getMachineReferences() {
 		return machineReferences;
 	}
+
+	public void addOperationReferenceNode(OperationReferenceNode operationReferenceNode) {
+		operationReferences.add(operationReferenceNode);
+		operationReferenceNode.setParent(this);
+	}
+
+	public List<OperationReferenceNode> getOperationReferences() {
+		return operationReferences;
+	}
+
+
 
 	public void addValues(SubstitutionNode substitution) {
 		values.add(substitution);

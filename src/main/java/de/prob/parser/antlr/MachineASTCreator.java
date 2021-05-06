@@ -6,6 +6,7 @@ import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.MachineReferenceNode;
 import de.prob.parser.ast.nodes.OperationNode;
+import de.prob.parser.ast.nodes.OperationReferenceNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
@@ -16,6 +17,7 @@ import files.BParser.DeclarationClauseContext;
 import files.BParser.Machine_instantiationContext;
 import files.BParser.StartContext;
 import files.BParserBaseVisitor;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.util.ArrayList;
@@ -83,28 +85,26 @@ public class MachineASTCreator {
 
 		@Override
 		public Void visitReferenceClause(BParser.ReferenceClauseContext ctx) {
-			MachineReferenceNode.Kind kind = null;
-			switch (ctx.name.getType()) {
-				case BParser.SEES:
-					kind = MachineReferenceNode.Kind.SEEN;
-					break;
-				case BParser.USES:
-					kind = MachineReferenceNode.Kind.USED;
-					break;
-				default:
-					throw new RuntimeException("Unknown reference type: " + ctx.name.getText());
-			}
+			Token referenceKindToken = ctx.name;
+
 			for (BParser.Composed_identifierContext instance : ctx.composed_identifier_list().idents) {
 				String prefix = null;
-				String machineName;
+				String name;
 				if(instance.IDENTIFIER().size() > 1) {
 					prefix = instance.IDENTIFIER().get(0).toString();
-					machineName = instance.IDENTIFIER().get(1).toString();
+					name = instance.IDENTIFIER().get(1).toString();
 				} else {
-					machineName = instance.IDENTIFIER().get(0).toString();
+					name = instance.IDENTIFIER().get(0).toString();
 				}
-				machineNode.addMachineReferenceNode(
-						new MachineReferenceNode(Util.createSourceCodePosition(ctx), machineName, kind, prefix, true));
+				if(referenceKindToken.getType() == BParser.SEES || referenceKindToken.getType() == BParser.USES) {
+					MachineReferenceNode.Kind kind = referenceKindToken.getType() == BParser.SEES ? MachineReferenceNode.Kind.SEEN : MachineReferenceNode.Kind.USED;
+					machineNode.addMachineReferenceNode(
+							new MachineReferenceNode(Util.createSourceCodePosition(ctx), name, kind, prefix, true));
+				} else if(referenceKindToken.getType() == BParser.PROMOTES) {
+					machineNode.addOperationReferenceNode(new OperationReferenceNode(Util.createSourceCodePosition(ctx), name, prefix, true));
+				} else {
+					throw new RuntimeException("Reference type of ReferenceClauseContext is unknown");
+				}
 			}
 			return null;
 		}
