@@ -10,7 +10,7 @@ import java.util.List;
 public class ExpressionOperatorNode extends ExprNode
 		implements OperatorNode<ExpressionOperatorNode.ExpressionOperator> {
 
-	public enum ExpressionOperator {
+    public enum ExpressionOperator {
 
 		// arithmetic
 		NATURAL, NATURAL1, INTEGER, INT, NAT, NAT1, MININT, MAXINT//

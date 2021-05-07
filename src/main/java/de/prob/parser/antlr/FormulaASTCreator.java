@@ -1,5 +1,6 @@
 package de.prob.parser.antlr;
 
+import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;
@@ -58,9 +59,11 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
@@ -255,6 +258,17 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 		PredicateOperator op = type == BParser.BTRUE ? PredicateOperator.TRUE : PredicateOperator.FALSE;
 		List<PredicateNode> list = new ArrayList<>();
 		return new PredicateOperatorNode(Util.createSourceCodePosition(ctx), op, list);
+	}
+
+	@Override
+	public Node visitTuple(BParser.TupleContext ctx) {
+		List<ExprNode> expressions = ctx.expression_in_par().stream().map(expr -> (ExprNode) expr.accept(this)).collect(Collectors.toList());
+		ExprNode tuple = expressions.get(expressions.size() - 1);
+		for(int i = expressions.size() - 2; i >= 0; i--) {
+			ExprNode lhs = expressions.get(i);
+			tuple = new ExpressionOperatorNode(lhs.getSourceCodePosition(), Arrays.asList(lhs, tuple), ExpressionOperator.COUPLE);
+		}
+		return tuple;
 	}
 
 	@Override
