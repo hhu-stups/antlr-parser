@@ -199,7 +199,7 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 
 	@Override
 	public Node visitChildren(RuleNode node) {
-		throw new RuntimeException("Not implemented: " + node.getClass().getSimpleName());
+		throw new RuntimeException("Not implemented: " + node.getClass().getSimpleName() + " at " + node.getSourceInterval());
 	}
 
 	// Predicates
