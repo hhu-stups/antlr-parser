@@ -125,6 +125,9 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
     }
 
     public String visitInitialisation(SubstitutionNode node) {
+        if (node==null) {
+           return "initialisation(none, skip(none))"; // TO DO: Sable returns no initialisation term at all
+        }
         String substitution = visitSubstitutionNode(node, null);
         return String.format("initialisation(none, %s)", substitution);
     }
@@ -246,7 +249,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "range";
                     break;
                 case ID:
-                    functor = "id";
+                    functor = "identity";
                     break;
                 case CLOSURE:
                     functor = "closure";
