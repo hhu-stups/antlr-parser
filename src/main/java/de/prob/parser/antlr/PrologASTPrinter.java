@@ -228,7 +228,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "max";
                     break;
                 case SET_SUBTRACTION:
-                    functor = "difference";
+                    functor = "set_subtraction";
                     break;
                 case INTERSECTION:
                     functor = "intersection";
