@@ -252,10 +252,10 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "identity";
                     break;
                 case CLOSURE:
-                    functor = "closure";
+                    functor = "reflexive_closure";
                     break;
                 case CLOSURE1:
-                    functor = "closure1";
+                    functor = "closure"; // yes, this is closure1 in the SableCC AST :-(
                     break;
                 case ITERATE:
                     functor = "iterate";
@@ -403,7 +403,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
                     functor = "total_surjection_relation";
                     break;
                 case SET_RELATION:
-                    functor = "set_relation";
+                    functor = "relations";
                     break;
                 case FIN:
                     functor = "fin_subset";
