@@ -77,44 +77,9 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	private Set<ExpressionOperatorNode> multOrCartNodes = new HashSet<>();
 	private Set<TypedNode> typedNodes = new HashSet<>();
 
-	public static void typecheckMachineNode(MachineNode machineNode) throws TypeErrorException {
-		TypeChecker typeChecker = new TypeChecker();
+	public TypeChecker(MachineNode machineNode) throws TypeErrorException {
 		try {
-			typeChecker.checkMachineNode(machineNode);
-		} catch (TypeCheckerVisitorException e) {
-			final Logger logger = Logger.getLogger(e.getClass().getName());
-			logger.log(Level.SEVERE, TYPE_ERROR, e);
-			throw e.getTypeErrorException();
-		}
-
-	}
-
-	public static void typecheckFormulaNode(FormulaNode formulaNode) throws TypeErrorException {
-		TypeChecker typeChecker = new TypeChecker();
-		try {
-			typeChecker.checkFormulaNode(formulaNode);
-		} catch (TypeCheckerVisitorException e) {
-			final Logger logger = Logger.getLogger(e.getClass().getName());
-			logger.log(Level.SEVERE, TYPE_ERROR, e);
-			throw e.getTypeErrorException();
-		}
-	}
-
-	public static void typecheckExprNode(ExprNode exprNode) throws TypeErrorException {
-		TypeChecker typeChecker = new TypeChecker();
-		try {
-			typeChecker.checkExprNode(exprNode);
-		} catch (TypeCheckerVisitorException e) {
-			final Logger logger = Logger.getLogger(e.getClass().getName());
-			logger.log(Level.SEVERE, TYPE_ERROR, e);
-			throw e.getTypeErrorException();
-		}
-	}
-
-	public static void typecheckLTLFormulaNode(LTLFormula ltlFormulaAst) throws TypeErrorException {
-		TypeChecker typeChecker = new TypeChecker();
-		try {
-			typeChecker.checkLTLFormulaNode(ltlFormulaAst);
+			checkMachineNode(machineNode);
 		} catch (TypeCheckerVisitorException e) {
 			final Logger logger = Logger.getLogger(e.getClass().getName());
 			logger.log(Level.SEVERE, TYPE_ERROR, e);
@@ -166,7 +131,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	}
 
 
-	private void checkExprNode(ExprNode exprNode) {
+	public void checkExprNode(ExprNode exprNode) {
 		BType type = visitExprNode(exprNode, new UntypedType());
 		if (type.isUntyped()) {
 			throw new TypeCheckerVisitorException(new TypeErrorException("Can not infer type of formula: " + type));

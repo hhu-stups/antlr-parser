@@ -61,6 +61,11 @@ public class MachineScopeChecker {
 		return this.machineNode;
 	}
 
+	public void checkExpression(ExprNode exprNode) {
+		FormulaScopeChecker formulaScopeChecker = new FormulaScopeChecker();
+		formulaScopeChecker.visitExprNode(exprNode);
+	}
+
 	private void check() {
 		FormulaScopeChecker formulaScopeChecker = new FormulaScopeChecker();
 

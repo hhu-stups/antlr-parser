@@ -37,7 +37,7 @@ public class Antlr4BParser {
 		StartContext tree = parse(input);
 		MachineNode machineNode = MachineASTCreator.createMachineAST(tree);
 		new MachineScopeChecker(machineNode);
-		TypeChecker.typecheckMachineNode(machineNode);
+		new TypeChecker(machineNode);
 		return machineNode;
 	}
 
@@ -47,12 +47,6 @@ public class Antlr4BParser {
 
 	public static BProject createBProject(List<MachineNode> machineNodeList, List<ExprNode> formulas, List<String> events) throws TypeErrorException, ScopeException {
 		return createBProject(machineNodeList, formulas, events, true);
-	}
-
-	public static void checkFormulas(MachineNode machineNode, List<ExprNode> formulas) throws TypeErrorException {
-		for(ExprNode formula : formulas) {
-			TypeChecker.typecheckExprNode(formula);
-		}
 	}
 
 	public static void checkEvents(MachineNode machineNode, List<String> events) {
@@ -68,18 +62,19 @@ public class Antlr4BParser {
 		sortMachineNodes(machineNodeList);
 		for (int i = machineNodeList.size() - 1; i >= 0; i--) {
 			MachineNode machineNode = machineNodeList.get(i);
-			new MachineScopeChecker(machineNode);
+			MachineScopeChecker scopeChecker = new MachineScopeChecker(machineNode);
 			// i == 0 means that main machine
 			if (i == 0) {
 				checkEvents(machineNode, events);
+				formulas.forEach(scopeChecker::checkExpression);
 			}
 		}
 		if(typecheck) {
 			for (int i = machineNodeList.size() - 1; i >= 0; i--) {
 				MachineNode machineNode = machineNodeList.get(i);
-				TypeChecker.typecheckMachineNode(machineNode);
+				TypeChecker typeChecker = new TypeChecker(machineNode);
 				if (i == 0) {
-					checkFormulas(machineNode, formulas);
+					formulas.forEach(typeChecker::checkExprNode);
 				}
 			}
 		}
