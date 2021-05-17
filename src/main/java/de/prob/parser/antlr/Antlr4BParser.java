@@ -20,7 +20,6 @@ import org.antlr.v4.runtime.DiagnosticErrorListener;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -50,6 +49,12 @@ public class Antlr4BParser {
 		return createBProject(machineNodeList, formulas, events, true);
 	}
 
+	public static void checkFormulas(MachineNode machineNode, List<ExprNode> formulas) throws TypeErrorException {
+		for(ExprNode formula : formulas) {
+			TypeChecker.typecheckExprNode(formula);
+		}
+	}
+
 	public static void checkEvents(MachineNode machineNode, List<String> events) {
 		Set<String> mainEvents = machineNode.getOperations().stream().map(OperationNode::getName).collect(Collectors.toSet());
 		if(!mainEvents.containsAll(events)) {
@@ -73,6 +78,9 @@ public class Antlr4BParser {
 			for (int i = machineNodeList.size() - 1; i >= 0; i--) {
 				MachineNode machineNode = machineNodeList.get(i);
 				TypeChecker.typecheckMachineNode(machineNode);
+				if (i == 0) {
+					checkFormulas(machineNode, formulas);
+				}
 			}
 		}
 		return new BProject(machineNodeList);
