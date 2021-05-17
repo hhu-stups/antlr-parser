@@ -34,6 +34,11 @@ public class MachineASTCreator {
 		return machineASTCreator.getMachineNode();
 	}
 
+	public static ExprNode createExpressionAST(BParser.ExpressionContext context) {
+		FormulaASTCreator formulaASTCreator = new FormulaASTCreator();
+		return (ExprNode) context.accept(formulaASTCreator);
+	}
+
 	private MachineNode getMachineNode() {
 		return this.machineNode;
 	}
@@ -44,7 +49,8 @@ public class MachineASTCreator {
 	}
 
 	class MachineConstructor extends BParserBaseVisitor<Void> {
-		FormulaASTCreator formulaAstCreator = new FormulaASTCreator();
+
+		private FormulaASTCreator formulaAstCreator = new FormulaASTCreator();
 
 		MachineConstructor(StartContext start) {
 			start.accept(this);

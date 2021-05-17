@@ -100,6 +100,17 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		}
 	}
 
+	public static void typecheckExprNode(ExprNode exprNode) throws TypeErrorException {
+		TypeChecker typeChecker = new TypeChecker();
+		try {
+			typeChecker.checkExprNode(exprNode);
+		} catch (TypeCheckerVisitorException e) {
+			final Logger logger = Logger.getLogger(e.getClass().getName());
+			logger.log(Level.SEVERE, TYPE_ERROR, e);
+			throw e.getTypeErrorException();
+		}
+	}
+
 	public static void typecheckLTLFormulaNode(LTLFormula ltlFormulaAst) throws TypeErrorException {
 		TypeChecker typeChecker = new TypeChecker();
 		try {
@@ -150,6 +161,15 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 						new TypeErrorException("Can not infer the type of local variable '" + node.getName()
 								+ "' Current type: " + node.getType()));
 			}
+		}
+		performPostActions();
+	}
+
+
+	private void checkExprNode(ExprNode exprNode) {
+		BType type = visitExprNode(exprNode, new UntypedType());
+		if (type.isUntyped()) {
+			throw new TypeCheckerVisitorException(new TypeErrorException("Can not infer type of formula: " + type));
 		}
 		performPostActions();
 	}
