@@ -78,7 +78,7 @@ public class Antlr4BParser {
 				}
 			}
 		}
-		return new BProject(machineNodeList);
+		return new BProject(machineNodeList, formulas);
 	}
 
 	public static BProject createBProjectFromMachineStrings(String main, String... machines)
