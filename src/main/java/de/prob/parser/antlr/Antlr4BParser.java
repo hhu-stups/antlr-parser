@@ -75,6 +75,10 @@ public class Antlr4BParser {
 		}
 	}
 
+	public static BProject createBProjectFromMainMachineFile(File mainBFile) throws TypeErrorException, ScopeException, IOException {
+		return createBProjectFromMainMachineFile(mainBFile, true);
+	}
+
 	public static BProject createBProjectFromMainMachineFile(File mainBFile, boolean typecheck) throws IOException, TypeErrorException, ScopeException {
 		final File parentFolder = mainBFile.getParentFile();
 		final List<MachineNode> machines = new ArrayList<>();
