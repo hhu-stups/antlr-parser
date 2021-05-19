@@ -2,8 +2,6 @@ package de.prob.parser.antlr;
 
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.MachineReferenceNode;
-import de.prob.parser.ast.nodes.OperationNode;
-import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.visitors.MachineScopeChecker;
 import de.prob.parser.ast.visitors.TypeChecker;
 import de.prob.parser.ast.visitors.TypeErrorException;
@@ -29,7 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Antlr4BParser {
 
@@ -42,43 +39,24 @@ public class Antlr4BParser {
 	}
 
 	public static BProject createBProject(List<MachineNode> machineNodeList) throws TypeErrorException, ScopeException {
-		return createBProject(machineNodeList, new ArrayList<>(), new ArrayList<>(), true);
+		return createBProject(machineNodeList, true);
 	}
 
-	public static BProject createBProject(List<MachineNode> machineNodeList, List<ExprNode> formulas, List<String> events) throws TypeErrorException, ScopeException {
-		return createBProject(machineNodeList, formulas, events, true);
-	}
-
-	public static void checkEvents(MachineNode machineNode, List<String> events) {
-		Set<String> mainEvents = machineNode.getOperations().stream().map(OperationNode::getName).collect(Collectors.toSet());
-		if(!mainEvents.containsAll(events)) {
-			throw new RuntimeException("Scope error in events");
-		}
-	}
-
-	public static BProject createBProject(List<MachineNode> machineNodeList, List<ExprNode> formulas, List<String> events, boolean typecheck) throws TypeErrorException, ScopeException {
+	public static BProject createBProject(List<MachineNode> machineNodeList, boolean typecheck) throws TypeErrorException, ScopeException {
 		// determine machine order
 
 		sortMachineNodes(machineNodeList);
 		for (int i = machineNodeList.size() - 1; i >= 0; i--) {
 			MachineNode machineNode = machineNodeList.get(i);
-			MachineScopeChecker scopeChecker = new MachineScopeChecker(machineNode);
-			// i == 0 means that main machine
-			if (i == 0) {
-				checkEvents(machineNode, events);
-				formulas.forEach(scopeChecker::checkExpression);
-			}
+			new MachineScopeChecker(machineNode);
 		}
 		if(typecheck) {
 			for (int i = machineNodeList.size() - 1; i >= 0; i--) {
 				MachineNode machineNode = machineNodeList.get(i);
-				TypeChecker typeChecker = new TypeChecker(machineNode);
-				if (i == 0) {
-					formulas.forEach(typeChecker::checkExprNode);
-				}
+				new TypeChecker(machineNode);
 			}
 		}
-		return new BProject(machineNodeList, formulas);
+		return new BProject(machineNodeList);
 	}
 
 	public static BProject createBProjectFromMachineStrings(String main, String... machines)
@@ -87,7 +65,7 @@ public class Antlr4BParser {
 		return createBProject(parsedmachines);
 	}
 
-	private static void checkMachineName(File file, String name) {
+	protected static void checkMachineName(File file, String name) {
 		if(!file.exists()) {
 			throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
 		}
@@ -97,16 +75,11 @@ public class Antlr4BParser {
 		}
 	}
 
-	public static BProject createBProjectFromMainMachineFile(File mainBFile, List<String> formulas, List<String> events, boolean typecheck) throws IOException, TypeErrorException, ScopeException {
+	public static BProject createBProjectFromMainMachineFile(File mainBFile, boolean typecheck) throws IOException, TypeErrorException, ScopeException {
 		final File parentFolder = mainBFile.getParentFile();
 		final List<MachineNode> machines = new ArrayList<>();
 		final StartContext mainMachineCST = parse(mainBFile);
 		final MachineNode main = MachineASTCreator.createMachineAST(mainMachineCST);
-		final List<ExprNode> formulaNodes = formulas.stream().map(formula -> {
-			CodePointCharStream stream = CharStreams.fromString(formula);
-			BParser.ExpressionContext expressionContext = parseExpression(stream);
-			return MachineASTCreator.createExpressionAST(expressionContext);
-		}).collect(Collectors.toList());
 		checkMachineName(mainBFile, main.getName());
 
 		machines.add(main);
@@ -133,20 +106,10 @@ public class Antlr4BParser {
 				}
 			}
 		}
-		return createBProject(machines, formulaNodes, events, typecheck);
+		return createBProject(machines, typecheck);
 	}
 
-	public static BProject createBProjectFromMainMachineFile(File mainBFile)
-			throws TypeErrorException, ScopeException, IOException {
-		return createBProjectFromMainMachineFile(mainBFile, new ArrayList<>(), new ArrayList<>(), true);
-	}
-
-	public static BProject createBProjectFromMainMachineFile(File mainBFile, List<String> formulas, List<String> events)
-			throws TypeErrorException, ScopeException, IOException {
-		return createBProjectFromMainMachineFile(mainBFile, formulas, events, true);
-	}
-
-	private static File getFile(File parentFolder, String name) {
+	protected static File getFile(File parentFolder, String name) {
 		// TODO try different file name extensions
 		return new File(parentFolder, name + ".mch");
 	}
@@ -164,7 +127,7 @@ public class Antlr4BParser {
 		return machineNodeList;
 	}
 
-	private static void sortMachineNodes(List<MachineNode> machineNodeList) {
+	protected static void sortMachineNodes(List<MachineNode> machineNodeList) {
 		final Map<String, MachineNode> machineNodeMap = new HashMap<>();
 		for (MachineNode machineNode : machineNodeList) {
 			machineNodeMap.put(machineNode.toString(), machineNode);
@@ -178,7 +141,7 @@ public class Antlr4BParser {
 		}
 	}
 
-	private static void determineMachineDependencies(final MachineNode machineNode,
+	protected static void determineMachineDependencies(final MachineNode machineNode,
 			final Map<String, MachineNode> machineNodes, final Map<String, Set<String>> dependencies,
 			final List<String> ancestors) {
 		final String name = machineNode.toString();
@@ -287,7 +250,7 @@ public class Antlr4BParser {
 		Path filePath = Paths.get(args[0]);
 
 		final long start = System.currentTimeMillis();
-		BProject project = createBProjectFromMainMachineFile(filePath.toFile(), new ArrayList<>(), new ArrayList<>(), typecheck);
+		BProject project = createBProjectFromMainMachineFile(filePath.toFile(), typecheck);
 		final long mid = System.currentTimeMillis();
 		PrologASTPrinter astPrinter = new PrologASTPrinter();
 		String prologAST = astPrinter.visitMachineNode(project.getMainMachine());
