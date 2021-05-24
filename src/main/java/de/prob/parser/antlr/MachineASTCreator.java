@@ -69,7 +69,15 @@ public class MachineASTCreator {
 	    // see DefinitionFinder in DefinitionsAnalyser.java
 		@Override public Void visitOrdinaryDefinition(BParser.OrdinaryDefinitionContext ctx) {
 			final String name = ctx.name.getText();
-			System.out.println("IGNORING DEFINITION " + name);
+			List<Token> parameters = ctx.parameters;
+			int numberOfParameter;
+			if (parameters == null) {
+				numberOfParameter = 0;
+			} else {
+				numberOfParameter = parameters.size();
+			}
+			// FormulaContext formula = ctx.formula();
+			System.out.println("IGNORING DEFINITION " + name + " with " + numberOfParameter + " parameter(s) ");
 		    return null; //visitChildren(ctx);
 		}
 
