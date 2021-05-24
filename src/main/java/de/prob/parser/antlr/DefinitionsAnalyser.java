@@ -43,6 +43,7 @@ public class DefinitionsAnalyser implements IDefinitions {
 		for (Iterator<String> iterator = definitionTypes.keySet().iterator(); iterator.hasNext();) {
 			String defName = (String) iterator.next();
 			DefinitionType definitionType = this.getDefinitionType(defName);
+			System.out.println("DEFINITION: " + defName + " has type " + definitionType);
 			if (definitionType == DefinitionType.UNKNOWN_TYPE) {
 				defsWithUnknownType.add(defName);
 			}

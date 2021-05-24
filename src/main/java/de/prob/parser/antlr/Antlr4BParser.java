@@ -251,6 +251,8 @@ public class Antlr4BParser {
 		}
 
 		boolean typecheck = args.length == 1 || Boolean.parseBoolean(args[1]);
+		// TODO: add options similar to SableCC parser, notably -prolog, or automatically generating .prob file
+		
 		Path filePath = Paths.get(args[0]);
 
 		final long start = System.currentTimeMillis();

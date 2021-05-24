@@ -59,10 +59,19 @@ public class MachineASTCreator {
 		@Override
 		public Void visitMachine_header(BParser.Machine_headerContext ctx) {
 			machineNode.setName(ctx.IDENTIFIER().getText());
+			// System.out.println("Creating AST for machine " + ctx.IDENTIFIER().getText());
 			return null;
 		}
 
 		//TODO: Add definitions to Machine AST
+		// @Override public Void visitDefinitionClause(BParser.DefinitionClauseContext ctx) { return null; }
+	    // @Override public T visitDefinitionFile(BParser.DefinitionFileContext ctx) { return visitChildren(ctx); }
+	    // see DefinitionFinder in DefinitionsAnalyser.java
+		@Override public Void visitOrdinaryDefinition(BParser.OrdinaryDefinitionContext ctx) {
+			final String name = ctx.name.getText();
+			System.out.println("IGNORING DEFINITION " + name);
+		    return null; //visitChildren(ctx);
+		}
 
 		@Override
 		public Void visitInstanceClause(BParser.InstanceClauseContext ctx) {
