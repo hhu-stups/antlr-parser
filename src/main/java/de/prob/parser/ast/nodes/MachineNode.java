@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import files.BParser.FormulaContext;
+import files.BParser.FormulaPredicateContext;
+import files.BParser.FormulaSubstitutionContext;
+import files.BParser.FormulaExpressionContext;
 
 public class MachineNode extends Node {
 
@@ -32,12 +35,28 @@ public class MachineNode extends Node {
 	private List<LTLFormula> ltlFormulas = new ArrayList<>();
 	
 	
+	public enum DefinitionType {
+		EXPRESSION_DEFINITION, PREDICATE_DEFINITION, SUBSTITUTION_DEFINITION, UNKNOWN_TYPE
+	}
+
 	private HashMap<String, FormulaContext> definitionBody = new HashMap<>();
 	private HashMap<String, Integer> definitionArity = new HashMap<>();
+	private HashMap<String, DefinitionType> definitionType = new HashMap<>();
     
     public void addDefinition(String name, int arity, FormulaContext body) {
         definitionBody.put(name,body);
-        definitionArity.put(name,arity);
+        definitionArity.put(name,arity);        
+        DefinitionType defType;
+        if (body instanceof FormulaPredicateContext) {
+            defType = MachineNode.DefinitionType.PREDICATE_DEFINITION;
+        } else if (body instanceof FormulaSubstitutionContext) {
+            defType = MachineNode.DefinitionType.SUBSTITUTION_DEFINITION;
+        } else if (body instanceof FormulaExpressionContext) {
+            defType = MachineNode.DefinitionType.EXPRESSION_DEFINITION;
+        } else {
+            defType = MachineNode.DefinitionType.UNKNOWN_TYPE;
+        }
+        definitionType.put(name,defType);
     }	
 
 	public String getName() {
