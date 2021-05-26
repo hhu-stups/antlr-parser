@@ -5,8 +5,11 @@ import de.prob.parser.ast.nodes.ltl.LTLFormula;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.substitution.SubstitutionNode;
 
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
+
+import files.BParser.FormulaContext;
 
 public class MachineNode extends Node {
 
@@ -27,6 +30,15 @@ public class MachineNode extends Node {
 	private List<SubstitutionNode> values = new ArrayList<>();
 
 	private List<LTLFormula> ltlFormulas = new ArrayList<>();
+	
+	
+	private HashMap<String, FormulaContext> definitionBody = new HashMap<>();
+	private HashMap<String, Integer> definitionArity = new HashMap<>();
+    
+    public void addDefinition(String name, int arity, FormulaContext body) {
+        definitionBody.put(name,body);
+        definitionArity.put(name,arity);
+    }	
 
 	public String getName() {
 		return this.machineName;

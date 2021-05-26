@@ -26,6 +26,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
+import files.BParser.FormulaContext;
+
 public class MachineASTCreator {
 	private final MachineNode machineNode;
 
@@ -70,14 +73,15 @@ public class MachineASTCreator {
 		@Override public Void visitOrdinaryDefinition(BParser.OrdinaryDefinitionContext ctx) {
 			final String name = ctx.name.getText();
 			List<Token> parameters = ctx.parameters;
-			int numberOfParameter;
+			int arity;
 			if (parameters == null) {
-				numberOfParameter = 0;
+				arity = 0;
 			} else {
-				numberOfParameter = parameters.size();
+				arity = parameters.size();
 			}
-			// FormulaContext formula = ctx.formula();
-			System.out.println("IGNORING DEFINITION " + name + " with " + numberOfParameter + " parameter(s) ");
+			FormulaContext formula = ctx.formula();
+			System.out.println("IGNORING DEFINITION " + name + "/" + arity + " == " + formula);
+			machineNode.addDefinition(name,arity,formula);
 		    return null; //visitChildren(ctx);
 		}
 
