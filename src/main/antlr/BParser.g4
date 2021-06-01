@@ -95,7 +95,7 @@ identifier_list
   ;
 
 definition
-  : name=IDENTIFIER ('(' parameters+=IDENTIFIER (',' parameters+=IDENTIFIER)* ')')? DOUBLE_EQUAL formula # OrdinaryDefinition
+  : name=IDENTIFIER ('(' parameters=identifier_list ')')? DOUBLE_EQUAL formula # OrdinaryDefinition
   | StringLiteral  # DefinitionFile
   ;
 

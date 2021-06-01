@@ -31,33 +31,9 @@ public class MachineNode extends Node {
 	private SubstitutionNode initialisation;
 	private List<OperationNode> operations = new ArrayList<>();
 	private List<SubstitutionNode> values = new ArrayList<>();
+	private List<DefinitionNode> definitions = new ArrayList<>();
 
 	private List<LTLFormula> ltlFormulas = new ArrayList<>();
-	
-	
-	public enum DefinitionType {
-		EXPRESSION_DEFINITION, PREDICATE_DEFINITION, SUBSTITUTION_DEFINITION, UNKNOWN_TYPE
-	}
-
-	private HashMap<String, FormulaContext> definitionBody = new HashMap<>();
-	private HashMap<String, Integer> definitionArity = new HashMap<>();
-	private HashMap<String, DefinitionType> definitionType = new HashMap<>();
-    
-    public void addDefinition(String name, int arity, FormulaContext body) {
-        definitionBody.put(name,body);
-        definitionArity.put(name,arity);        
-        DefinitionType defType;
-        if (body instanceof FormulaPredicateContext) {
-            defType = MachineNode.DefinitionType.PREDICATE_DEFINITION;
-        } else if (body instanceof FormulaSubstitutionContext) {
-            defType = MachineNode.DefinitionType.SUBSTITUTION_DEFINITION;
-        } else if (body instanceof FormulaExpressionContext) {
-            defType = MachineNode.DefinitionType.EXPRESSION_DEFINITION;
-        } else {
-            defType = MachineNode.DefinitionType.UNKNOWN_TYPE;
-        }
-        definitionType.put(name,defType);
-    }	
 
 	public String getName() {
 		return this.machineName;
@@ -105,6 +81,10 @@ public class MachineNode extends Node {
 
 	public List<OperationNode> getOperations() {
 		return operations;
+	}
+
+	public List<DefinitionNode> getDefinitions() {
+		return this.definitions;
 	}
 
 	public void setOperations(List<OperationNode> operations) {
@@ -184,8 +164,6 @@ public class MachineNode extends Node {
 		return operationReferences;
 	}
 
-
-
 	public void addValues(SubstitutionNode substitution) {
 		values.add(substitution);
 		substitution.setParent(this);
@@ -214,9 +192,14 @@ public class MachineNode extends Node {
 
 	@Override
 	public String toString() {
-		if(prefix != null) {
+		if (prefix != null) {
 			return this.prefix + "." + this.machineName;
 		}
 		return this.machineName;
 	}
+
+	public void addDefinition(DefinitionNode definitionNode) {
+		this.definitions.add(definitionNode);
+	}
+
 }

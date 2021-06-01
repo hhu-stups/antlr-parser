@@ -1,6 +1,5 @@
 package de.prob.parser.antlr;
 
-import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;

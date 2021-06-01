@@ -84,7 +84,7 @@ public class DefinitionsAnalyser implements IDefinitions {
 			FormulaContext formula = ctx.formula();
 			final String name = ctx.name.getText();
 			definitions.put(name, formula);
-			List<Token> parameters = ctx.parameters;
+			List<TerminalNode> parameters = ctx.parameters.IDENTIFIER();
 			int numberOfParameter;
 			if (parameters == null) {
 				numberOfParameter = 0;
