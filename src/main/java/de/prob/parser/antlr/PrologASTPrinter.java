@@ -164,7 +164,7 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 		} else {
 			// todo
 		}
-		return String.format("%s_definition(none, identifier(none,%s), [%s], %s)", prefix, opName,
+		return String.format("%s_definition(none, %s, [%s], %s)", prefix, opName,
 				String.join(", ", params), body);
 	}
 
