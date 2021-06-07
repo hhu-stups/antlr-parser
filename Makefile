@@ -4,7 +4,7 @@ ANTLR_JAR=build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar
 
 test:
 	./gradlew run -Pfile="$(FILE)" -Ptypecheck="false"
-$(ANTLR_JAR): src/main/java/de/prob/parser/antlr/*.java
+$(ANTLR_JAR): src/main/java/de/prob/parser/antlr/*.java src/main/antlr/*.g4
 	./gradlew fatJar
 testjar: $(ANTLR_JAR)
 	time java -jar $(ANTLR_JAR) $(FILE) false
