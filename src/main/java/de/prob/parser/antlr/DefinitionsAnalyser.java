@@ -43,6 +43,7 @@ public class DefinitionsAnalyser implements IDefinitions {
 		for (Iterator<String> iterator = definitionTypes.keySet().iterator(); iterator.hasNext();) {
 			String defName = (String) iterator.next();
 			DefinitionType definitionType = this.getDefinitionType(defName);
+			System.out.println("DEFINITION: " + defName + " has type " + definitionType);
 			if (definitionType == DefinitionType.UNKNOWN_TYPE) {
 				defsWithUnknownType.add(defName);
 			}
@@ -83,7 +84,7 @@ public class DefinitionsAnalyser implements IDefinitions {
 			FormulaContext formula = ctx.formula();
 			final String name = ctx.name.getText();
 			definitions.put(name, formula);
-			List<Token> parameters = ctx.parameters;
+			List<TerminalNode> parameters = ctx.parameters.IDENTIFIER();
 			int numberOfParameter;
 			if (parameters == null) {
 				numberOfParameter = 0;

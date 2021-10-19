@@ -2,9 +2,11 @@ package de.prob.parser.antlr;
 
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
+import de.prob.parser.ast.nodes.DefinitionNode;
 import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.MachineReferenceNode;
+import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.OperationNode;
 import de.prob.parser.ast.nodes.OperationReferenceNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
@@ -25,6 +27,11 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import files.BParser.FormulaContext;
+import files.BParser.FormulaExpressionContext;
+import files.BParser.FormulaPredicateContext;
+import files.BParser.FormulaSubstitutionContext;
 
 public class MachineASTCreator {
 	private final MachineNode machineNode;
@@ -64,10 +71,42 @@ public class MachineASTCreator {
 		@Override
 		public Void visitMachine_header(BParser.Machine_headerContext ctx) {
 			machineNode.setName(ctx.IDENTIFIER().getText());
+			// System.out.println("Creating AST for machine " + ctx.IDENTIFIER().getText());
 			return null;
 		}
 
-		//TODO: Add definitions to Machine AST
+		// TODO: Add definitions to Machine AST
+		// @Override public Void visitDefinitionClause(BParser.DefinitionClauseContext
+		// ctx) { return null; }
+		// @Override public T visitDefinitionFile(BParser.DefinitionFileContext ctx) {
+		// return visitChildren(ctx); }
+		// see DefinitionFinder in DefinitionsAnalyser.java
+		@Override
+		public Void visitOrdinaryDefinition(BParser.OrdinaryDefinitionContext ctx) {
+			final String name = ctx.name.getText();
+			Node body = null;
+			FormulaContext formula = ctx.formula();
+	        if (formula instanceof FormulaPredicateContext) {
+	        	body = ((FormulaPredicateContext)formula).predicate().accept(formulaAstCreator);
+	        } else if (formula instanceof FormulaSubstitutionContext) {
+	        	body = ((FormulaSubstitutionContext)formula).substitution().accept(formulaAstCreator);
+	        } else if (formula instanceof FormulaExpressionContext) {
+	        	body = ((FormulaExpressionContext)formula).expression().accept(formulaAstCreator);
+	        } else {
+	        	throw new RuntimeException();
+	        }
+
+			List<DeclarationNode> paramNodes = new ArrayList<>();
+			if (ctx.parameters != null) {
+				paramNodes = createDeclarationList(ctx.parameters.IDENTIFIER(),
+						DeclarationNode.Kind.OP_INPUT_PARAMETER);
+			}
+
+			DefinitionNode definitionNode = new DefinitionNode(Util.createSourceCodePosition(ctx), name, paramNodes,
+					body);
+			machineNode.addDefinition(definitionNode);
+			return null;
+		}
 
 		@Override
 		public Void visitInstanceClause(BParser.InstanceClauseContext ctx) {
@@ -101,18 +140,21 @@ public class MachineASTCreator {
 			for (BParser.Composed_identifierContext instance : ctx.composed_identifier_list().idents) {
 				String prefix = null;
 				String name;
-				if(instance.IDENTIFIER().size() > 1) {
+				if (instance.IDENTIFIER().size() > 1) {
 					prefix = instance.IDENTIFIER().get(0).toString();
 					name = instance.IDENTIFIER().get(1).toString();
 				} else {
 					name = instance.IDENTIFIER().get(0).toString();
 				}
-				if(referenceKindToken.getType() == BParser.SEES || referenceKindToken.getType() == BParser.USES) {
-					MachineReferenceNode.Kind kind = referenceKindToken.getType() == BParser.SEES ? MachineReferenceNode.Kind.SEEN : MachineReferenceNode.Kind.USED;
+				if (referenceKindToken.getType() == BParser.SEES || referenceKindToken.getType() == BParser.USES) {
+					MachineReferenceNode.Kind kind = referenceKindToken.getType() == BParser.SEES
+							? MachineReferenceNode.Kind.SEEN
+							: MachineReferenceNode.Kind.USED;
 					machineNode.addMachineReferenceNode(
 							new MachineReferenceNode(Util.createSourceCodePosition(ctx), name, kind, prefix, true));
-				} else if(referenceKindToken.getType() == BParser.PROMOTES) {
-					machineNode.addOperationReferenceNode(new OperationReferenceNode(Util.createSourceCodePosition(ctx), name, prefix, true));
+				} else if (referenceKindToken.getType() == BParser.PROMOTES) {
+					machineNode.addOperationReferenceNode(
+							new OperationReferenceNode(Util.createSourceCodePosition(ctx), name, prefix, true));
 				} else {
 					throw new RuntimeException("Reference type of ReferenceClauseContext is unknown");
 				}
@@ -174,20 +216,21 @@ public class MachineASTCreator {
 
 		@Override
 		public Void visitValuesClause(BParser.ValuesClauseContext ctx) {
-			for(int i = 0; i < ctx.idents.size(); i++) {
+			for (int i = 0; i < ctx.idents.size(); i++) {
 				String name = ctx.idents.get(i).getText();
-				IdentifierExprNode identifier = new IdentifierExprNode(Util.createSourceCodePosition(ctx.idents.get(i)), name, false);
+				IdentifierExprNode identifier = new IdentifierExprNode(Util.createSourceCodePosition(ctx.idents.get(i)),
+						name, false);
 				ExprNode expr = (ExprNode) ctx.exprs.get(i).accept(formulaAstCreator);
 				machineNode.addValues(new AssignSubstitutionNode(Util.createSourceCodePosition(ctx),
-						Collections.singletonList(identifier),
-						Collections.singletonList(expr)));
+						Collections.singletonList(identifier), Collections.singletonList(expr)));
 			}
 			return null;
 		}
 
 		@Override
 		public Void visitAssertionClause(BParser.AssertionClauseContext ctx) {
-			List<PredicateNode> preds = ctx.predicate().stream().map(pred -> (PredicateNode) pred.accept(formulaAstCreator)).collect(Collectors.toList());
+			List<PredicateNode> preds = ctx.predicate().stream()
+					.map(pred -> (PredicateNode) pred.accept(formulaAstCreator)).collect(Collectors.toList());
 			machineNode.setAssertions(preds);
 			return null;
 		}

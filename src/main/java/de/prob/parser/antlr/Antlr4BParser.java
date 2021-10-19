@@ -39,16 +39,18 @@ public class Antlr4BParser {
 	}
 
 	public static BProject createBProject(List<MachineNode> machineNodeList) throws TypeErrorException, ScopeException {
-		return createBProject(machineNodeList, true);
+		return createBProject(machineNodeList, true, true);
 	}
 
-	public static BProject createBProject(List<MachineNode> machineNodeList, boolean typecheck) throws TypeErrorException, ScopeException {
+	public static BProject createBProject(List<MachineNode> machineNodeList, boolean typecheck, boolean scopecheck) throws TypeErrorException, ScopeException {
 		// determine machine order
 
 		sortMachineNodes(machineNodeList);
 		for (int i = machineNodeList.size() - 1; i >= 0; i--) {
 			MachineNode machineNode = machineNodeList.get(i);
-			new MachineScopeChecker(machineNode);
+		    if(scopecheck) {
+			    new MachineScopeChecker(machineNode);
+			}
 		}
 		if(typecheck) {
 			for (int i = machineNodeList.size() - 1; i >= 0; i--) {
@@ -76,10 +78,10 @@ public class Antlr4BParser {
 	}
 
 	public static BProject createBProjectFromMainMachineFile(File mainBFile) throws TypeErrorException, ScopeException, IOException {
-		return createBProjectFromMainMachineFile(mainBFile, true);
+		return createBProjectFromMainMachineFile(mainBFile, true, true);
 	}
 
-	public static BProject createBProjectFromMainMachineFile(File mainBFile, boolean typecheck) throws IOException, TypeErrorException, ScopeException {
+	public static BProject createBProjectFromMainMachineFile(File mainBFile, boolean typecheck, boolean scopecheck) throws IOException, TypeErrorException, ScopeException {
 		final File parentFolder = mainBFile.getParentFile();
 		final List<MachineNode> machines = new ArrayList<>();
 		final StartContext mainMachineCST = parse(mainBFile);
@@ -110,7 +112,7 @@ public class Antlr4BParser {
 				}
 			}
 		}
-		return createBProject(machines, typecheck);
+		return createBProject(machines, typecheck, scopecheck);
 	}
 
 	protected static File getFile(File parentFolder, String name) {
@@ -274,10 +276,13 @@ public class Antlr4BParser {
 		}
 
 		boolean typecheck = args.length == 1 || Boolean.parseBoolean(args[1]);
+		boolean scopecheck =  (args.length<=2) ? typecheck : Boolean.parseBoolean(args[2]);
+		// TODO: add options similar to SableCC parser, notably -prolog, or automatically generating .prob file
+		
 		Path filePath = Paths.get(args[0]);
 
 		final long start = System.currentTimeMillis();
-		BProject project = createBProjectFromMainMachineFile(filePath.toFile(), typecheck);
+		BProject project = createBProjectFromMainMachineFile(filePath.toFile(), typecheck, scopecheck);
 		final long mid = System.currentTimeMillis();
 		PrologASTPrinter astPrinter = new PrologASTPrinter();
 		String prologAST = astPrinter.visitMachineNode(project.getMainMachine());

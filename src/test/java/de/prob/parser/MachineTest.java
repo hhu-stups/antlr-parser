@@ -63,6 +63,15 @@ public class MachineTest {
 		machine += "END";
 		check(machine);
 	}
+	
+	@Test
+	public void testMachinesWithDefinitions() throws Exception {
+		String machine = "MACHINE test\n";
+		machine += "DEFINITIONS\n";
+		machine += "Foo(x) == x + 1 \n";
+		machine += "END";
+		check(machine);
+	}
 
 	private void check(String main, String... others) throws Exception {
 		Antlr4BParser.createBProjectFromMachineStrings(main, others);

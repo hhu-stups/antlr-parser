@@ -5,8 +5,14 @@ import de.prob.parser.ast.nodes.ltl.LTLFormula;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.substitution.SubstitutionNode;
 
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.List;
+
+import files.BParser.FormulaContext;
+import files.BParser.FormulaPredicateContext;
+import files.BParser.FormulaSubstitutionContext;
+import files.BParser.FormulaExpressionContext;
 
 public class MachineNode extends Node {
 
@@ -25,6 +31,7 @@ public class MachineNode extends Node {
 	private SubstitutionNode initialisation;
 	private List<OperationNode> operations = new ArrayList<>();
 	private List<SubstitutionNode> values = new ArrayList<>();
+	private List<DefinitionNode> definitions = new ArrayList<>();
 
 	private List<LTLFormula> ltlFormulas = new ArrayList<>();
 
@@ -74,6 +81,10 @@ public class MachineNode extends Node {
 
 	public List<OperationNode> getOperations() {
 		return operations;
+	}
+
+	public List<DefinitionNode> getDefinitions() {
+		return this.definitions;
 	}
 
 	public void setOperations(List<OperationNode> operations) {
@@ -153,8 +164,6 @@ public class MachineNode extends Node {
 		return operationReferences;
 	}
 
-
-
 	public void addValues(SubstitutionNode substitution) {
 		values.add(substitution);
 		substitution.setParent(this);
@@ -183,9 +192,14 @@ public class MachineNode extends Node {
 
 	@Override
 	public String toString() {
-		if(prefix != null) {
+		if (prefix != null) {
 			return this.prefix + "." + this.machineName;
 		}
 		return this.machineName;
 	}
+
+	public void addDefinition(DefinitionNode definitionNode) {
+		this.definitions.add(definitionNode);
+	}
+
 }
