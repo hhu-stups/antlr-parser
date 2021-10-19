@@ -39,6 +39,11 @@ public class MachineASTCreator {
 		return (ExprNode) context.accept(formulaASTCreator);
 	}
 
+	public static PredicateNode createPredicateAST(BParser.PredicateContext context) {
+		FormulaASTCreator formulaASTCreator = new FormulaASTCreator();
+		return (PredicateNode) context.accept(formulaASTCreator);
+	}
+
 	private MachineNode getMachineNode() {
 		return this.machineNode;
 	}

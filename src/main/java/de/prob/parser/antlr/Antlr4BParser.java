@@ -242,6 +242,29 @@ public class Antlr4BParser {
 		return tree;
 	}
 
+	public static BParser.PredicateContext parsePredicate(final CharStream charStream) {
+		BLexer lexer = new BLexer(charStream);
+		// MyLexer myLexer = new MyLexer(fromString);
+
+		// create a buffer of tokens pulled from the lexer
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+		// BLexer.rulesGrammar = true;
+		// create a parser that feeds off the tokens buffer
+
+		BParser parser = new BParser(tokens);
+		// RulesGrammar parser = new RulesGrammar(tokens);
+
+		// parser.addErrorListener(new MyErrorListener());
+		// parser.removeErrorListeners();
+		parser.addErrorListener(new DiagnosticErrorListener());
+		MyErrorListener myErrorListener = new MyErrorListener();
+		parser.addErrorListener(myErrorListener);
+		BParser.PredicateContext tree = null;
+
+		tree = parser.predicate();
+		return tree;
+	}
+
 	public static void main(String[] args) throws TypeErrorException, ScopeException, IOException, URISyntaxException {
 		if(args.length != 1 && args.length != 2) {
 			System.out.println("Arguments for ANTLR B Parser is wrong");
