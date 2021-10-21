@@ -104,8 +104,7 @@ task uberjar(type: Jar, dependsOn: deploy) {
 }
 
 wrapper {
-    gradleVersion = "6.8.2"
-    distributionType = Wrapper.DistributionType.ALL
+    gradleVersion = "7.2"
 }
 
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs) // What does this do?
