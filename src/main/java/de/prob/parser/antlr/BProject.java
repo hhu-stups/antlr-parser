@@ -3,7 +3,6 @@ package de.prob.parser.antlr;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import de.prob.parser.ast.nodes.MachineNode;
 
