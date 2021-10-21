@@ -19,6 +19,7 @@ import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
 import de.prob.parser.ast.nodes.expression.StructNode;
 import de.prob.parser.ast.nodes.predicate.IdentifierPredicateNode;
 import de.prob.parser.ast.nodes.predicate.LetPredicateNode;
+import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.predicate.QuantifiedPredicateNode;
 import de.prob.parser.ast.nodes.substitution.AnySubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.AssignSubstitutionNode;
@@ -64,6 +65,11 @@ public class MachineScopeChecker {
 	public void checkExpression(ExprNode exprNode) {
 		FormulaScopeChecker formulaScopeChecker = new FormulaScopeChecker();
 		formulaScopeChecker.visitExprNode(exprNode);
+	}
+
+	public void checkPredicate(PredicateNode predicateNode) {
+		FormulaScopeChecker formulaScopeChecker = new FormulaScopeChecker();
+		formulaScopeChecker.visitPredicateNode(predicateNode);
 	}
 
 	private void check() {

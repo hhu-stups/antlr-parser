@@ -139,6 +139,14 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		performPostActions();
 	}
 
+	public void checkPredicateNode(PredicateNode predNode) {
+		BType type = visitPredicateNode(predNode, new UntypedType());
+		if (type.isUntyped()) {
+			throw new TypeCheckerVisitorException(new TypeErrorException("Can not infer type of formula: " + type));
+		}
+		performPostActions();
+	}
+
 	private void checkLTLFormulaNode(LTLFormula ltlFormulaAst) {
 		for (DeclarationNode node : ltlFormulaAst.getImplicitDeclarations()) {
 			node.setType(new UntypedType());
