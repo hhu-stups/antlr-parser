@@ -1,7 +1,9 @@
 package de.prob.parser.antlr;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import de.prob.parser.ast.nodes.MachineNode;
 
@@ -24,6 +26,10 @@ public class BProject {
 		} else {
 			throw new RuntimeException("Unknown operation name: " + machineName);
 		}
+	}
+
+	public List<MachineNode> getMachines() {
+		return new ArrayList<>(machinesMap.values());
 	}
 
 }
