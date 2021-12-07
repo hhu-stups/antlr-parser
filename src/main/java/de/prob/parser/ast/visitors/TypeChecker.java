@@ -549,6 +549,16 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 				visitExprNode(expressionNodes.get(0), new SetType(new CoupleType(IntegerType.getInstance(), node.getType())));
 			}
 			return node.getType();
+		case CARTESIAN_PRODUCT: {
+			SetType found = new SetType(new CoupleType(new UntypedType(), new UntypedType()));
+			found = (SetType) unify(expected, found, node);
+			CoupleType c1 = (CoupleType) found.getSubType();
+			BType typeOfA = c1.getLeft();
+			BType typeOfB = c1.getRight();
+			visitExprNode(expressionNodes.get(0), typeOfA);
+			visitExprNode(expressionNodes.get(1), typeOfB);
+			return node.getType();
+		}
 		case DIRECT_PRODUCT: {
 			/*
 			 * E ⊗ F type of result is is P(T ×(U × V)) type of E is P(T × U)
