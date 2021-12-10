@@ -555,8 +555,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			CoupleType c1 = (CoupleType) found.getSubType();
 			BType typeOfA = c1.getLeft();
 			BType typeOfB = c1.getRight();
-			visitExprNode(expressionNodes.get(0), typeOfA);
-			visitExprNode(expressionNodes.get(1), typeOfB);
+			visitExprNode(expressionNodes.get(0), new SetType(typeOfA));
+			visitExprNode(expressionNodes.get(1), new SetType(typeOfB));
 			return node.getType();
 		}
 		case DIRECT_PRODUCT: {
