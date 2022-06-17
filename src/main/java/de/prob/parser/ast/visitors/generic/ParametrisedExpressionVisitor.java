@@ -1,5 +1,6 @@
 package de.prob.parser.ast.visitors.generic;
 
+import de.prob.parser.ast.nodes.expression.RealNumberNode;
 import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;
 import de.prob.parser.ast.nodes.expression.RecordNode;
 import de.prob.parser.ast.nodes.expression.StructNode;
@@ -24,6 +25,8 @@ public interface ParametrisedExpressionVisitor<R, P> {
 			return visitIdentifierExprNode((IdentifierExprNode) node, expected);
 		} else if (node instanceof NumberNode) {
 			return visitNumberNode((NumberNode) node, expected);
+		} else if(node instanceof RealNumberNode) {
+			return visitRealNumberNode((RealNumberNode) node, expected);
 		} else if (node instanceof QuantifiedExpressionNode) {
 			return visitQuantifiedExpressionNode((QuantifiedExpressionNode) node, expected);
 		} else if (node instanceof SetComprehensionNode) {
@@ -55,6 +58,8 @@ public interface ParametrisedExpressionVisitor<R, P> {
 	R visitCastPredicateExpressionNode(CastPredicateExpressionNode node, P expected);
 
 	R visitNumberNode(NumberNode node, P expected);
+
+	R visitRealNumberNode(RealNumberNode node, P expected);
 
 	R visitQuantifiedExpressionNode(QuantifiedExpressionNode node, P expected);
 

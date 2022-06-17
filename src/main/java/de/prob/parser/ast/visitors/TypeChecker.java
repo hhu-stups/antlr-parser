@@ -7,6 +7,7 @@ import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.MachineReferenceNode;
 import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.OperationNode;
+import de.prob.parser.ast.nodes.expression.RealNumberNode;
 import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;
 import de.prob.parser.ast.nodes.expression.RecordNode;
 import de.prob.parser.ast.nodes.expression.StructNode;
@@ -55,6 +56,7 @@ import de.prob.parser.ast.types.DeferredSetElementType;
 import de.prob.parser.ast.types.EnumeratedSetElementType;
 import de.prob.parser.ast.types.IntegerOrSetOfPairs;
 import de.prob.parser.ast.types.IntegerType;
+import de.prob.parser.ast.types.RealType;
 import de.prob.parser.ast.types.RecordType;
 import de.prob.parser.ast.types.SetOrIntegerType;
 import de.prob.parser.ast.types.SetType;
@@ -76,6 +78,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	private Set<ExpressionOperatorNode> minusNodes = new HashSet<>();
 	private Set<ExpressionOperatorNode> multOrCartNodes = new HashSet<>();
 	private Set<TypedNode> typedNodes = new HashSet<>();
+
+	// TODO: Implement type checking for reals
 
 	public TypeChecker(MachineNode machineNode) throws TypeErrorException {
 		try {
@@ -797,6 +801,11 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	@Override
 	public BType visitNumberNode(NumberNode node, BType expected) {
 		return unify(expected, IntegerType.getInstance(), node);
+	}
+
+	@Override
+	public BType visitRealNumberNode(RealNumberNode node, BType expected) {
+		return unify(expected, RealType.getInstance(), node);
 	}
 
 	private BType unify(BType expected, BType found, TypedNode node) {

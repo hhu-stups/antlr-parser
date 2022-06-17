@@ -2,6 +2,7 @@ package de.prob.parser.antlr;
 
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.Node;
+import de.prob.parser.ast.nodes.expression.RealNumberNode;
 import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;
 import de.prob.parser.ast.nodes.expression.RecordNode;
 import de.prob.parser.ast.nodes.expression.StructNode;
@@ -56,6 +57,7 @@ import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -557,6 +559,12 @@ public class FormulaASTCreator extends BParserBaseVisitor<Node> {
 	public Node visitNumber(BParser.NumberContext ctx) {
 		BigInteger value = new BigInteger(ctx.Number().getText());
 		return new NumberNode(Util.createSourceCodePosition(ctx), value);
+	}
+
+	@Override
+	public Node visitRealNumber(BParser.RealNumberContext ctx) {
+		BigDecimal value = new BigDecimal(ctx.Real_Number().getText());
+		return new RealNumberNode(Util.createSourceCodePosition(ctx), value);
 	}
 
 	@Override
