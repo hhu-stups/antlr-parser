@@ -219,6 +219,7 @@ expression_in_par
 
 expression
   : Number                                                                  # Number
+  | Real_Number                                                             # RealNumber
   | HEX_LITERAL                                                             # HexDigit
   | value=(TRUE|FALSE)                                                      # BooleanValue
   | StringLiteral                                                           # String
@@ -358,6 +359,7 @@ expression_keyword
   | STRING
   | MAXINT
   | MININT
+  | REAL
   )
   ;
 

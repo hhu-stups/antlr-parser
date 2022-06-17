@@ -23,6 +23,8 @@ Number
   | DIGIT
   ;
 
+Real_Number: Number '.' Number ;
+
 HEX_LITERAL: '0x' HEX_DIGIT+;
 
 MACHINE: 'MACHINE' ;
@@ -261,6 +263,7 @@ INT: 'INT';
 INTEGER: 'INTEGER' | '\u2124';
 MAXINT: 'MAXINT';
 MININT: 'MININT';
+REAL: 'REAL' | '\u214F';
 BOOL: 'BOOL';
 STRING: 'STRING';
 PRED: 'pred';
