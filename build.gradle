@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'antlr'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
+apply plugin: 'maven'
 apply plugin: 'application'
 
 project.version = '0.1.0-SNAPSHOT'
