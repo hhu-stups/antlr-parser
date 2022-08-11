@@ -658,7 +658,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		case GENERALIZED_INTER:
 		case GENERALIZED_UNION:
 			unify(expected, new SetType(new UntypedType()), node);
-			visitExprNode(expressionNodes.get(0), new SetType(node.getType()));
+			visitExprNode(expressionNodes.get(0), ((SetType) node.getType()).getSubType());
 			return ((SetType) node.getType()).getSubType();
 		case EMPTY_SEQUENCE:
 			typedNodes.add(node);
