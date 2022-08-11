@@ -2,7 +2,6 @@ apply plugin: 'java'
 apply plugin: 'antlr'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
-apply plugin: 'maven'
 apply plugin: 'application'
 
 project.version = '0.1.0-SNAPSHOT'
@@ -28,8 +27,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 dependencies {
-    antlr "org.antlr:antlr4:4.7.1" // use ANTLR version 4
-    testCompile 'junit:junit:4.8.2'
+    antlr 'org.antlr:antlr4:4.10.1' // use ANTLR version 4
+    testImplementation 'junit:junit:4.13.2'
 }
 
 
@@ -104,7 +103,7 @@ task uberjar(type: Jar, dependsOn: deploy) {
 }
 
 wrapper {
-    gradleVersion = "7.2"
+    gradleVersion = "7.4.2"
 }
 
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs) // What does this do?
