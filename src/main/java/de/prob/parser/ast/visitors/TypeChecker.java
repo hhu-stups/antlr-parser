@@ -648,7 +648,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		case RESTRICT_FRONT:
 		case RESTRICT_TAIL:
 			// s /|\ n s \|/ n
-			// type of result is is P(Z × T)
+			// type of result is P(Z × T)
 			// type of s is P(Z×T)
 			// type of n is INTEGER
 			unify(expected, new SetType(new CoupleType(IntegerType.getInstance(), new UntypedType())), node);
@@ -657,9 +657,12 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			return node.getType();
 		case GENERALIZED_INTER:
 		case GENERALIZED_UNION:
+			// inter(S), union(S)
+			// type of result is Z
+			// type of S is P(Z)
 			unify(expected, new SetType(new UntypedType()), node);
-			visitExprNode(expressionNodes.get(0), ((SetType) node.getType()).getSubType());
-			return ((SetType) node.getType()).getSubType();
+			visitExprNode(expressionNodes.get(0), new SetType(node.getType()));
+			return node.getType();
 		case EMPTY_SEQUENCE:
 			typedNodes.add(node);
 			return unify(expected, new SetType(new CoupleType(IntegerType.getInstance(), new UntypedType())), node);
