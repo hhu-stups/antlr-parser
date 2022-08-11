@@ -29,7 +29,6 @@ targetCompatibility = 1.8
 dependencies {
     antlr 'org.antlr:antlr4:4.10.1' // use ANTLR version 4
     testImplementation 'junit:junit:4.13.2'
-    implementation 'com.github.jitpack:example:1.1'
 }
 
 
