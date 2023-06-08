@@ -13,7 +13,7 @@ public class ExpressionOperatorNode extends ExprNode
     public enum ExpressionOperator {
 
 		// arithmetic
-		NATURAL, NATURAL1, INTEGER, INT, NAT, NAT1, MININT, MAXINT//
+		NATURAL, NATURAL1, INTEGER, INT, NAT, NAT1, MININT, MAXINT, REAL//
 		, TRUE, FALSE, POWER_OF //
 		, PLUS, MINUS, MULT, DIVIDE, MOD, INTERVAL//
 		, UNARY_MINUS//
