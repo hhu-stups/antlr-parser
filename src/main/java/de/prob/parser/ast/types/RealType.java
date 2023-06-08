@@ -1,6 +1,7 @@
 package de.prob.parser.ast.types;
 
 public class RealType extends BasicType implements BType {
+
     private static RealType instance = new RealType();
 
     public static RealType getInstance() {
@@ -13,7 +14,7 @@ public class RealType extends BasicType implements BType {
 
     @Override
     public boolean unifiable(BType otherType) {
-        return otherType instanceof UntypedType || otherType instanceof RealType;
+        return otherType == this || otherType instanceof UntypedType;
     }
 
     @Override
@@ -21,10 +22,12 @@ public class RealType extends BasicType implements BType {
         if (unifiable(otherType)) {
             if (otherType == instance) {
                 return instance;
-            } else if (otherType instanceof RealType) {
-                return otherType.unify(this);
+            } else {
+                ((UntypedType) otherType).replaceBy(this);
+                return instance;
             }
+        } else {
+            throw new UnificationException();
         }
-        throw new UnificationException();
     }
 }
