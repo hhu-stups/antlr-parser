@@ -319,7 +319,7 @@ public class Antlr4BParser {
 		String prologAST = astPrinter.visitMachineNode(project.getMainMachine());
 		final long end = System.currentTimeMillis();
 		System.out.println("% Generated AST for machine: " + project.getMainMachine().getName() + " (Parsing: " + (mid - start) + " ms, AST: " + (end - start) + " ms)");
-		System.out.println("parser_version('ANTLR-0.1').");
+		System.out.println("parser_version('ANTLR-" + getVersion() + "').");
 		System.out.println("classical_b('"+ project.getMainMachine().getName() + "',['" + filePath + "'])."); // TO DO: insert real machine name
 		System.out.println(prologAST + ".");
 		
