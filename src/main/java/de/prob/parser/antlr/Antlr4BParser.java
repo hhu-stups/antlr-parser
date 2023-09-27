@@ -1,24 +1,15 @@
 package de.prob.parser.antlr;
 
-import de.prob.parser.ast.nodes.MachineNode;
-import de.prob.parser.ast.nodes.MachineReferenceNode;
-import de.prob.parser.ast.visitors.MachineScopeChecker;
-import de.prob.parser.ast.visitors.TypeChecker;
-import de.prob.parser.ast.visitors.TypeErrorException;
-import de.prob.parser.util.Utils;
-import files.BLexer;
-import files.BParser;
-import files.BParser.StartContext;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.CharStreams;
-import org.antlr.v4.runtime.CodePointCharStream;
-import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.DiagnosticErrorListener;
-
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.io.UncheckedIOException;
 import java.net.URISyntaxException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -26,9 +17,49 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
+import de.prob.parser.ast.nodes.MachineNode;
+import de.prob.parser.ast.nodes.MachineReferenceNode;
+import de.prob.parser.ast.visitors.MachineScopeChecker;
+import de.prob.parser.ast.visitors.TypeChecker;
+import de.prob.parser.ast.visitors.TypeErrorException;
+import de.prob.parser.util.Utils;
+
+import files.BLexer;
+import files.BParser;
+import files.BParser.StartContext;
+
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CodePointCharStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.DiagnosticErrorListener;
+
 public class Antlr4BParser {
+	private static final Properties buildProperties;
+	static {
+		buildProperties = new Properties();
+		final InputStream is = Antlr4BParser.class.getResourceAsStream("build.properties");
+		if (is == null) {
+			throw new UncheckedIOException(new FileNotFoundException("Build properties not found, this should never happen!"));
+		} else {
+			try (final Reader r = new InputStreamReader(is, StandardCharsets.UTF_8)) {
+				buildProperties.load(r);
+			} catch (final IOException e) {
+				throw new UncheckedIOException("IOException while loading build properties, this should never happen!", e);
+			}
+		}
+	}
+
+	public static String getVersion() {
+		return buildProperties.getProperty("version");
+	}
+
+	public static String getGitCommit() {
+		return buildProperties.getProperty("git");
+	}
 
 	public static MachineNode createSemanticAST(String input) throws TypeErrorException, ScopeException {
 		StartContext tree = parse(input);

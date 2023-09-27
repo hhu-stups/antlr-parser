@@ -34,30 +34,6 @@ sourceSets {
     }
 }
 
-
-def getCheckedOutGitCommitHash() {
-    def gitFolder = "$projectDir/.git/"
-    try {
-        def head = new File(gitFolder + "HEAD").text.split(":") // .git/HEAD
-        def isCommit = head.length == 1 // detached head mode?
-        if (isCommit) return head[0].trim() // head contains only commit id
-        def refHead = new File(gitFolder + head[1].trim()) // look up ref: .git/refs/heads/master
-        refHead.text.trim() 
-    } catch (Exception e) { "unknown" }
-}
-
-task createBuildConstants  {
-    doFirst {
-        def buildconstants_class = """
-version=${project.version}
-git=${getCheckedOutGitCommitHash()}"""
-        File f = file("src/main/resources/build.properties")
-        f.delete()
-        f.getParentFile().mkdirs()
-        f << buildconstants_class
-    }
-}
-
 task deploy(dependsOn: [build])
 
 // gradle generateGrammarSource
@@ -80,12 +56,24 @@ jar {
 }
 
 compileJava {
-    dependsOn = ['createBuildConstants','generateGrammarSource']
-    doFirst {
-   	def buildconstants_class = """CompileDate=${new java.sql.Timestamp(Calendar.getInstance().getTime().getTime()).toString()}"""
-   	File f = file("src/main/resources/revision.properties")
-        f.delete()
-        f <<  buildconstants_class
+    dependsOn = ['generateGrammarSource']
+}
+
+def readCurrentGitCommit() {
+    def proc = ["git", "rev-parse", "HEAD"].execute(null, project.projectDir)
+    def exitCode = proc.waitFor()
+    if (exitCode != 0) {
+        throw new IllegalStateException("git rev-parse command exited with status code ${exitCode}:\n" + proc.err.readLines().join("\n"))
+    }
+    return proc.in.readLines()[0]
+}
+
+final currentGitCommit = readCurrentGitCommit()
+processResources {
+    inputs.property("project.version", project.version)
+    inputs.property("currentGitCommit", currentGitCommit)
+    filesMatching("de/prob/parser/antlr/build.properties") {
+        expand(version: project.version, git: currentGitCommit)
     }
 }
 
