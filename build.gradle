@@ -1,8 +1,10 @@
-apply plugin: 'java'
-apply plugin: 'antlr'
-apply plugin: 'idea'
-apply plugin: 'eclipse'
-apply plugin: 'application'
+plugins {
+    id "antlr"
+    id "application"
+    id "eclipse"
+    id "idea"
+    id "java"
+}
 
 project.version = '0.1.0-SNAPSHOT'
 project.group = 'de.hhu.stups'
