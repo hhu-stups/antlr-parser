@@ -5,13 +5,11 @@ plugins {
     id "idea"
     id "java"
     
-    id "com.github.johnrengelman.shadow" version "7.1.2"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 project.version = '0.1.0-SNAPSHOT'
 project.group = 'de.hhu.stups'
-
-mainClassName = "de.prob.parser.antlr.Antlr4BParser"
 
 repositories {
     mavenCentral()
@@ -20,9 +18,6 @@ repositories {
         url "https://oss.sonatype.org/content/repositories/snapshots/"
     }
 }
-
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
 
 dependencies {
     antlr 'org.antlr:antlr4:4.7.1' // use ANTLR version 4
@@ -36,6 +31,10 @@ sourceSets {
           	srcDirs = ['build/temp', 'src/main/java', 'build/generated-src/antlr/main']
         }
     }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
 }
 
 // gradle generateGrammarSource
@@ -67,10 +66,6 @@ processResources {
     }
 }
 
-wrapper {
-    gradleVersion = "7.4.2"
-}
-
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs) // What does this do?
 
 tasks.withType(JavaExec) {
@@ -81,4 +76,8 @@ tasks.withType(JavaExec) {
             args([file, true])
         }
     }
+}
+
+application {
+    mainClass = "de.prob.parser.antlr.Antlr4BParser"
 }
