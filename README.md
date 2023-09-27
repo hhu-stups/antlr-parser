@@ -29,13 +29,13 @@ To disable type checking (which can still be slow and is less powerful than ProB
 
 You can also build a stand-alone JAR like this:
 ```
-	./gradlew fatJar
+	./gradlew shadowJar
 ```
 
 You can then use it as follows:
 
 ```
-	time java -jar build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar $(FILE) false
+	time java -jar build/libs/antlr-parser-0.1.0-SNAPSHOT-all.jar $(FILE) false
 ```
 
 Note this is more or less equivalent to using [ProB](https://prob.hhu.de/)'s SableCC parser (available in ProB's lib folder):

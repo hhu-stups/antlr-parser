@@ -4,6 +4,8 @@ plugins {
     id "eclipse"
     id "idea"
     id "java"
+    
+    id "com.github.johnrengelman.shadow" version "7.1.2"
 }
 
 project.version = '0.1.0-SNAPSHOT'
@@ -36,25 +38,11 @@ sourceSets {
     }
 }
 
-task deploy(dependsOn: [build])
-
 // gradle generateGrammarSource
 generateGrammarSource {
     maxHeapSize = "64m"
     arguments += ["-visitor", "-long-messages"]
     outputDirectory = file('build/generated-src/antlr/main/files')
-}
-
-
-jar {
-    include '**/*.class'
-    include '**/*.java'
-    exclude '**.*.scc'
-    from 'build/temp'
-    include '**/*.dat'
-    include '**/*.properties'
-    from sourceSets.main.toString()
-    include '**/*.java'
 }
 
 compileJava {
@@ -79,29 +67,11 @@ processResources {
     }
 }
 
-task uberjar(type: Jar, dependsOn: deploy) {
-    baseName = 'antlr-parser'
-    subprojects.each { subproject ->
-        from subproject.configurations.archives.allArtifacts.getFiles().collect { zipTree(it) }
-    }
-}
-
 wrapper {
     gradleVersion = "7.4.2"
 }
 
 sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs) // What does this do?
-
-task fatJar(type: Jar) {
-    baseName = project.name + '-all'
-    manifest {
-        attributes 'Title': 'antlr-parser',
-                'Version': project.version,
-                'Main-Class': mainClassName
-    }
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
 
 tasks.withType(JavaExec) {
     if(project.hasProperty('file')) {

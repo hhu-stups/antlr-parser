@@ -1,11 +1,11 @@
 FILE=CAN_BUS_tlc.mch
 FILE=rule_medium500.mch
-ANTLR_JAR=build/libs/antlr-parser-all-0.1.0-SNAPSHOT.jar
+ANTLR_JAR=build/libs/antlr-parser-0.1.0-SNAPSHOT-all.jar
 
 test:
 	./gradlew run -Pfile="$(FILE)" -Ptypecheck="false"
 $(ANTLR_JAR): src/main/java/de/prob/parser/antlr/*.java src/main/antlr/*.g4
-	./gradlew fatJar
+	./gradlew shadowJar
 testjar: $(ANTLR_JAR)
 	time java -jar $(ANTLR_JAR) $(FILE) false
 
