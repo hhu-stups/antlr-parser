@@ -19,8 +19,20 @@ repositories {
     }
 }
 
+// Prevent the full ANTLR tool (not just the runtime) being declared as a runtime dependency of our code.
+// Workaround for https://github.com/gradle/gradle/issues/820
+configurations {
+    api {
+        extendsFrom = extendsFrom.findAll {it != antlr}
+    }
+}
+
 dependencies {
-    antlr 'org.antlr:antlr4:4.9.3'
+    def antlrVersion = "4.9.3"
+
+    antlr group: "org.antlr", name: "antlr4", version: antlrVersion
+    api group: "org.antlr", name: "antlr4-runtime", version: antlrVersion
+
     testImplementation 'junit:junit:4.13.2'
 }
 
