@@ -39,7 +39,6 @@ java {
 
 // gradle generateGrammarSource
 generateGrammarSource {
-    maxHeapSize = "64m"
     arguments += ["-visitor", "-long-messages"]
     outputDirectory = file('build/generated-src/antlr/main/files')
 }
