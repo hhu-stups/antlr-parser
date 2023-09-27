@@ -10,16 +10,10 @@ project.group = 'de.hhu.stups'
 mainClassName = "de.prob.parser.antlr.Antlr4BParser"
 
 repositories {
-    mavenLocal()
-    jcenter()
     mavenCentral()
     maven {
         name "snapshots"
         url "https://oss.sonatype.org/content/repositories/snapshots/"
-    }
-    maven {
-        name "release"
-        url "https://oss.sonatype.org/content/repositories/releases/"
     }
 }
 
