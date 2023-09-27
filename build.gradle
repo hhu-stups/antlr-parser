@@ -20,7 +20,7 @@ repositories {
 }
 
 dependencies {
-    antlr 'org.antlr:antlr4:4.7.1' // use ANTLR version 4
+    antlr 'org.antlr:antlr4:4.9.3'
     testImplementation 'junit:junit:4.13.2'
 }
 
