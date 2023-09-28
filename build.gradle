@@ -42,7 +42,9 @@ java {
 
 // gradle generateGrammarSource
 generateGrammarSource {
-    arguments += ["-visitor", "-long-messages", "-package", "files"]
+    // This combination of "-lib", "-Xexact-output-dir", and outputDirectory is necessary
+    // to have both the grammar files and generated sources in the correct package without breaking imports.
+    arguments += ["-visitor", "-long-messages", "-package", "files", "-lib", "src/main/antlr/files", "-Xexact-output-dir"]
     outputDirectory = file('build/generated-src/antlr/main/files')
 }
 
