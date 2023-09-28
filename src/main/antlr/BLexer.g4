@@ -1,12 +1,5 @@
 lexer grammar BLexer;
 
-
-
-
-@header {
-package files;
-}
-
 @lexer::members {
 public boolean systemGrammar = false;
 

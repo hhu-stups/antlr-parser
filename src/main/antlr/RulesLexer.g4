@@ -9,10 +9,6 @@ public static final int PRAGMA_MODE = 1;
 import BLexer;
 
 /*
-@header {
-package files;
-}
-
 options {
   tokenVocab=BLexer;
 }*/

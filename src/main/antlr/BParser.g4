@@ -2,9 +2,6 @@ parser grammar BParser;
 
 options { tokenVocab=BLexer; }
 
-@header {
-package files;
-}
 //import Blexer;
 //options { tokenVocab=Blexer; } // this is currently not supported by gradle
 

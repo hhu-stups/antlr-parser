@@ -42,7 +42,7 @@ java {
 
 // gradle generateGrammarSource
 generateGrammarSource {
-    arguments += ["-visitor", "-long-messages"]
+    arguments += ["-visitor", "-long-messages", "-package", "files"]
     outputDirectory = file('build/generated-src/antlr/main/files')
 }
 
