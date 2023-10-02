@@ -19,12 +19,12 @@ and we deemed usage of this library suitable for your goals.
 
 You can use gradle to parse a FILE like this:
 ```
-	./gradlew run -Pfile="FILE"
+	./gradlew run --args="FILE true"
 ```
 To disable type checking (which can still be slow and is less powerful than ProB's typechecking) you can do this:
 
 ```
-	./gradlew run -Pfile="FILE" -Ptypecheck="false"
+	./gradlew run --args="FILE false"
 ```
 
 You can also build a stand-alone JAR like this:

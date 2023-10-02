@@ -3,7 +3,7 @@ FILE=rule_medium500.mch
 ANTLR_JAR=build/libs/antlr-parser-0.1.0-SNAPSHOT-all.jar
 
 test:
-	./gradlew run -Pfile="$(FILE)" -Ptypecheck="false"
+	./gradlew run --args="'$(FILE)' false"
 $(ANTLR_JAR): src/main/java/de/prob/parser/antlr/*.java src/main/antlr/*.g4
 	./gradlew shadowJar
 testjar: $(ANTLR_JAR)
