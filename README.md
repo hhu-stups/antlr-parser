@@ -18,29 +18,32 @@ and we deemed usage of this library suitable for your goals.
 ## Using the Parser on the Command Line
 
 You can use gradle to parse a FILE like this:
-```
-	./gradlew run --args="FILE true"
+
+```sh
+$ ./gradlew run --args="FILE true"
 ```
 To disable type checking (which can still be slow and is less powerful than ProB's typechecking) you can do this:
 
-```
-	./gradlew run --args="FILE false"
+```sh
+$ ./gradlew run --args="FILE false"
 ```
 
 You can also build a stand-alone JAR like this:
-```
-	./gradlew shadowJar
+
+```sh
+$ ./gradlew shadowJar
 ```
 
 You can then use it as follows:
 
-```
-	time java -jar build/libs/antlr-parser-0.1.0-SNAPSHOT-all.jar $(FILE) false
+```sh
+$ java -jar build/libs/antlr-parser-0.1.0-SNAPSHOT-all.jar $(FILE) false
 ```
 
 Note this is more or less equivalent to using [ProB](https://prob.hhu.de/)'s SableCC parser (available in ProB's lib folder):
-```
-	time java -jar probcliparser.jar FILE -prolog -time
+
+```sh
+$ java -jar probcliparser.jar FILE -prolog -time
 ```
 
 ## Limitations
