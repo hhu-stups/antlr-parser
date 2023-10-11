@@ -630,9 +630,19 @@ public class PrologASTPrinter implements AbstractVisitor<String, Void> {
 				functor = "equivalence";
 				break;
 			}
-			List<String> predicates = node.getPredicateArguments().stream()
-					.map(pred -> visitPredicateNode(pred, expected)).collect(Collectors.toList());
-			return String.format("%s(none,%s)", functor, String.join(", ", predicates));
+			String predicates = node.getPredicateArguments().stream()
+				.map(pred -> visitPredicateNode(pred, expected))
+				.collect(Collectors.joining(","));
+			if (operator == PredicateOperatorNode.PredicateOperator.AND || operator == PredicateOperatorNode.PredicateOperator.OR) {
+				// Conjunction and disjunction are binary operators,
+				// but may have more than two operands if the same operator is chained multiple times.
+				// This is represented as a single list argument in the Prolog AST.
+				return String.format("%s(none,[%s])", functor, predicates);
+			} else {
+				// Other operators always have a fixed number of operands (1 or 2).
+				// They are represented as normal Prolog term arguments.
+				return String.format("%s(none,%s)", functor, predicates);
+			}
 		}
 	}
 
