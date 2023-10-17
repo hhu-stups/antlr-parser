@@ -56,10 +56,6 @@ generateGrammarSource {
     outputDirectory = file('build/generated-src/antlr/main/files')
 }
 
-compileJava {
-    dependsOn = ['generateGrammarSource']
-}
-
 def readCurrentGitCommit() {
     def proc = ["git", "rev-parse", "HEAD"].execute(null, project.projectDir)
     def exitCode = proc.waitFor()
