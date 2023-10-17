@@ -4,18 +4,23 @@ plugins {
     id "eclipse"
     id "idea"
     id "java"
+    id "maven-publish"
+    id "signing"
     
     id "com.github.johnrengelman.shadow" version "8.1.1"
 }
 
 project.version = '0.1.0-SNAPSHOT'
 project.group = 'de.hhu.stups'
+final isSnapshot = project.version.endsWith("-SNAPSHOT")
 
 repositories {
     mavenCentral()
-    maven {
-        name "snapshots"
-        url "https://oss.sonatype.org/content/repositories/snapshots/"
+    if (isSnapshot) {
+        maven {
+            name "snapshots"
+            url "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
     }
 }
 
@@ -38,6 +43,9 @@ dependencies {
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
+
+    withSourcesJar()
+    withJavadocJar()
 }
 
 // gradle generateGrammarSource
@@ -85,4 +93,59 @@ tasks.withType(JavaExec) {
 
 application {
     mainClass = "de.prob.parser.antlr.Antlr4BParser"
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+
+            pom {
+                name = "ANTLR B parser" 
+                description = "DO NOT USE THIS PLEASE"
+                url = "https://github.com/hhu-stups/antlr-parser"
+
+                licenses {
+                    license {
+                        name = "EPL-1.0"
+                        url = "https://www.eclipse.org/org/documents/epl-v10.html"
+                    }
+                }
+
+                scm {
+                    connection = "scm:git:https://github.com/hhu-stups/antlr-parser.git"
+                    developerConnection = "scm:git:https://gitlab.cs.uni-duesseldorf.de/stups/prob/antlr_b_parser.git"
+                    url = "https://github.com/hhu-stups/antlr-parser"
+                }
+
+                developers {
+                    developer {
+                        id = "vu"
+                        name = "Fabian Vu"
+                        email = "fabian.vu@hhu.de"
+                    }
+                }
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            final releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            final snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+            url isSnapshot ? snapshotsRepoUrl : releasesRepoUrl
+            if (project.hasProperty("ossrhUsername") && project.hasProperty("ossrhPassword")) {
+                credentials {
+                    username project.ossrhUsername
+                    password project.ossrhPassword
+                }
+            }
+        }
+    }
+}
+
+ext."signing.secretKeyRingFile" = rootProject.file("secring.gpg").absolutePath
+
+signing {
+    sign publishing.publications.mavenJava
 }
