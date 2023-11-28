@@ -1,5 +1,6 @@
 package de.prob.parser.ast.visitors.generic;
 
+import de.prob.parser.ast.nodes.expression.RealNumberNode;
 import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;
 import de.prob.parser.ast.nodes.expression.RecordNode;
 import de.prob.parser.ast.nodes.expression.StructNode;
@@ -239,5 +240,10 @@ public class ASTVisitor implements ExpressionVisitor, SubstitutionVisitor, Predi
 	@Override
 	public void visitRecordFieldAccessNode(RecordFieldAccessNode node) {
 		visitExprNode(node.getRecord());
+	}
+
+	@Override
+	public void visitRealNumberNode(RealNumberNode node) {
+		// no children
 	}
 }
