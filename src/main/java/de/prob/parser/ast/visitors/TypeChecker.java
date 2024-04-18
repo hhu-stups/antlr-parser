@@ -169,7 +169,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		performPostActions();
 	}
 
-	private void setInitialType(DeclarationNode node) {
+	public void setInitialType(DeclarationNode node) {
 		if (node.getType() == null) {
 			node.setType(new UntypedType());
 		}
@@ -823,7 +823,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		}
 	}
 
-	private void setDeclarationTypes(List<DeclarationNode> list) {
+	public void setDeclarationTypes(List<DeclarationNode> list) {
 		for (DeclarationNode decl : list) {
 			if (decl.getType() == null) {
 				decl.setType(new UntypedType());
