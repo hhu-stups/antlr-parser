@@ -118,7 +118,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			// expression formula
 			BType type = visitExprNode((ExprNode) formula, new UntypedType());
 			if (type.isUntyped()) {
-				throw new TypeCheckerVisitorException(new TypeErrorException("Can not infer type of formula: " + type));
+				throw new TypeCheckerVisitorException(new TypeErrorException("Can not infer type of formula: " + type + "  at line " + formula.getSourceCodePosition().getStartLine() + " column " + formula.getSourceCodePosition().getStartColumn()));
 			}
 		}
 
@@ -128,7 +128,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			if (node.getType().isUntyped()) {
 				throw new TypeCheckerVisitorException(
 						new TypeErrorException("Can not infer the type of local variable '" + node.getName()
-								+ "' Current type: " + node.getType()));
+								+ "' Current type: " + node.getType() + "  at line " + node.getSourceCodePosition().getStartLine() + " column " + node.getSourceCodePosition().getStartColumn()));
 			}
 		}
 		performPostActions();
@@ -138,7 +138,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	public void checkExprNode(ExprNode exprNode) {
 		BType type = visitExprNode(exprNode, new UntypedType());
 		if (type.isUntyped()) {
-			throw new TypeCheckerVisitorException(new TypeErrorException("Can not infer type of formula: " + type));
+			throw new TypeCheckerVisitorException(new TypeErrorException("Can not infer type of formula: " + type + "  at line " + exprNode.getSourceCodePosition().getStartLine() + " column " + exprNode.getSourceCodePosition().getStartColumn()));
 		}
 		performPostActions();
 	}
@@ -146,7 +146,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	public void checkPredicateNode(PredicateNode predNode) {
 		BType type = visitPredicateNode(predNode, new UntypedType());
 		if (type.isUntyped()) {
-			throw new TypeCheckerVisitorException(new TypeErrorException("Can not infer type of formula: " + type));
+			throw new TypeCheckerVisitorException(new TypeErrorException("Can not infer type of formula: " + type + "  at line " + predNode.getSourceCodePosition().getStartLine() + " column " + predNode.getSourceCodePosition().getStartColumn()));
 		}
 		performPostActions();
 	}
@@ -163,7 +163,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			if (node.getType().isUntyped()) {
 				throw new TypeCheckerVisitorException(
 						new TypeErrorException("Can not infer the type of local variable '" + node.getName()
-								+ "' Current type: " + node.getType()));
+								+ "' Current type: " + node.getType() + "  at line " + node.getSourceCodePosition().getStartLine() + " column " + node.getSourceCodePosition().getStartColumn()));
 			}
 		}
 		performPostActions();
@@ -205,7 +205,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		// check that all constants have a type, otherwise throw an exception
 		machineNode.getConstants().stream().filter(TypedNode::isUntyped).findFirst().ifPresent(con -> {
 			throw new TypeCheckerVisitorException(new TypeErrorException(
-					"Can not infer the type of constant " + con.getName() + ". Type variable: " + con.getType()));
+					"Can not infer the type of constant " + con.getName() + ". Type variable: " + con.getType() + "  at line " + con.getSourceCodePosition().getStartLine() + " column " + con.getSourceCodePosition().getStartColumn()));
 		});
 
 		machineNode.getValues().forEach(node -> visitSubstitutionNode(node, null));
@@ -218,7 +218,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 
 		machineNode.getIncludedRenamedVariables().stream().filter(TypedNode::isUntyped).findFirst().ifPresent(var -> {
 			throw new TypeCheckerVisitorException(new TypeErrorException(
-					"Can not infer the type of variable " + var.getName() + ". Type variable: " + var.getType()));
+					"Can not infer the type of variable " + var.getName() + ". Type variable: " + var.getType() + "  at line " + var.getSourceCodePosition().getStartLine() + " column " + var.getSourceCodePosition().getStartColumn()));
 		});
 
 		// visit the invariant clause
@@ -234,7 +234,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		// check that all variables have type, otherwise throw an exception
 		machineNode.getVariables().stream().filter(TypedNode::isUntyped).findFirst().ifPresent(var -> {
 			throw new TypeCheckerVisitorException(new TypeErrorException(
-					"Can not infer the type of variable " + var.getName() + ". Type variable: " + var.getType()));
+					"Can not infer the type of variable " + var.getName() + ". Type variable: " + var.getType() + "  at line " + var.getSourceCodePosition().getStartLine() + " column " + var.getSourceCodePosition().getStartColumn()));
 		});
 
 		// visit the initialisation clause
@@ -300,12 +300,12 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 				if (node instanceof DeclarationNode) {
 					DeclarationNode var = (DeclarationNode) node;
 					throw new TypeCheckerVisitorException(new TypeErrorException(
-							"Can not infer the type of local variable " + var.getName() + ": " + node.getType()));
+							"Can not infer the type of local variable " + var.getName() + ": " + node.getType() + "  at line " + node.getSourceCodePosition().getStartLine() + " column " + node.getSourceCodePosition().getStartColumn()));
 				} else if (node instanceof ExpressionOperatorNode) {
 					ExpressionOperatorNode exprNode = (ExpressionOperatorNode) node;
 					throw new TypeCheckerVisitorException(
 							new TypeErrorException("Can not infer the complete type of operator "
-									+ exprNode.getOperator() + ": " + node.getType()));
+									+ exprNode.getOperator() + ": " + node.getType() + "  at line " + node.getSourceCodePosition().getStartLine() + " column " + node.getSourceCodePosition().getStartColumn()));
 				}
 			}
 		}
