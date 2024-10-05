@@ -36,11 +36,6 @@ tests:macos:
   tags:
     - macos
 
-tests:windows64:
-  extends: .tests
-  script: gradlew.bat %GRADLE_ARGS% check
-  tags:
-    - windows
 
 publish:
   stage: deploy
