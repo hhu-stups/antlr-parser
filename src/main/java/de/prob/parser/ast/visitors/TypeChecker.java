@@ -611,8 +611,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 
 			visitExprNode(expressionNodes.get(0), new SetType(new CoupleType(c1, c2)));
 			visitExprNode(expressionNodes.get(1), new SetType(new CoupleType(c2, c3)));
-		}
 			return node.getType();
+		}
 		case DOMAIN_RESTRICTION:
 		case DOMAIN_SUBTRACTION:
 			// S <| r
