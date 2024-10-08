@@ -64,8 +64,10 @@ import de.prob.parser.ast.types.StringType;
 import de.prob.parser.ast.types.UnificationException;
 import de.prob.parser.ast.types.UntypedType;
 
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -78,6 +80,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	private Set<ExpressionOperatorNode> minusNodes = new HashSet<>();
 	private Set<ExpressionOperatorNode> multOrCartNodes = new HashSet<>();
 	private Set<TypedNode> typedNodes = new HashSet<>();
+	private Map<String, DeferredSetElementType> deferredSets = new HashMap<>();
+	private Map<String, EnumeratedSetElementType> enumeratedSets = new HashMap<>();
 
 	// TODO: Implement type checking for reals
 
@@ -178,6 +182,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	private void checkMachineNode(MachineNode machineNode) {
 		for (EnumeratedSetDeclarationNode eSet : machineNode.getEnumeratedSets()) {
 			DeclarationNode setDeclaration = eSet.getSetDeclarationNode();
+			enumeratedSets.put(setDeclaration.getName(), new EnumeratedSetElementType(setDeclaration.getName(), eSet.getElementsAsStrings()));
 			if (setDeclaration.getType() == null) {
 				EnumeratedSetElementType userDefinedElementType = new EnumeratedSetElementType(setDeclaration.getName(),
 						eSet.getElementsAsStrings());
@@ -189,6 +194,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 		}
 
 		for (DeclarationNode dSet : machineNode.getDeferredSets()) {
+			deferredSets.put(dSet.getName(), new DeferredSetElementType(dSet.getName()));
 			if(dSet.getType() == null) {
 				dSet.setType(new SetType(new DeferredSetElementType(dSet.getName())));
 			}
@@ -793,7 +799,11 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	@Override
 	public BType visitIdentifierExprNode(IdentifierExprNode node, BType expected) {
 		if(node.getDeclarationNode() == null || node.getDeclarationNode().getType() == null) {
-			//TODO: Implement scoping and type checking of included sets
+			if(deferredSets.containsKey(node.getName())) {
+				return unify(expected, new SetType(deferredSets.get(node.getName())), node);
+			} else if(enumeratedSets.containsKey(node.getName())) {
+				return unify(expected, new SetType(enumeratedSets.get(node.getName())), node);
+			}
 			return unify(expected, new UntypedType(), node);
 		}
 		return unify(expected, node.getDeclarationNode().getType(), node);

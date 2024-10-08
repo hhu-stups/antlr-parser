@@ -78,6 +78,8 @@ public class SemanticASTTest {
 				"    ff <+ gg = gg \\/ (dom(gg) <<| ff)\n" +
 				"  & hh : POW(setX * setX)\n" +
 				"  & ry : POW(setY * setY)\n" +
+				"  & rx : POW(setX * setX)\n" +
+				"  & (el1 |-> el1) : id(setX)\n" +
 				"  & ff <+ {} = ff\n" +
 				"  & {} <+ ff = ff\n" +
 				"  & ff <+ ff = ff\n" +
