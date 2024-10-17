@@ -98,7 +98,9 @@ public class MachineNode extends Node {
 
 	public void setInvariant(PredicateNode invariant) {
 		this.invariant = invariant;
-		this.invariant.setParent(this);
+		if(this.getInvariant() != null) {
+			this.invariant.setParent(this);
+		}
 	}
 
 	public PredicateNode getProperties() {
