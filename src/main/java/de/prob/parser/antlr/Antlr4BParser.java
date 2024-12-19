@@ -134,6 +134,9 @@ public class Antlr4BParser {
 			final MachineReferenceNode next = todo.iterator().next();
 			todo.remove(next);
 			final String name = next.getMachineName();
+			if(EXTERNAL_LIBRARIES.contains(name)) {
+				continue;
+			}
 			if (!parsedMachines.contains(name)) {
 				final File file = getFile(parentFolder, name);
 				checkMachineName(file, name);
