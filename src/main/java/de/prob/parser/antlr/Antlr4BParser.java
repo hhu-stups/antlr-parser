@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +39,9 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.DiagnosticErrorListener;
 
 public class Antlr4BParser {
+
+	public static final List<String> EXTERNAL_LIBRARIES = Collections.singletonList("LibraryZMQ_RPC");
+
 	private static final Properties buildProperties;
 	static {
 		buildProperties = new Properties();
@@ -99,12 +103,14 @@ public class Antlr4BParser {
 	}
 
 	protected static void checkMachineName(File file, String name) {
-		if(!file.exists()) {
-			throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
-		}
-		String path = file.getName().replaceAll(".mch", "");
-		if(!path.equals(name)) {
-			throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
+		if(!EXTERNAL_LIBRARIES.contains(name)) {
+			if (!file.exists()) {
+				throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
+			}
+			String path = file.getName().replaceAll(".mch", "");
+			if (!path.equals(name)) {
+				throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
+			}
 		}
 	}
 
