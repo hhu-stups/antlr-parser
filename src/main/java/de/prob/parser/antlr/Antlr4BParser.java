@@ -134,15 +134,17 @@ public class Antlr4BParser {
 			final MachineReferenceNode next = todo.iterator().next();
 			todo.remove(next);
 			final String name = next.getMachineName();
-			if(EXTERNAL_LIBRARIES.contains(name)) {
-				continue;
-			}
 			if (!parsedMachines.contains(name)) {
-				final File file = getFile(parentFolder, name);
-				checkMachineName(file, name);
-				final StartContext cst = parse(file);
-				final MachineNode ast = MachineASTCreator.createMachineAST(cst);
-				ast.setPrefix(next.getPrefix());
+				MachineNode ast;
+				if(EXTERNAL_LIBRARIES.contains(name)) {
+					ast = new MachineNode(null);
+				} else {
+					final File file = getFile(parentFolder, name);
+					checkMachineName(file, name);
+					final StartContext cst = parse(file);
+					ast = MachineASTCreator.createMachineAST(cst);
+					ast.setPrefix(next.getPrefix());
+				}
 				machines.add(ast);
 				for (MachineReferenceNode machineReferenceNode : ast.getMachineReferences()) {
 					final String refName = machineReferenceNode.getMachineName();
