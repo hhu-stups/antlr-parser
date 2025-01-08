@@ -23,6 +23,8 @@ import java.util.Set;
 
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.MachineReferenceNode;
+import de.prob.parser.ast.nodes.OperationNode;
+import de.prob.parser.ast.nodes.substitution.SkipSubstitutionNode;
 import de.prob.parser.ast.visitors.MachineScopeChecker;
 import de.prob.parser.ast.visitors.TypeChecker;
 import de.prob.parser.ast.visitors.TypeErrorException;
@@ -68,6 +70,7 @@ public class Antlr4BParser {
 	public static MachineNode createSemanticAST(String input) throws TypeErrorException, ScopeException {
 		StartContext tree = parse(input);
 		MachineNode machineNode = MachineASTCreator.createMachineAST(tree);
+		replaceExternals(machineNode);
 		new MachineScopeChecker(machineNode);
 		new TypeChecker(machineNode);
 		return machineNode;
@@ -77,12 +80,21 @@ public class Antlr4BParser {
 		return createBProject(machineNodeList, true, true);
 	}
 
+	public static void replaceExternals(MachineNode machineNode) {
+		for(OperationNode operationNode : machineNode.getOperations()) {
+			if(operationNode.getName().startsWith("EXTERNAL_")) {
+				operationNode.setSubstitution(new SkipSubstitutionNode(operationNode.getSourceCodePosition()));
+			}
+		}
+	}
+
 	public static BProject createBProject(List<MachineNode> machineNodeList, boolean typecheck, boolean scopecheck) throws TypeErrorException, ScopeException {
 		// determine machine order
 
 		sortMachineNodes(machineNodeList);
 		for (int i = machineNodeList.size() - 1; i >= 0; i--) {
 			MachineNode machineNode = machineNodeList.get(i);
+			replaceExternals(machineNode);
 		    if(scopecheck) {
 			    new MachineScopeChecker(machineNode);
 			}
