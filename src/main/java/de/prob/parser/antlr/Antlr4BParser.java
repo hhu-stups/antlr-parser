@@ -40,6 +40,8 @@ import org.antlr.v4.runtime.DiagnosticErrorListener;
 
 public class Antlr4BParser {
 
+	public static final List<String> EXTERNAL_LIBRARIES = Collections.singletonList("LibraryZMQ_RPC");
+
 	private static final Properties buildProperties;
 	static {
 		buildProperties = new Properties();
@@ -101,12 +103,14 @@ public class Antlr4BParser {
 	}
 
 	protected static void checkMachineName(File file, String name) {
-		if (!file.exists()) {
-			throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
-		}
-		String path = file.getName().replaceAll(".mch", "");
-		if (!path.equals(name)) {
-			throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
+		if(!EXTERNAL_LIBRARIES.contains(name)) {
+			if (!file.exists()) {
+				throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
+			}
+			String path = file.getName().replaceAll(".mch", "");
+			if (!path.equals(name)) {
+				throw new RuntimeException(String.format("Machine %s must have the same name as its file", name));
+			}
 		}
 	}
 
@@ -132,11 +136,14 @@ public class Antlr4BParser {
 			final String name = next.getMachineName();
 			if (!parsedMachines.contains(name)) {
 				MachineNode ast;
+
+
 				final File file = getFile(parentFolder, name);
 				checkMachineName(file, name);
 				final StartContext cst = parse(file);
 				ast = MachineASTCreator.createMachineAST(cst);
 				ast.setPrefix(next.getPrefix());
+
 				machines.add(ast);
 				for (MachineReferenceNode machineReferenceNode : ast.getMachineReferences()) {
 					final String refName = machineReferenceNode.getMachineName();
