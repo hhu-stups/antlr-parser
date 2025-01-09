@@ -81,11 +81,11 @@ public class Antlr4BParser {
 	}
 
 	public static void replaceExternals(MachineNode machineNode) {
-		for(OperationNode operationNode : machineNode.getOperations()) {
+		/*for(OperationNode operationNode : machineNode.getOperations()) {
 			if(operationNode.getName().startsWith("EXTERNAL_")) {
 				operationNode.setSubstitution(new SkipSubstitutionNode(operationNode.getSourceCodePosition()));
 			}
-		}
+		}*/
 	}
 
 	public static BProject createBProject(List<MachineNode> machineNodeList, boolean typecheck, boolean scopecheck) throws TypeErrorException, ScopeException {
