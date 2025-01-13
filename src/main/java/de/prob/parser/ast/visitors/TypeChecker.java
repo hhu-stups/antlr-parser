@@ -98,6 +98,7 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			externalFunctionsAndVariables.put("RpcInteger", new SetType(new CoupleType(IntegerType.getInstance(), new SetElementType("RpcValue"))));
 			externalFunctionsAndVariables.put("RpcFloat",new SetType(new CoupleType(RealType.getInstance(), new SetElementType("RpcValue"))));
 			externalFunctionsAndVariables.put("RDIV", new SetType(new CoupleType(new CoupleType(RealType.getInstance(), RealType.getInstance()), RealType.getInstance())));
+			externalFunctionsAndVariables.put("RMUL", new SetType(new CoupleType(new CoupleType(RealType.getInstance(), RealType.getInstance()), RealType.getInstance())));
 			externalFunctionsAndVariables.put("real", new SetType(new CoupleType(IntegerType.getInstance(), RealType.getInstance())));
 			externalFunctionsAndVariables.put("floor", new SetType(new CoupleType(RealType.getInstance(), IntegerType.getInstance())));
 			externalFunctionsAndVariables.put("ZMQ_RPC_INIT", new SetType(new CoupleType(StringType.getInstance(), IntegerType.getInstance())));
