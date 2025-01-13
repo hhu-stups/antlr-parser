@@ -58,6 +58,7 @@ import de.prob.parser.ast.types.IntegerOrSetOfPairs;
 import de.prob.parser.ast.types.IntegerType;
 import de.prob.parser.ast.types.RealType;
 import de.prob.parser.ast.types.RecordType;
+import de.prob.parser.ast.types.SetElementType;
 import de.prob.parser.ast.types.SetOrIntegerType;
 import de.prob.parser.ast.types.SetType;
 import de.prob.parser.ast.types.StringType;
@@ -83,10 +84,24 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 	private Map<String, DeferredSetElementType> deferredSets = new HashMap<>();
 	private Map<String, EnumeratedSetElementType> enumeratedSets = new HashMap<>();
 
+	private Map<String, BType> externalFunctionsAndVariables = new HashMap<>();
+
 	// TODO: Implement type checking for reals
 
 	public TypeChecker(MachineNode machineNode) throws TypeErrorException {
 		try {
+			externalFunctionsAndVariables.put("RpcSuccess", new SetType(new SetElementType("RpcValue")));
+			externalFunctionsAndVariables.put("ZMQ_RPC_SEND", new SetType(new CoupleType(new CoupleType(new CoupleType(IntegerType.getInstance(), StringType.getInstance()), new SetType(new CoupleType(StringType.getInstance(), new SetElementType("RpcValue")))), new SetElementType("RpcValue"))));
+			externalFunctionsAndVariables.put("RpcString", new SetType(new SetElementType("RpcValue")));
+			externalFunctionsAndVariables.put("RpcBoolean", new SetType(new SetElementType("RpcValue")));
+			externalFunctionsAndVariables.put("RpcArray", new SetType(new SetElementType("RpcValue")));
+			externalFunctionsAndVariables.put("RpcInteger", new SetType(new SetElementType("RpcValue")));
+			externalFunctionsAndVariables.put("RpcFloat", new SetType(new SetElementType("RpcValue")));
+			externalFunctionsAndVariables.put("RDIV", new SetType(new CoupleType(new CoupleType(RealType.getInstance(), RealType.getInstance()), RealType.getInstance())));
+			externalFunctionsAndVariables.put("real", new SetType(new CoupleType(IntegerType.getInstance(), RealType.getInstance())));
+			externalFunctionsAndVariables.put("floor", new SetType(new CoupleType(RealType.getInstance(), IntegerType.getInstance())));
+			externalFunctionsAndVariables.put("ZMQ_RPC_INIT", new SetType(new CoupleType(StringType.getInstance(), IntegerType.getInstance())));
+
 			checkMachineNode(machineNode);
 		} catch (TypeCheckerVisitorException e) {
 			final Logger logger = Logger.getLogger(e.getClass().getName());
@@ -803,6 +818,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 				return unify(expected, new SetType(deferredSets.get(node.getName())), node);
 			} else if(enumeratedSets.containsKey(node.getName())) {
 				return unify(expected, new SetType(enumeratedSets.get(node.getName())), node);
+			} else if(externalFunctionsAndVariables.containsKey(node.getName())) {
+				return unify(expected, externalFunctionsAndVariables.get(node.getName()), node);
 			}
 			return unify(expected, new UntypedType(), node);
 		}
