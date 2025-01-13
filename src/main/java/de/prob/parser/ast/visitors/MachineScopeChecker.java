@@ -66,6 +66,7 @@ public class MachineScopeChecker {
 		externalFunctionsAndVariables.put("RpcInteger", new DeclarationNode(machineNode.getSourceCodePosition(), "RpcInteger", DeclarationNode.Kind.CONSTANT, machineNode));
 		externalFunctionsAndVariables.put("RpcFloat", new DeclarationNode(machineNode.getSourceCodePosition(), "RpcFloat", DeclarationNode.Kind.CONSTANT, machineNode));
 		externalFunctionsAndVariables.put("RDIV", new DeclarationNode(machineNode.getSourceCodePosition(), "RDIV", DeclarationNode.Kind.CONSTANT, machineNode));
+		externalFunctionsAndVariables.put("real", new DeclarationNode(machineNode.getSourceCodePosition(), "real", DeclarationNode.Kind.CONSTANT, machineNode));
 		externalFunctionsAndVariables.put("floor", new DeclarationNode(machineNode.getSourceCodePosition(), "floor", DeclarationNode.Kind.CONSTANT, machineNode));
 		externalFunctionsAndVariables.put("ZMQ_RPC_INIT", new DeclarationNode(machineNode.getSourceCodePosition(), "ZMQ_RPC_INIT", DeclarationNode.Kind.CONSTANT, machineNode));
 		try {
