@@ -57,11 +57,6 @@ public class MachineScopeChecker {
 
 	public MachineScopeChecker(MachineNode machineNode) throws ScopeException {
 		this.machineNode = machineNode;
-		try {
-			check();
-		} catch (VisitorException e) {
-			throw (ScopeException) e.getCause();
-		}
 		externalOperations.put("ZMQ_RPC_DESTROY", new OperationNode(machineNode.getSourceCodePosition(), "ZMQ_RPC_DESTROY", new ArrayList<>(), new SkipSubstitutionNode(machineNode.getSourceCodePosition()), new ArrayList<>()));
 		externalFunctionsAndVariables.put("RpcSuccess", new DeclarationNode(machineNode.getSourceCodePosition(), "RpcSuccess", DeclarationNode.Kind.CONSTANT, machineNode));
 		externalFunctionsAndVariables.put("ZMQ_RPC_SEND", new DeclarationNode(machineNode.getSourceCodePosition(), "ZMQ_RPC_SEND", DeclarationNode.Kind.CONSTANT, machineNode));
@@ -71,6 +66,11 @@ public class MachineScopeChecker {
 		externalFunctionsAndVariables.put("RpcInteger", new DeclarationNode(machineNode.getSourceCodePosition(), "RpcInteger", DeclarationNode.Kind.CONSTANT, machineNode));
 		externalFunctionsAndVariables.put("floor", new DeclarationNode(machineNode.getSourceCodePosition(), "floor", DeclarationNode.Kind.CONSTANT, machineNode));
 		externalFunctionsAndVariables.put("ZMQ_RPC_INIT", new DeclarationNode(machineNode.getSourceCodePosition(), "ZMQ_RPC_INIT", DeclarationNode.Kind.CONSTANT, machineNode));
+		try {
+			check();
+		} catch (VisitorException e) {
+			throw (ScopeException) e.getCause();
+		}
 	}
 
 	public MachineNode getMachineNode() {
