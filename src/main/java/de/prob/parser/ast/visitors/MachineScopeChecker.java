@@ -2,6 +2,7 @@ package de.prob.parser.ast.visitors;
 
 import de.prob.parser.antlr.ScopeException;
 import de.prob.parser.antlr.VisitorException;
+import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
@@ -27,10 +28,12 @@ import de.prob.parser.ast.nodes.substitution.BecomesElementOfSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.BecomesSuchThatSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.LetSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.OperationCallSubstitutionNode;
+import de.prob.parser.ast.nodes.substitution.SkipSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.VarSubstitutionNode;
 import de.prob.parser.ast.visitors.generic.ASTVisitor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -48,6 +51,10 @@ public class MachineScopeChecker {
 	private List<DeclarationNode> constantsInScope;
 	private List<DeclarationNode> variablesInScope;
 
+	private Map<String, DeclarationNode> externalFunctionsAndVariables = new HashMap<>();
+
+	private Map<String, OperationNode> externalOperations = new HashMap<>();
+
 	public MachineScopeChecker(MachineNode machineNode) throws ScopeException {
 		this.machineNode = machineNode;
 		try {
@@ -55,7 +62,15 @@ public class MachineScopeChecker {
 		} catch (VisitorException e) {
 			throw (ScopeException) e.getCause();
 		}
-
+		externalOperations.put("ZMQ_RPC_DESTROY", new OperationNode(machineNode.getSourceCodePosition(), "ZMQ_RPC_DESTROY", new ArrayList<>(), new SkipSubstitutionNode(machineNode.getSourceCodePosition()), new ArrayList<>()));
+		externalFunctionsAndVariables.put("RpcSuccess", new DeclarationNode(machineNode.getSourceCodePosition(), "RpcSuccess", DeclarationNode.Kind.CONSTANT, machineNode));
+		externalFunctionsAndVariables.put("ZMQ_RPC_SEND", new DeclarationNode(machineNode.getSourceCodePosition(), "ZMQ_RPC_SEND", DeclarationNode.Kind.CONSTANT, machineNode));
+		externalFunctionsAndVariables.put("RpcString", new DeclarationNode(machineNode.getSourceCodePosition(), "RpcString", DeclarationNode.Kind.CONSTANT, machineNode));
+		externalFunctionsAndVariables.put("RpcBoolean", new DeclarationNode(machineNode.getSourceCodePosition(), "RpcBoolean", DeclarationNode.Kind.CONSTANT, machineNode));
+		externalFunctionsAndVariables.put("RpcArray", new DeclarationNode(machineNode.getSourceCodePosition(), "RpcArray", DeclarationNode.Kind.CONSTANT, machineNode));
+		externalFunctionsAndVariables.put("RpcInteger", new DeclarationNode(machineNode.getSourceCodePosition(), "RpcInteger", DeclarationNode.Kind.CONSTANT, machineNode));
+		externalFunctionsAndVariables.put("floor", new DeclarationNode(machineNode.getSourceCodePosition(), "floor", DeclarationNode.Kind.CONSTANT, machineNode));
+		externalFunctionsAndVariables.put("ZMQ_RPC_INIT", new DeclarationNode(machineNode.getSourceCodePosition(), "ZMQ_RPC_INIT", DeclarationNode.Kind.CONSTANT, machineNode));
 	}
 
 	public MachineNode getMachineNode() {
@@ -295,6 +310,8 @@ public class MachineScopeChecker {
 			String opName = String.join(".", names);
 			if (operationsInScope.containsKey(opName)) {
 				node.setOperationsNode(operationsInScope.get(opName));
+			} else if(externalOperations.containsKey(opName)) {
+				node.setOperationsNode(externalOperations.get(opName));
 			} else {
 				throw new VisitorException(new ScopeException("Unknown operation name: " + opName));
 			}
@@ -417,6 +434,9 @@ public class MachineScopeChecker {
 	}
 
 	public DeclarationNode lookUpIdentifier(String name, Node node) {
+		if(externalFunctionsAndVariables.containsKey(name)) {
+			return externalFunctionsAndVariables.get(name);
+		}
 		for (int i = scopeTable.size() - 1; i >= 0; i--) {
 			Map<String, DeclarationNode> map = scopeTable.get(i);
 			if (map.containsKey(name)) {
