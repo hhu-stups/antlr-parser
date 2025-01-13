@@ -90,13 +90,13 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 
 	public TypeChecker(MachineNode machineNode) throws TypeErrorException {
 		try {
-			externalFunctionsAndVariables.put("RpcSuccess", new SetType(new SetElementType("RpcValue")));
+			externalFunctionsAndVariables.put("RpcSuccess", new SetType(new CoupleType(IntegerType.getInstance(), new SetElementType("RpcValue"))));
 			externalFunctionsAndVariables.put("ZMQ_RPC_SEND", new SetType(new CoupleType(new CoupleType(new CoupleType(IntegerType.getInstance(), StringType.getInstance()), new SetType(new CoupleType(StringType.getInstance(), new SetElementType("RpcValue")))), new SetElementType("RpcValue"))));
-			externalFunctionsAndVariables.put("RpcString", new SetType(new SetElementType("RpcValue")));
-			externalFunctionsAndVariables.put("RpcBoolean", new SetType(new SetElementType("RpcValue")));
-			externalFunctionsAndVariables.put("RpcArray", new SetType(new SetElementType("RpcValue")));
-			externalFunctionsAndVariables.put("RpcInteger", new SetType(new SetElementType("RpcValue")));
-			externalFunctionsAndVariables.put("RpcFloat", new SetType(new SetElementType("RpcValue")));
+			externalFunctionsAndVariables.put("RpcString", new SetType(new CoupleType(StringType.getInstance(), new SetElementType("RpcValue"))));
+			externalFunctionsAndVariables.put("RpcBoolean", new SetType(new CoupleType(BoolType.getInstance(), new SetElementType("RpcValue"))));
+			externalFunctionsAndVariables.put("RpcArray", new SetType(new CoupleType(new SetType(new CoupleType(IntegerType.getInstance(), new SetElementType("RpcValue"))), new SetElementType("RpcValue"))));
+			externalFunctionsAndVariables.put("RpcInteger", new SetType(new CoupleType(IntegerType.getInstance(), new SetElementType("RpcValue"))));
+			externalFunctionsAndVariables.put("RpcFloat",new SetType(new CoupleType(RealType.getInstance(), new SetElementType("RpcValue"))));
 			externalFunctionsAndVariables.put("RDIV", new SetType(new CoupleType(new CoupleType(RealType.getInstance(), RealType.getInstance()), RealType.getInstance())));
 			externalFunctionsAndVariables.put("real", new SetType(new CoupleType(IntegerType.getInstance(), RealType.getInstance())));
 			externalFunctionsAndVariables.put("floor", new SetType(new CoupleType(RealType.getInstance(), IntegerType.getInstance())));
