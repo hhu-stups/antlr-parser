@@ -86,8 +86,6 @@ processResources {
     }
 }
 
-sourceSets.test.runtimeClasspath += files(sourceSets.main.java.srcDirs) // What does this do?
-
 tasks.withType(JavaExec) {
     // Shouldn't be needed anymore - please use ./gradlew run --args="..." instead.
     if(project.hasProperty('file')) {
