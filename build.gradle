@@ -103,6 +103,13 @@ application {
     mainClass = "de.prob.parser.antlr.Antlr4BParser"
 }
 
+// Don't publish the shadowJar to Maven Central. Code from:
+// https://github.com/johnrengelman/shadow/issues/586#issuecomment-708375599
+// https://github.com/johnrengelman/shadow/issues/651#issuecomment-815921124
+components.java.withVariantsFromConfiguration(configurations.shadowRuntimeElements) {
+    skip()
+}
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
