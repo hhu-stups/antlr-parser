@@ -79,10 +79,10 @@ def readCurrentGitCommit() {
 
 final currentGitCommit = readCurrentGitCommit()
 processResources {
-    inputs.property("project.version", project.version)
+    inputs.property("version", project.version)
     inputs.property("currentGitCommit", currentGitCommit)
     filesMatching("de/prob/parser/antlr/build.properties") {
-        expand(version: project.version, git: currentGitCommit)
+        expand(version: inputs.properties["version"], git: currentGitCommit)
     }
 }
 
