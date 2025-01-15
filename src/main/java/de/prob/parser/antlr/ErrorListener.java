@@ -1,5 +1,7 @@
 package de.prob.parser.antlr;
 
+import java.util.BitSet;
+
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonToken;
 import org.antlr.v4.runtime.Parser;
@@ -18,7 +20,7 @@ public class ErrorListener extends BaseErrorListener {
 
     @Override
     public void reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
-            java.util.BitSet conflictingAlts, ATNConfigSet configs) {
+            BitSet conflictingAlts, ATNConfigSet configs) {
         // log ambiguity
     }
 
