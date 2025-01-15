@@ -1,8 +1,5 @@
 package de.prob.parser.ast.visitors;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.TypedNode;
 import de.prob.parser.ast.types.BType;
@@ -11,16 +8,16 @@ import de.prob.parser.ast.types.UnificationException;
 public class TypeErrorException extends Exception {
 	private static final long serialVersionUID = -5344167922965323221L;
 
-	private static final String TYPE_ERROR = "Type error";
+	public TypeErrorException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
 	public TypeErrorException(String message) {
-		super(message);
+		this(message, null);
 	}
 
 	public TypeErrorException(BType expected, BType found, TypedNode node, UnificationException e) {
-		super(createErrorMessage(expected, found, node));
-		final Logger logger = Logger.getLogger(getClass().getName());
-		logger.log(Level.SEVERE, TYPE_ERROR, e);
+		this(createErrorMessage(expected, found, node), e);
 	}
 
 	private static String createErrorMessage(BType expected, BType found, TypedNode node) {
