@@ -8,10 +8,6 @@ import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.MachineReferenceNode;
 import de.prob.parser.ast.nodes.Node;
 import de.prob.parser.ast.nodes.OperationNode;
-import de.prob.parser.ast.nodes.expression.RealNumberNode;
-import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;
-import de.prob.parser.ast.nodes.expression.RecordNode;
-import de.prob.parser.ast.nodes.expression.StructNode;
 import de.prob.parser.ast.nodes.TypedNode;
 import de.prob.parser.ast.nodes.expression.ExprNode;
 import de.prob.parser.ast.nodes.expression.ExpressionOperatorNode;
@@ -21,8 +17,12 @@ import de.prob.parser.ast.nodes.expression.LambdaNode;
 import de.prob.parser.ast.nodes.expression.LetExpressionNode;
 import de.prob.parser.ast.nodes.expression.NumberNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
+import de.prob.parser.ast.nodes.expression.RealNumberNode;
+import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;
+import de.prob.parser.ast.nodes.expression.RecordNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
 import de.prob.parser.ast.nodes.expression.StringNode;
+import de.prob.parser.ast.nodes.expression.StructNode;
 import de.prob.parser.ast.nodes.ltl.LTLBPredicateNode;
 import de.prob.parser.ast.nodes.ltl.LTLFormula;
 import de.prob.parser.ast.nodes.ltl.LTLInfixOperatorNode;
@@ -71,14 +71,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 public class TypeChecker implements AbstractVisitor<BType, BType> {
-
-	private static final String TYPE_ERROR = "TYPE_ERROR";
-
 	private Set<ExpressionOperatorNode> minusNodes = new HashSet<>();
 	private Set<ExpressionOperatorNode> multOrCartNodes = new HashSet<>();
 	private Set<TypedNode> typedNodes = new HashSet<>();
@@ -106,8 +101,6 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 
 			checkMachineNode(machineNode);
 		} catch (VisitorException e) {
-			final Logger logger = Logger.getLogger(e.getClass().getName());
-			logger.log(Level.SEVERE, TYPE_ERROR, e);
 			throw (TypeErrorException)e.getCause();
 		}
 	}

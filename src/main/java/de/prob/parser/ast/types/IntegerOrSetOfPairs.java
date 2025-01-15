@@ -2,8 +2,8 @@ package de.prob.parser.ast.types;
 
 import java.util.Observable;
 import java.util.Observer;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import de.prob.parser.ast.visitors.TypeErrorException;
 
 public class IntegerOrSetOfPairs extends Observable implements BType, Observer {
     private BType left;
@@ -72,8 +72,7 @@ public class IntegerOrSetOfPairs extends Observable implements BType, Observer {
             }
         } catch (UnificationException e) {
             // should not happen
-            final Logger logger = Logger.getLogger(getClass().getName());
-            logger.log(Level.SEVERE, "unification failed in update", e);
+            throw new IllegalStateException(new TypeErrorException("Unification failed in update", e));
         }
     }
 
