@@ -10,21 +10,20 @@ import de.prob.parser.ast.types.UnificationException;
 
 public class TypeErrorException extends Exception {
 	private static final long serialVersionUID = -5344167922965323221L;
-	private final String message;
 
 	private static final String TYPE_ERROR = "Type error";
 
 	public TypeErrorException(String message) {
-		this.message = message;
+		super(message);
 	}
 
 	public TypeErrorException(BType expected, BType found, TypedNode node, UnificationException e) {
-		this.message = createErrorMessage(expected, found, node);
+		super(createErrorMessage(expected, found, node));
 		final Logger logger = Logger.getLogger(getClass().getName());
 		logger.log(Level.SEVERE, TYPE_ERROR, e);
 	}
 
-	private String createErrorMessage(BType expected, BType found, TypedNode node) {
+	private static String createErrorMessage(BType expected, BType found, TypedNode node) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Expected ").append(expected).append(" but found ").append(found).append(" ");
 
@@ -38,15 +37,4 @@ public class TypeErrorException extends Exception {
 		sb.append(" column ").append(pos).append(".");
 		return sb.toString();
 	}
-
-	@Override
-	public String getMessage() {
-		return this.message;
-	}
-
-	@Override
-	public String toString() {
-		return this.message;
-	}
-
 }
