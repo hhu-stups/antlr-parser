@@ -6,9 +6,13 @@ public class ParseErrorException extends Exception {
     private static final long serialVersionUID = 2305560853973886094L;
     private final CommonToken token;
 
-    public ParseErrorException(CommonToken token, String message) {
-        super(message);
+    public ParseErrorException(CommonToken token, String message, Throwable cause) {
+        super(message, cause);
         this.token = token;
+    }
+
+    public ParseErrorException(CommonToken token, String message) {
+        this(token, message, null);
     }
 
     @Override
