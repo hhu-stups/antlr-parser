@@ -1,21 +1,18 @@
 package de.prob.parser;
 
+import de.prob.parser.antlr.Antlr4BParser;
 import de.prob.parser.antlr.BProject;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorWithExprArgsNode;
 import de.prob.parser.ast.visitors.TypeChecker;
 import de.prob.parser.ast.visitors.TypeErrorException;
-import org.junit.Ignore;
-import org.junit.Test;
 
-import de.prob.parser.antlr.Antlr4BParser;
+import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
 public class SemanticASTTest {
-
-	@Ignore
 	@Test
 	public void testRecords() throws Exception {
 		String machine = "MACHINE test2\n";
