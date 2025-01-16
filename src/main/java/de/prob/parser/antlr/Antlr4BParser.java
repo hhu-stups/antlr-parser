@@ -23,12 +23,9 @@ import java.util.Set;
 
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.MachineReferenceNode;
-import de.prob.parser.ast.nodes.OperationNode;
-import de.prob.parser.ast.nodes.substitution.SkipSubstitutionNode;
 import de.prob.parser.ast.visitors.MachineScopeChecker;
 import de.prob.parser.ast.visitors.TypeChecker;
 import de.prob.parser.ast.visitors.TypeErrorException;
-import de.prob.parser.util.Utils;
 
 import files.BLexer;
 import files.BParser;
@@ -187,6 +184,26 @@ public class Antlr4BParser {
 		return machineNodeList;
 	}
 
+	private static <T> List<T> sortByTopologicalOrder(final Map<T, Set<T>> dependencies) {
+		final Set<T> allValues = new HashSet<>(dependencies.keySet());
+		ArrayList<T> sortedList = new ArrayList<>();
+		boolean newRun = true;
+		while (newRun) {
+			newRun = false;
+			final ArrayList<T> todo = new ArrayList<>(allValues);
+			todo.removeAll(sortedList);
+			for (T element : todo) {
+				Set<T> deps = new HashSet<>(dependencies.get(element));
+				deps.removeAll(sortedList);
+				if (deps.isEmpty()) {
+					sortedList.add(0,element);
+					newRun = true;
+				}
+			}
+		}
+		return sortedList;
+	}
+
 	protected static void sortMachineNodes(List<MachineNode> machineNodeList) {
 		final Map<String, MachineNode> machineNodeMap = new HashMap<>();
 		for (MachineNode machineNode : machineNodeList) {
@@ -194,7 +211,7 @@ public class Antlr4BParser {
 		}
 		Map<String, Set<String>> dependencies = new HashMap<>();
 		determineMachineDependencies(machineNodeList.get(0), machineNodeMap, dependencies, new ArrayList<>());
-		List<String> machineNameList = Utils.sortByTopologicalOrder(dependencies);
+		List<String> machineNameList = sortByTopologicalOrder(dependencies);
 		machineNodeList.clear();
 		for (String machineName : machineNameList) {
 			machineNodeList.add(machineNodeMap.get(machineName));
