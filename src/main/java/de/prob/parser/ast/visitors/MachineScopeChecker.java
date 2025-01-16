@@ -30,6 +30,7 @@ import de.prob.parser.ast.nodes.substitution.LetSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.OperationCallSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.SkipSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.VarSubstitutionNode;
+import de.prob.parser.ast.types.IntegerType;
 import de.prob.parser.ast.visitors.generic.ASTVisitor;
 
 import java.util.ArrayList;
@@ -59,8 +60,10 @@ public class MachineScopeChecker {
 
 	public MachineScopeChecker(MachineNode machineNode) throws ScopeException {
 		this.machineNode = machineNode;
+		DeclarationNode socketNode = new DeclarationNode(machineNode.getSourceCodePosition(), "socket", DeclarationNode.Kind.OP_INPUT_PARAMETER, machineNode);
+		socketNode.setType(IntegerType.getInstance());
 		externalOperations.put("ZMQ_RPC_DESTROY", new OperationNode(machineNode.getSourceCodePosition(), "ZMQ_RPC_DESTROY", new ArrayList<>(), new SkipSubstitutionNode(machineNode.getSourceCodePosition()),
-				Collections.singletonList(new DeclarationNode(machineNode.getSourceCodePosition(), "socket", DeclarationNode.Kind.OP_INPUT_PARAMETER, machineNode))));
+				Collections.singletonList(socketNode)));
 		externalFunctionsAndVariables.put("RpcSuccess", new DeclarationNode(machineNode.getSourceCodePosition(), "RpcSuccess", DeclarationNode.Kind.CONSTANT, machineNode));
 		externalFunctionsAndVariables.put("ZMQ_RPC_SEND", new DeclarationNode(machineNode.getSourceCodePosition(), "ZMQ_RPC_SEND", DeclarationNode.Kind.CONSTANT, machineNode));
 		externalFunctionsAndVariables.put("RpcString", new DeclarationNode(machineNode.getSourceCodePosition(), "RpcString", DeclarationNode.Kind.CONSTANT, machineNode));
