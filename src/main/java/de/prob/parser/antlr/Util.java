@@ -5,8 +5,8 @@ import org.antlr.v4.runtime.Token;
 
 import de.prob.parser.ast.SourceCodePosition;
 
-public class Util {
-	public static SourceCodePosition createSourceCodePosition(ParserRuleContext ctx) {
+final class Util {
+	static SourceCodePosition createSourceCodePosition(ParserRuleContext ctx) {
 		return new SourceCodePosition(
 			ctx.getStart().getLine(),
 			ctx.getStart().getCharPositionInLine(),
@@ -14,7 +14,7 @@ public class Util {
 		);
 	}
 
-	public static SourceCodePosition createSourceCodePosition(Token ctx) {
+	static SourceCodePosition createSourceCodePosition(Token ctx) {
 		return new SourceCodePosition(
 			ctx.getLine(),
 			ctx.getCharPositionInLine(),
