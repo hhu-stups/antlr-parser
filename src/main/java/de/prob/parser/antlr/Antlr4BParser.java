@@ -64,15 +64,6 @@ public class Antlr4BParser {
 		return buildProperties.getProperty("git");
 	}
 
-	public static MachineNode createSemanticAST(String input) throws TypeErrorException, ScopeException {
-		StartContext tree = parse(input);
-		MachineNode machineNode = MachineASTCreator.createMachineAST(tree);
-		replaceExternals(machineNode);
-		new MachineScopeChecker(machineNode);
-		new TypeChecker(machineNode);
-		return machineNode;
-	}
-
 	public static BProject createBProject(List<MachineNode> machineNodeList) throws TypeErrorException, ScopeException {
 		return createBProject(machineNodeList, true, true);
 	}
