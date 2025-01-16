@@ -286,11 +286,11 @@ public class MachineASTCreator {
 		}
 
 		private SourceCodePosition getSourcePositionFromTerminalNode(TerminalNode terminalNode) {
-			SourceCodePosition sourceCodePosition = new SourceCodePosition();
-			sourceCodePosition.setStartLine(terminalNode.getSymbol().getLine());
-			sourceCodePosition.setStartColumn(terminalNode.getSymbol().getCharPositionInLine());
-			sourceCodePosition.setText(terminalNode.getSymbol().getText());
-			return sourceCodePosition;
+			return new SourceCodePosition(
+				terminalNode.getSymbol().getLine(),
+				terminalNode.getSymbol().getCharPositionInLine(),
+				terminalNode.getSymbol().getText()
+			);
 		}
 
 	}
