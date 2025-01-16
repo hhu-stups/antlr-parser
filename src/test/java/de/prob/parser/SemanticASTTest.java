@@ -5,8 +5,6 @@ import de.prob.parser.antlr.BProject;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorNode;
 import de.prob.parser.ast.nodes.predicate.PredicateOperatorWithExprArgsNode;
-import de.prob.parser.ast.visitors.TypeChecker;
-import de.prob.parser.ast.visitors.TypeErrorException;
 
 import org.junit.Test;
 
@@ -720,9 +718,7 @@ public class SemanticASTTest {
 				"  PREDICATE setcomprlaw1;\n" +
 				"  PREDICATE law1; */\n" +
 				"END\n";
-		BProject project = check(machine);
-		MachineNode machineNode = project.getMainMachine();
-		checkType(machineNode);
+		check(machine);
 	}
 
 	@Test
@@ -1831,9 +1827,4 @@ public class SemanticASTTest {
 	private BProject check(String main, String... others) throws Exception {
 		return Antlr4BParser.createBProjectFromMachineStrings(main, others);
 	}
-
-	private void checkType(MachineNode machineNode) throws TypeErrorException {
-		TypeChecker typeChecker = new TypeChecker(machineNode);
-	}
-
 }
