@@ -27,25 +27,4 @@ public class Utils {
 		}
 		return sortedList;
 	}
-	
-	
-	public static <T> List<T> determineCycle(final Set<T> remaining, final Map<T, Set<T>> dependencies) {
-		ArrayList<T> cycle = new ArrayList<>();
-		Set<T> set = new HashSet<>(remaining);
-		boolean newRun = true;
-		while (newRun) {
-			for (T next : set) {
-				if (cycle.contains(next)) {
-					newRun = false;
-					cycle.add(next);
-					break;
-				} else if (remaining.contains(next)) {
-					cycle.add(next);
-					set = new HashSet<>(dependencies.get(next));
-					break;
-				}
-			}
-		}
-		return cycle;
-	}
 }
