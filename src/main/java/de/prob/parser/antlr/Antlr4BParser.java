@@ -175,7 +175,7 @@ public class Antlr4BParser {
 		return machineNodeList;
 	}
 
-	private static <T> List<T> sortByTopologicalOrder(final Map<T, Set<T>> dependencies) {
+	public static <T> List<T> sortByTopologicalOrder(final Map<T, Set<T>> dependencies) {
 		final Set<T> allValues = new HashSet<>(dependencies.keySet());
 		ArrayList<T> sortedList = new ArrayList<>();
 		boolean newRun = true;
