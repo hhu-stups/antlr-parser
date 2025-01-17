@@ -222,6 +222,9 @@ public class Antlr4BParser {
 				throw new RuntimeException("Cycle detected");
 			}
 			set.add(refName);
+			if (!machineNodes.containsKey(refName)) {
+				throw new RuntimeException("Machine " + name + " references unknown machine " + refName);
+			}
 			final MachineNode refMachineNode = machineNodes.get(refName);
 			machineReferenceNode.setMachineNode(refMachineNode);
 			determineMachineDependencies(refMachineNode, machineNodes, dependencies, new ArrayList<>(ancestors));
