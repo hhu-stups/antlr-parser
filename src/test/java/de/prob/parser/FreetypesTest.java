@@ -19,4 +19,15 @@ public class FreetypesTest {
 		BProject p = Antlr4BParser.createBProjectFromMachineStrings(machine);
 		assertNotNull(p);
 	}
+
+	@Test
+	public void testFreetypeRecursive() throws Exception {
+		String machine = "MACHINE FT\n";
+		machine += "FREETYPES A = a, b(A)\n";
+		machine += "CONSTANTS x, y\n";
+		machine += "PROPERTIES x=a & y=b(a)\n";
+		machine += "END";
+		BProject p = Antlr4BParser.createBProjectFromMachineStrings(machine);
+		assertNotNull(p);
+	}
 }
