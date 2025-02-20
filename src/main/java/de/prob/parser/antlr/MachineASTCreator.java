@@ -1,9 +1,19 @@
 package de.prob.parser.antlr;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.DefinitionNode;
 import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
+import de.prob.parser.ast.nodes.FreetypeBaseElementNode;
+import de.prob.parser.ast.nodes.FreetypeConstructorNode;
+import de.prob.parser.ast.nodes.FreetypeDeclarationNode;
+import de.prob.parser.ast.nodes.FreetypeElementNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.MachineReferenceNode;
 import de.prob.parser.ast.nodes.Node;
@@ -14,24 +24,19 @@ import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.substitution.AssignSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.SubstitutionNode;
-import files.BParser;
-import files.BParser.DeclarationClauseContext;
-import files.BParser.Machine_instantiationContext;
-import files.BParser.StartContext;
-import files.BParserBaseVisitor;
+
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-
+import files.BParser;
+import files.BParser.DeclarationClauseContext;
 import files.BParser.FormulaContext;
 import files.BParser.FormulaExpressionContext;
 import files.BParser.FormulaPredicateContext;
 import files.BParser.FormulaSubstitutionContext;
+import files.BParser.Machine_instantiationContext;
+import files.BParser.StartContext;
+import files.BParserBaseVisitor;
 
 public class MachineASTCreator {
 	private final MachineNode machineNode;
@@ -179,6 +184,37 @@ public class MachineASTCreator {
 			DeclarationNode declarationNode = new DeclarationNode(position, ctx.IDENTIFIER().getSymbol().getText(),
 					DeclarationNode.Kind.DEFERRED_SET, machineNode);
 			machineNode.addDeferredSet(declarationNode);
+			return null;
+		}
+
+		@Override
+		public Void visitFreetype_definition(BParser.Freetype_definitionContext ctx) {
+			SourceCodePosition position = getSourcePositionFromTerminalNode(ctx.IDENTIFIER());
+			DeclarationNode declarationNode = new DeclarationNode(position, ctx.IDENTIFIER().getSymbol().getText(),
+					DeclarationNode.Kind.FREETYPE, machineNode);
+			List<FreetypeBaseElementNode> elements = new ArrayList<>();
+			for (BParser.Freetype_constructorContext constructorCtx : ctx.constructors) {
+				if (constructorCtx instanceof BParser.ElementContext) {
+					BParser.ElementContext e = (BParser.ElementContext) constructorCtx;
+					elements.add(new FreetypeElementNode(
+							getSourcePositionFromTerminalNode(e.IDENTIFIER()),
+							e.IDENTIFIER().getSymbol().getText(),
+							machineNode
+					));
+				} else if (constructorCtx instanceof BParser.ConstructorContext) {
+					BParser.ConstructorContext c = (BParser.ConstructorContext) constructorCtx;
+					ExprNode expr = (ExprNode) c.expr.accept(formulaAstCreator);
+					elements.add(new FreetypeConstructorNode(
+							getSourcePositionFromTerminalNode(c.IDENTIFIER()),
+							c.IDENTIFIER().getSymbol().getText(),
+							machineNode,
+							expr
+					));
+				} else {
+					unreachable();
+				}
+			}
+			machineNode.addFreetype(new FreetypeDeclarationNode(position, declarationNode, elements));
 			return null;
 		}
 

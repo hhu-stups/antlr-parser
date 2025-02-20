@@ -1,9 +1,19 @@
 package de.prob.parser.ast.visitors;
 
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 import de.prob.parser.antlr.VisitorException;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
 import de.prob.parser.ast.nodes.FormulaNode;
+import de.prob.parser.ast.nodes.FreetypeConstructorNode;
+import de.prob.parser.ast.nodes.FreetypeDeclarationNode;
+import de.prob.parser.ast.nodes.FreetypeElementNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.MachineReferenceNode;
 import de.prob.parser.ast.nodes.Node;
@@ -55,6 +65,7 @@ import de.prob.parser.ast.types.BoolType;
 import de.prob.parser.ast.types.CoupleType;
 import de.prob.parser.ast.types.DeferredSetElementType;
 import de.prob.parser.ast.types.EnumeratedSetElementType;
+import de.prob.parser.ast.types.FreetypeType;
 import de.prob.parser.ast.types.IntegerOrSetOfPairs;
 import de.prob.parser.ast.types.IntegerType;
 import de.prob.parser.ast.types.RealType;
@@ -66,19 +77,13 @@ import de.prob.parser.ast.types.StringType;
 import de.prob.parser.ast.types.UnificationException;
 import de.prob.parser.ast.types.UntypedType;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 public class TypeChecker implements AbstractVisitor<BType, BType> {
 	private Set<ExpressionOperatorNode> minusNodes = new HashSet<>();
 	private Set<ExpressionOperatorNode> multOrCartNodes = new HashSet<>();
 	private Set<TypedNode> typedNodes = new HashSet<>();
 	private Map<String, DeferredSetElementType> deferredSets = new HashMap<>();
 	private Map<String, EnumeratedSetElementType> enumeratedSets = new HashMap<>();
+	private Map<String, FreetypeType> freetypes = new HashMap<>();
 
 	private Map<String, BType> externalFunctionsAndVariables = new HashMap<>();
 
@@ -194,6 +199,36 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 			deferredSets.put(dSet.getName(), new DeferredSetElementType(dSet.getName()));
 			if(dSet.getType() == null) {
 				dSet.setType(new SetType(new DeferredSetElementType(dSet.getName())));
+			}
+		}
+
+		for (FreetypeDeclarationNode ft : machineNode.getFreetypes()) {
+			DeclarationNode ftDeclaration = ft.getFreetypeDeclarationNode();
+			FreetypeType ftType = new FreetypeType(ftDeclaration.getName());
+			freetypes.put(ftDeclaration.getName(), ftType);
+			if (ftDeclaration.getType() == null) {
+				// the whole freetype is the set of all valid freetype values of this type
+				ftDeclaration.setType(new SetType(ftType));
+				for (DeclarationNode element : ft.getElements()) {
+					if (element instanceof FreetypeElementNode) {
+						element.setType(ftType); // elements *are* the freetype, they are singletons
+					} else if (element instanceof FreetypeConstructorNode) {
+						FreetypeConstructorNode c = (FreetypeConstructorNode) element;
+
+						// the expr must denote a type (which means it must be a set)
+						SetType subType;
+						if (c.getExpr().getType() == null) {
+							subType = (SetType) visitExprNode(c.getExpr(), new SetType(new UntypedType()));
+						} else {
+							subType = (SetType) c.getExpr().getType();
+						}
+
+						// constructors are functions that create new freetype values given a value of the subtype
+						element.setType(new SetType(new CoupleType(subType.getSubType(), ftType)));
+					} else {
+						throw new AssertionError();
+					}
+				}
 			}
 		}
 
@@ -800,6 +835,8 @@ public class TypeChecker implements AbstractVisitor<BType, BType> {
 				return unify(expected, new SetType(deferredSets.get(node.getName())), node);
 			} else if(enumeratedSets.containsKey(node.getName())) {
 				return unify(expected, new SetType(enumeratedSets.get(node.getName())), node);
+			} else if (freetypes.containsKey(node.getName())) {
+				return unify(expected, new SetType(freetypes.get(node.getName())), node);
 			} else if(externalFunctionsAndVariables.containsKey(node.getName())) {
 				return unify(expected, externalFunctionsAndVariables.get(node.getName()), node);
 			}

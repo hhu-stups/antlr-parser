@@ -2,8 +2,8 @@ parser grammar BParser;
 
 options { tokenVocab=BLexer; }
 
-//import Blexer;
-//options { tokenVocab=Blexer; } // this is currently not supported by gradle
+//import BLexer;
+//options { tokenVocab=BLexer; } // this is currently not supported by gradle
 
 start
   : parse_unit EOF      # ParseUnit
@@ -43,22 +43,23 @@ machine_header
   ;
 
 machine_clause
-  : definition_clause                                             # DefinitionClauseIndirection
-  | name=(CONSTRAINTS|PROPERTIES|INVARIANT) pred=predicate        # PredicateClause
+  : definition_clause                                              # DefinitionClauseIndirection
+  | name=(CONSTRAINTS|PROPERTIES|INVARIANT) pred=predicate         # PredicateClause
   | name=(INCLUDES|EXTENDS|IMPORTS) instances+=machine_instantiation
-      (COMMA instances+=machine_instantiation)*                   # InstanceClause
+      (COMMA instances+=machine_instantiation)*                    # InstanceClause
   | name=(SEES|USES|PROMOTES)
-      composed_identifier_list                                    # ReferenceClause
+      composed_identifier_list                                     # ReferenceClause
   | name=(CONSTANTS|ABSTRACT_CONSTANTS|CONCRETE_CONSTANTS|
           VARIABLES|ABSTRACT_VARIABLES|CONCRETE_VARIABLES)
-          identifier_list                                         # DeclarationClause
-  | INITIALISATION substitution                                   # InitialisationClause
+          identifier_list                                          # DeclarationClause
+  | INITIALISATION substitution                                    # InitialisationClause
   | name=(OPERATIONS|LOCAL_OPERATIONS)
-      ops+=operation (SEMICOLON ops+=operation)*                  # OperationsClause
+      ops+=operation (SEMICOLON ops+=operation)*                   # OperationsClause
   | VALUES idents+=IDENTIFIER EQUAL exprs+=expression
-     (SEMICOLON idents+=IDENTIFIER EQUAL exprs+=expression)*      # ValuesClause
-  | ASSERTIONS preds+=predicate (SEMICOLON pred+=predicate)*      # AssertionClause
-  | SETS set_definition (SEMICOLON set_definition)*               # SetsClause
+     (SEMICOLON idents+=IDENTIFIER EQUAL exprs+=expression)*       # ValuesClause
+  | ASSERTIONS preds+=predicate (SEMICOLON pred+=predicate)*       # AssertionClause
+  | SETS set_definition (SEMICOLON set_definition)*                # SetsClause
+  | FREETYPES freetype_definition (SEMICOLON freetype_definition)* # FreetypesClause
   ;
 
 definition_clause
@@ -72,6 +73,15 @@ machine_instantiation
 set_definition
   : IDENTIFIER                                                  # DeferredSet
   | IDENTIFIER EQUAL LEFT_BRACE identifier_list RIGHT_BRACE     # EnumeratedSet
+  ;
+
+freetype_definition
+  : IDENTIFIER EQUAL constructors+=freetype_constructor (COMMA constructors+=freetype_constructor)*
+  ;
+
+freetype_constructor
+  : IDENTIFIER                                           # Element
+  | IDENTIFIER LEFT_PAR expr=expression_in_par RIGHT_PAR # Constructor
   ;
 
 operation

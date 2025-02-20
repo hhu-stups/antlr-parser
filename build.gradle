@@ -7,7 +7,7 @@ plugins {
     id "maven-publish"
     id "signing"
     
-    id "com.gradleup.shadow" version "8.3.5"
+    id "com.gradleup.shadow" version "8.3.6"
 }
 
 project.version = '0.1.0-SNAPSHOT'
@@ -33,7 +33,7 @@ configurations {
 }
 
 dependencies {
-    def antlrVersion = "4.9.3"
+    def antlrVersion = "4.13.2"
 
     antlr group: "org.antlr", name: "antlr4", version: antlrVersion
     api group: "org.antlr", name: "antlr4-runtime", version: antlrVersion
@@ -46,6 +46,13 @@ java {
 
     withSourcesJar()
     withJavadocJar()
+}
+
+javadoc {
+    options {
+        // silence warnings on missing javadoc
+        addBooleanOption('Xdoclint:all,-missing', true)
+    }
 }
 
 // gradle generateGrammarSource

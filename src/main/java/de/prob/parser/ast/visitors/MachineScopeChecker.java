@@ -1,10 +1,19 @@
 package de.prob.parser.ast.visitors;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
 import de.prob.parser.antlr.ScopeException;
 import de.prob.parser.antlr.VisitorException;
-import de.prob.parser.ast.SourceCodePosition;
 import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.EnumeratedSetDeclarationNode;
+import de.prob.parser.ast.nodes.FreetypeDeclarationNode;
 import de.prob.parser.ast.nodes.MachineNode;
 import de.prob.parser.ast.nodes.MachineReferenceNode;
 import de.prob.parser.ast.nodes.Node;
@@ -33,16 +42,6 @@ import de.prob.parser.ast.nodes.substitution.VarSubstitutionNode;
 import de.prob.parser.ast.types.IntegerType;
 import de.prob.parser.ast.visitors.generic.ASTVisitor;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
-
 public class MachineScopeChecker {
 	private final LinkedList<Map<String, DeclarationNode>> scopeTable = new LinkedList<>();
 	private final Map<String, OperationNode> operationsInScope = new TreeMap<>();
@@ -51,6 +50,7 @@ public class MachineScopeChecker {
 
 	private List<MachineNode> machinesInScope;
 	private List<DeclarationNode> setsInScope;
+	private List<DeclarationNode> freetypesInScope;
 	private List<DeclarationNode> constantsInScope;
 	private List<DeclarationNode> variablesInScope;
 
@@ -103,6 +103,7 @@ public class MachineScopeChecker {
 		if (machineNode.getProperties() != null) {
 			scopeTable.clear();
 			createNewScope(getSetsInScope());
+			createNewScope(getFreetypesInScope());
 			createNewScope(getConstantsInScope());
 			formulaScopeChecker.visitPredicateNode(machineNode.getProperties());
 		}
@@ -110,6 +111,7 @@ public class MachineScopeChecker {
 		if (machineNode.getValues() != null) {
 			scopeTable.clear();
 			createNewScope(getSetsInScope());
+			createNewScope(getFreetypesInScope());
 			createNewScope(getConstantsInScope());
 			machineNode.getValues().forEach(formulaScopeChecker::visitSubstitutionNode);
 		}
@@ -117,6 +119,7 @@ public class MachineScopeChecker {
 		if (machineNode.getInvariant() != null) {
 			scopeTable.clear();
 			createNewScope(getSetsInScope());
+			createNewScope(getFreetypesInScope());
 			createNewScope(getConstantsInScope());
 			createNewScope(getVariablesInScope());
 			formulaScopeChecker.visitPredicateNode(machineNode.getInvariant());
@@ -125,6 +128,7 @@ public class MachineScopeChecker {
 		if (machineNode.getAssertions() != null) {
 			scopeTable.clear();
 			createNewScope(getSetsInScope());
+			createNewScope(getFreetypesInScope());
 			createNewScope(getConstantsInScope());
 			createNewScope(getVariablesInScope());
 			machineNode.getAssertions().forEach(formulaScopeChecker::visitPredicateNode);
@@ -134,6 +138,7 @@ public class MachineScopeChecker {
 		if (machineNode.getInitialisation() != null) {
 			scopeTable.clear();
 			createNewScope(getSetsInScope());
+			createNewScope(getFreetypesInScope());
 			createNewScope(getConstantsInScope());
 			createNewScope(getVariablesInScope());
 			formulaScopeChecker.visitSubstitutionNode(machineNode.getInitialisation());
@@ -141,6 +146,7 @@ public class MachineScopeChecker {
 
 		for (OperationNode op : machineNode.getOperations()) {
 			createNewScope(getSetsInScope());
+			createNewScope(getFreetypesInScope());
 			createNewScope(getConstantsInScope());
 			createNewScope(getVariablesInScope());
 			createNewScope(op.getParams());
@@ -257,6 +263,34 @@ public class MachineScopeChecker {
 				}
 			}
 			result.addAll(machine.getDeferredSets());
+		}
+		return result;
+	}
+
+	private List<DeclarationNode> getFreetypesInScope() {
+		if (this.freetypesInScope == null) {
+			freetypesInScope = getFreetypesInScope(getMachinesInScope());
+		}
+		return freetypesInScope;
+	}
+
+	private List<DeclarationNode> getFreetypesInScope(List<MachineNode> list) {
+		List<DeclarationNode> result = new ArrayList<>();
+		for (MachineNode machine : list) {
+			for (FreetypeDeclarationNode ft : machine.getFreetypes()) {
+				result.add(ft.getFreetypeDeclarationNode());
+				result.addAll(ft.getElements());
+				if (machine.getPrefix() != null && !machineNode.equals(machine)) {
+					result.addAll(ft.getElements().stream()
+							              .map(decl -> {
+								              DeclarationNode newNode = new DeclarationNode(decl.getSourceCodePosition(), machine.getPrefix() + "." + decl.getName(), DeclarationNode.Kind.FREETYPE_ELEMENT, decl.getSurroundingMachineNode());
+								              newNode.setType(decl.getType());
+								              newNode.setParent(decl.getParent());
+								              return newNode;
+							              })
+							              .collect(Collectors.toList()));
+				}
+			}
 		}
 		return result;
 	}

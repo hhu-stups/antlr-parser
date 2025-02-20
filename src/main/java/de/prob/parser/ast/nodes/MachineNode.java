@@ -20,6 +20,7 @@ public class MachineNode extends Node {
 	private String machineName;
 	private List<EnumeratedSetDeclarationNode> setEnumerations = new ArrayList<>();
 	private List<DeclarationNode> deferredSets = new ArrayList<>();
+	private List<FreetypeDeclarationNode> freetypes = new ArrayList<>();
 	private List<DeclarationNode> constants = new ArrayList<>();
 	private List<DeclarationNode> variables = new ArrayList<>();
 	private List<DeclarationNode> includedRenamedVariables = new ArrayList<>();
@@ -137,6 +138,15 @@ public class MachineNode extends Node {
 
 	public List<DeclarationNode> getDeferredSets() {
 		return new ArrayList<>(this.deferredSets);
+	}
+
+	public void addFreetype(FreetypeDeclarationNode freetypeNode) {
+		this.freetypes.add(freetypeNode);
+		freetypeNode.setParent(this);
+	}
+
+	public List<FreetypeDeclarationNode> getFreetypes() {
+		return new ArrayList<>(this.freetypes);
 	}
 
 	public List<LTLFormula> getLTLFormulas() {
