@@ -426,7 +426,7 @@ public class MachineScopeChecker {
 		@Override
 		public void visitLetPredicateNode(LetPredicateNode node) {
 			createNewScope(node.getLocalIdentifiers());
-			visitPredicateNode(node.getPredicate());
+			visitPredicateNode(node.getWherePredicate());
 			visitPredicateNode(node.getPredicate());
 			scopeTable.removeLast();
 		}
