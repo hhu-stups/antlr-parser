@@ -3,7 +3,7 @@ package de.prob.parser.ast.types;
 import java.util.Observable;
 import java.util.Observer;
 
-public class SetType extends Observable implements BType, Observer {
+public final class SetType extends Observable implements BType, Observer {
 
     private BType subType;
 
@@ -100,5 +100,4 @@ public class SetType extends Observable implements BType, Observer {
     public boolean isUntyped() {
         return this.subType.isUntyped();
     }
-
 }

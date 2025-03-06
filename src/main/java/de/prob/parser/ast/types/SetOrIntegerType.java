@@ -3,7 +3,7 @@ package de.prob.parser.ast.types;
 import java.util.Observable;
 import java.util.Observer;
 
-public class SetOrIntegerType extends Observable implements BType, Observer {
+public final class SetOrIntegerType extends Observable implements BType, Observer {
 
     private BType argType;
 
@@ -87,5 +87,4 @@ public class SetOrIntegerType extends Observable implements BType, Observer {
     public boolean isUntyped() {
         return true;
     }
-
 }

@@ -3,7 +3,7 @@ package de.prob.parser.ast.types;
 import java.util.Observable;
 import java.util.Observer;
 
-public class CoupleType extends Observable implements BType, Observer {
+public final class CoupleType extends Observable implements BType, Observer {
 
     private BType left;
     private BType right;
@@ -115,7 +115,5 @@ public class CoupleType extends Observable implements BType, Observer {
             sb.append(this.right);
         }
         return sb.toString();
-
     }
-
 }

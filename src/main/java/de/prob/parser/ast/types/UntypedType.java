@@ -2,7 +2,7 @@ package de.prob.parser.ast.types;
 
 import java.util.Observable;
 
-public class UntypedType extends Observable implements BType {
+public final class UntypedType extends Observable implements BType {
 
     @Override
     public boolean unifiable(BType otherType) {
@@ -44,7 +44,7 @@ public class UntypedType extends Observable implements BType {
 
     @Override
     public String toString() {
-        int shortenedHashCode = this.hashCode() / 10000;
-        return "_Type" + shortenedHashCode + "_";
+        int h = this.hashCode();
+        return "_Type" + ((h ^ (h >>> 16)) & 0xFFFF) + "_";
     }
 }

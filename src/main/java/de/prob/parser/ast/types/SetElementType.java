@@ -1,10 +1,13 @@
 package de.prob.parser.ast.types;
 
-public class SetElementType implements BType {
+import java.util.Objects;
+
+public abstract class SetElementType implements BType {
+
     private final String setName;
 
-    public SetElementType(String name) {
-        this.setName = name;
+    SetElementType(String name) {
+        this.setName = Objects.requireNonNull(name, "name");
     }
 
     @Override
@@ -19,7 +22,7 @@ public class SetElementType implements BType {
     }
 
     public String getSetName() {
-        return setName;
+        return this.setName;
     }
 
     @Override
@@ -29,25 +32,22 @@ public class SetElementType implements BType {
 
     @Override
     public boolean unifiable(BType otherType) {
-        if (otherType instanceof UntypedType) {
-            return true;
-        }
-        return this.equals(otherType);
+        return otherType instanceof UntypedType || this.equals(otherType);
     }
 
     @Override
-    public boolean contains(BType other) {
+    public final boolean contains(BType other) {
         return false;
     }
 
     @Override
-    public boolean isUntyped() {
+    public final boolean isUntyped() {
         return false;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if(obj instanceof SetElementType) {
+        if (obj instanceof SetElementType) {
             return this.setName.equals(((SetElementType) obj).getSetName());
         }
         return false;

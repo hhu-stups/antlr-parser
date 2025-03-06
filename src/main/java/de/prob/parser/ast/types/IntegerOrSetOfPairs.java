@@ -1,11 +1,12 @@
 package de.prob.parser.ast.types;
 
+import de.prob.parser.ast.visitors.TypeErrorException;
+
 import java.util.Observable;
 import java.util.Observer;
 
-import de.prob.parser.ast.visitors.TypeErrorException;
+public final class IntegerOrSetOfPairs extends Observable implements BType, Observer {
 
-public class IntegerOrSetOfPairs extends Observable implements BType, Observer {
     private BType left;
     private BType right;
 
@@ -133,7 +134,7 @@ public class IntegerOrSetOfPairs extends Observable implements BType, Observer {
     @Override
     public boolean unifiable(BType otherType) {
         if (otherType instanceof SetOrIntegerType || otherType instanceof IntegerType
-            || otherType instanceof IntegerOrSetOfPairs || otherType instanceof UntypedType) {
+                || otherType instanceof IntegerOrSetOfPairs || otherType instanceof UntypedType) {
             return true;
         } else if (otherType instanceof SetType) {
             SetType setType = (SetType) otherType;
@@ -160,5 +161,4 @@ public class IntegerOrSetOfPairs extends Observable implements BType, Observer {
     public BType getRight() {
         return right;
     }
-
 }

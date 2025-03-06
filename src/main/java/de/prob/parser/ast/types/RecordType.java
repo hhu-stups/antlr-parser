@@ -4,13 +4,9 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
-/**
- * Created by fabian on 25.05.19.
- */
-public class RecordType extends Observable implements BType, Observer {
+public final class RecordType extends Observable implements BType, Observer {
 
     private List<String> identifiers;
-
     private List<BType> subtypes;
 
     public RecordType(List<String> identifiers, List<BType> subtypes) {
@@ -134,6 +130,4 @@ public class RecordType extends Observable implements BType, Observer {
     public List<BType> getSubtypes() {
         return subtypes;
     }
-
-
 }
