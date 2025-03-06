@@ -23,16 +23,12 @@ import de.prob.parser.ast.nodes.expression.IdentifierExprNode;
 import de.prob.parser.ast.nodes.expression.LambdaNode;
 import de.prob.parser.ast.nodes.expression.LetExpressionNode;
 import de.prob.parser.ast.nodes.expression.QuantifiedExpressionNode;
-import de.prob.parser.ast.nodes.expression.RecordFieldAccessNode;
-import de.prob.parser.ast.nodes.expression.RecordNode;
 import de.prob.parser.ast.nodes.expression.SetComprehensionNode;
-import de.prob.parser.ast.nodes.expression.StructNode;
 import de.prob.parser.ast.nodes.predicate.IdentifierPredicateNode;
 import de.prob.parser.ast.nodes.predicate.LetPredicateNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 import de.prob.parser.ast.nodes.predicate.QuantifiedPredicateNode;
 import de.prob.parser.ast.nodes.substitution.AnySubstitutionNode;
-import de.prob.parser.ast.nodes.substitution.AssignSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.BecomesElementOfSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.BecomesSuchThatSubstitutionNode;
 import de.prob.parser.ast.nodes.substitution.LetSubstitutionNode;
@@ -450,31 +446,6 @@ public class MachineScopeChecker {
 			}
 			visitPredicateNode(node.getPredicate());
 		}
-
-		@Override
-		public void visitAssignSubstitutionNode(AssignSubstitutionNode node) {
-			for (ExprNode expr : node.getLeftSide()) {
-				visitExprNode(expr);
-			}
-			for (ExprNode expr : node.getRightSide()) {
-				visitExprNode(expr);
-			}
-		}
-
-		@Override
-		public void visitStructNode(StructNode node) {
-			//Do not visit declared fields
-		}
-
-		@Override
-		public void visitRecordNode(RecordNode node) {
-			//Do not visit declared fields
-		}
-
-		@Override
-		public void visitRecordFieldAccessNode(RecordFieldAccessNode node) {
-			visitExprNode(node.getRecord());
-		}
 	}
 
 	public DeclarationNode lookUpIdentifier(String name, Node node) {
@@ -490,5 +461,4 @@ public class MachineScopeChecker {
 		}
 		throw new VisitorException(new ScopeException("Unknown identifier: " + name));
 	}
-
 }
