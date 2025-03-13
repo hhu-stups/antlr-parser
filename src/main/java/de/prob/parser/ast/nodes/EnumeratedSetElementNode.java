@@ -31,4 +31,9 @@ public class EnumeratedSetElementNode extends ExprNode {
     public DeclarationNode getDeclarationNode() {
         return declarationNode;
     }
+
+    @Override
+    public String toString() {
+        return elementName;
+    }
 }

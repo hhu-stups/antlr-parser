@@ -36,12 +36,8 @@ public class IfPredicateNode extends PredicateNode {
 		this.condition = condition;
 	}
 
-	String prepareToString(String selectIf) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(selectIf).append(" ").append(condition).append(" THEN ").append(thenPred);
-		sb.append(" ELSE ").append(elsePred);
-		sb.append(" END");
-		return sb.toString();
+	@Override
+	public String toString() {
+		return "IF " + condition + " THEN " + thenPred + " ELSE " + elsePred + " END";
 	}
-
 }

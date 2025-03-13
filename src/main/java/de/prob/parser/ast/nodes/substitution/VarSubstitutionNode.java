@@ -33,7 +33,7 @@ public class VarSubstitutionNode extends SubstitutionNode {
 
 	@Override
 	public String toString() {
-		return "VAR " + localVariables + " THEN " + body + " END";
+		return "VAR " + localVariables + " IN " + body + " END";
 	}
 
 }

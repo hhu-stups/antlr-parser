@@ -67,18 +67,28 @@ public class IfOrSelectSubstitutionsNode extends SubstitutionNode {
 		this.elseSubstitution = elseSub;
 	}
 
-	String prepareToString(String selectIf, String whenElsif) {
+	@Override
+	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(selectIf).append(" ").append(conditions.get(0)).append(" THEN ").append(substitutions.get(0));
+		sb.append(operator).append(" ").append(conditions.get(0)).append(" THEN ").append(substitutions.get(0));
 		for (int i = 1; i < conditions.size(); i++) {
-			sb.append(" ").append(whenElsif).append(" ").append(conditions.get(i)).append(" THEN ")
-					.append(substitutions.get(i));
+			sb.append(" ");
+			switch (operator) {
+				case IF:
+					sb.append("ELSIF");
+					break;
+				case SELECT:
+					sb.append("WHEN");
+					break;
+				default:
+					throw new AssertionError();
+			}
+			sb.append(" ").append(conditions.get(i)).append(" THEN ").append(substitutions.get(i));
 		}
-		if (null != elseSubstitution) {
+		if (elseSubstitution != null) {
 			sb.append(" ELSE ").append(elseSubstitution);
 		}
 		sb.append(" END");
 		return sb.toString();
 	}
-
 }

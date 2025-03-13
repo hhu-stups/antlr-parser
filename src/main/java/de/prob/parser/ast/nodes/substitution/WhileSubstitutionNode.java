@@ -39,4 +39,8 @@ public class WhileSubstitutionNode extends SubstitutionNode {
 		return invariant;
 	}
 
+	@Override
+	public String toString() {
+		return "WHILE " + condition + " DO " + body + " INVARIANT " + invariant + " VARIANT " + variant + " END";
+	}
 }

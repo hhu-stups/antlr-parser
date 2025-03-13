@@ -41,11 +41,19 @@ public class ListSubstitutionNode extends SubstitutionNode {
 			if (first) {
 				first = false;
 			} else {
-				sb.append("; ");
+				switch (operator) {
+					case Parallel:
+						sb.append(" || ");
+						break;
+					case Sequential:
+						sb.append(" ; ");
+						break;
+					default:
+						throw new AssertionError();
+				}
 			}
 			sb.append(substitutionNode);
 		}
 		return sb.toString();
 	}
-
 }

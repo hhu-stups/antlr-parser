@@ -5,6 +5,7 @@ import de.prob.parser.ast.nodes.DeclarationNode;
 import de.prob.parser.ast.nodes.predicate.PredicateNode;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 //TODO: Reason for extending SetComprehensionNode?
 public class QuantifiedExpressionNode extends SetComprehensionNode {
@@ -36,4 +37,17 @@ public class QuantifiedExpressionNode extends SetComprehensionNode {
 		return operator;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append(operator);
+		sb.append("(");
+		sb.append(declarationList.stream().map(Object::toString).collect(Collectors.joining(",")));
+		sb.append(",");
+		sb.append(predicateNode);
+		sb.append(",");
+		sb.append(expressionNode);
+		sb.append(")");
+		return sb.toString();
+	}
 }

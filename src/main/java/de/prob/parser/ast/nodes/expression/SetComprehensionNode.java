@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SetComprehensionNode extends ExprNode {
-	private List<DeclarationNode> declarationList;
-	private PredicateNode predicateNode;
+	protected List<DeclarationNode> declarationList;
+	protected PredicateNode predicateNode;
 
 	public SetComprehensionNode(SourceCodePosition sourceCodePosition, List<DeclarationNode> declarationList,
 			PredicateNode predicateNode) {
@@ -36,7 +36,6 @@ public class SetComprehensionNode extends ExprNode {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("SET_COMPREHENSION(");
-
 		sb.append(declarationList.stream().map(Object::toString).collect(Collectors.joining(",")));
 		sb.append(",");
 		sb.append(predicateNode);
