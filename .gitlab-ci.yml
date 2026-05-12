@@ -6,6 +6,7 @@ variables:
 cache:
   paths:
     - .gradle/caches
+    - .gradle/notifications
     - .gradle/wrapper
 
 .tests:
