@@ -49,9 +49,6 @@ tests:jdk-8:
   image: eclipse-temurin:8
   variables:
     ORG_GRADLE_PROJECT_javaToolchainVersion: "8"
-  before_script:
-    - apt-get update
-    - apt-get install -y git
 
 tests:jdk-11:
   extends:
