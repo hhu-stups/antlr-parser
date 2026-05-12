@@ -36,7 +36,7 @@ configurations {
 }
 
 dependencies {
-    def antlrVersion = "4.9.3" // last tool version that supports Java 8
+    def antlrVersion = "4.13.2"
 
     antlr("org.antlr:antlr4:${antlrVersion}")
     api("org.antlr:antlr4-runtime:${antlrVersion}")
